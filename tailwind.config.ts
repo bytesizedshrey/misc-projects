@@ -61,6 +61,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Cyberpunk theme colors
+				cyber: {
+					background: '#0A0A0A',
+					purple: '#8000FF',
+					cyan: '#00FFFF',
+					magenta: '#FF3366',
+					dark: '#1A1F2C',
+					light: '#F1F1F1'
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,47 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'glow': {
+					'0%, 100%': { 
+						textShadow: '0 0 5px #8000FF, 0 0 15px #8000FF, 0 0 20px #8000FF',
+						boxShadow: '0 0 5px #8000FF, 0 0 15px #8000FF'
+					},
+					'50%': { 
+						textShadow: '0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF',
+						boxShadow: '0 0 10px #00FFFF, 0 0 20px #00FFFF'
+					}
+				},
+				'flicker': {
+					'0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': {
+						opacity: '1'
+					},
+					'20%, 21.999%, 63%, 63.999%, 65%, 69.999%': {
+						opacity: '0.33'
+					}
+				},
+				'float': {
+					'0%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-20px)'
+					},
+					'100%': {
+						transform: 'translateY(0px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow': 'glow 3s ease-in-out infinite',
+				'flicker': 'flicker 3s linear infinite',
+				'float': 'float 6s ease-in-out infinite'
+			},
+			fontFamily: {
+				'orbitron': ['Orbitron', 'sans-serif'],
+				'cyberpunk': ['Orbitron', 'sans-serif']
 			}
 		}
 	},
