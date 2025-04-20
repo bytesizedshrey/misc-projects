@@ -20,7 +20,6 @@ export function Navbar() {
             </span>
           </Link>
         </div>
-
         {/* Desktop Navigation */}
         <div className={`${isMobile ? "hidden" : "flex"} items-center gap-6`}>
           <Link to="/forum" className="font-orbitron text-cyber-light hover:text-cyber-cyan transition-colors">
@@ -32,9 +31,10 @@ export function Navbar() {
           <Link to="/about" className="font-orbitron text-cyber-light hover:text-cyber-cyan transition-colors">
             About
           </Link>
-          <Button className="cyber-button ml-4">Sign In</Button>
+          <Link to="/auth-magic">
+            <Button className="cyber-button ml-4">Sign In</Button>
+          </Link>
         </div>
-
         {/* Mobile menu button */}
         {isMobile && (
           <button
@@ -67,7 +67,6 @@ export function Navbar() {
             </svg>
           </button>
         )}
-
         {/* Mobile menu */}
         {isMobile && menuOpen && (
           <div className="absolute top-16 right-0 left-0 bg-cyber-background border-b border-cyber-purple py-4 px-4 shadow-lg">
@@ -93,7 +92,9 @@ export function Navbar() {
               >
                 About
               </Link>
-              <Button className="cyber-button w-full mt-2">Sign In</Button>
+              <Link to="/auth-magic" onClick={() => setMenuOpen(false)}>
+                <Button className="cyber-button w-full mt-2">Sign In</Button>
+              </Link>
             </div>
           </div>
         )}

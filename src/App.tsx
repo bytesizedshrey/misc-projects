@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +9,7 @@ import Forum from "./pages/Forum";
 import Tools from "./pages/Tools";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import AuthMagic from "./pages/AuthMagic";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,7 @@ const App = () => (
           <Route path="/forum" element={<Forum />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/about" element={<About />} />
+          <Route path="/auth-magic" element={<AuthMagic />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
