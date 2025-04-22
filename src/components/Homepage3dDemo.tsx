@@ -1,14 +1,22 @@
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import React, { Suspense, useRef } from "react";
+import * as THREE from "three";
 
 function SpinningCube() {
-  const ref = useRef<any>();
+  const meshRef = useRef<THREE.Mesh>(null);
+  
   // Animate rotation with React Three Fiber's useFrame
-  // But lazy animate only if visible.
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.01;
+      meshRef.current.rotation.y += 0.01;
+    }
+  });
+
   return (
     <mesh
-      ref={ref}
+      ref={meshRef}
       rotation={[0.8, 0.6, 0]}
       position={[0, 0, 0]}
       scale={1.25}
