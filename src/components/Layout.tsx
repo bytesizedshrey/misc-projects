@@ -1,6 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { Shield, Settings, BookOpen, User } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
+import FloatingEmojis from "./FloatingEmojis";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,8 +9,9 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="min-h-screen flex flex-col bg-clay-bg">
-      <header className="py-4 px-6 border-b border-white/20 shadow-sm flex justify-between items-center">
+    <div className="min-h-screen flex flex-col bg-clay-bg relative overflow-x-hidden">
+      <FloatingEmojis />
+      <header className="py-4 px-6 border-b border-white/20 shadow-sm flex justify-between items-center z-10 relative">
         <Link to="/" className="flex items-center gap-2">
           <Shield className="h-8 w-8 text-clay-purple" />
           <span className="text-2xl font-bold bg-gradient-to-r from-clay-purple to-clay-purple-dark bg-clip-text text-transparent">
@@ -31,6 +33,7 @@ const Layout = ({ children }: LayoutProps) => {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <button 
             className="rounded-full p-2 hover:bg-clay-purple/10 transition-colors"
             aria-label="Settings"
@@ -51,7 +54,7 @@ const Layout = ({ children }: LayoutProps) => {
           </button>
         </div>
       </header>
-      <main className="flex-1 container mx-auto py-6 px-4">
+      <main className="flex-1 container mx-auto py-6 px-4 relative z-10">
         {children}
       </main>
       <footer className="py-4 px-6 border-t border-white/20 text-center text-clay-neutral-300 text-sm">

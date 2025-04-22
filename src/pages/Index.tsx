@@ -1,8 +1,8 @@
-
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import { Shield, Server, Computer, AlertCircle, Lock, Unlock, ArrowRight } from "lucide-react";
+import Homepage3dDemo from "../components/Homepage3dDemo";
 
 const Index = () => {
   return (
@@ -15,7 +15,8 @@ const Index = () => {
           transition={{ duration: 0.7 }}
           className="max-w-3xl mx-auto px-4"
         >
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 flex flex-col items-center">
+            <Homepage3dDemo />
             <motion.div
               className="clay-card p-6 inline-block"
               whileHover={{ scale: 1.05 }}
