@@ -61,6 +61,39 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Claymorphism palette
+				clay: {
+					bg: '#f2f5f9',
+					shadow: '#d1d9e6',
+					highlight: '#ffffff',
+					purple: {
+						light: '#E5DEFF',
+						DEFAULT: '#9b87f5',
+						dark: '#7E69AB'
+					},
+					blue: {
+						light: '#D3E4FD',
+						DEFAULT: '#33C3F0',
+						dark: '#1EAEDB'
+					},
+					green: {
+						light: '#F2FCE2',
+						DEFAULT: '#6FCF97',
+						dark: '#27AE60'
+					},
+					red: {
+						light: '#FFDEE2',
+						DEFAULT: '#EB5757',
+						dark: '#C13333'
+					},
+					neutral: {
+						100: '#FFFFFF',
+						200: '#F1F0FB',
+						300: '#8E9196',
+						400: '#403E43',
+						500: '#1A1F2C'
+					}
 				}
 			},
 			borderRadius: {

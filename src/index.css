@@ -13,7 +13,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    /* Updated primary color to purple */
+    --primary: 252 80% 74%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -32,7 +33,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -61,7 +62,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 252 80% 74%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -96,6 +97,115 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-clay-bg text-clay-neutral-500 antialiased;
   }
+}
+
+@layer components {
+  /* Claymorphism component styles */
+  .clay-card {
+    @apply bg-clay-bg rounded-2xl p-6 shadow-[8px_8px_16px_0px_#d1d9e6,_-8px_-8px_16px_0px_rgba(255,255,255,0.6)] border border-white/40 relative overflow-hidden;
+  }
+  
+  .clay-button {
+    @apply py-3 px-6 rounded-xl bg-gradient-to-br from-white/80 to-clay-bg shadow-[6px_6px_12px_0px_#d1d9e6,_-6px_-6px_12px_0px_rgba(255,255,255,0.8)] 
+    hover:shadow-[4px_4px_8px_0px_#d1d9e6,_-4px_-4px_8px_0px_rgba(255,255,255,0.8)] 
+    active:shadow-[inset_4px_4px_8px_0px_#d1d9e6,_inset_-4px_-4px_8px_0px_rgba(255,255,255,0.8)]
+    transition-all duration-300 ease-out font-medium border border-white/40;
+  }
+  
+  .clay-button-primary {
+    @apply bg-gradient-to-br from-clay-purple-light to-clay-purple text-white
+    hover:from-clay-purple hover:to-clay-purple-dark;
+  }
+  
+  .clay-input {
+    @apply bg-clay-bg border border-white/60 shadow-[inset_3px_3px_6px_0px_#d1d9e6,_inset_-3px_-3px_6px_0px_rgba(255,255,255,0.7)]
+    rounded-xl py-3 px-4 focus:outline-none focus:ring-1 focus:ring-clay-purple;
+  }
+  
+  .clay-node {
+    @apply w-20 h-20 flex items-center justify-center rounded-full relative 
+    cursor-grab active:cursor-grabbing transition-transform duration-200;
+  }
+  
+  .clay-node-inner {
+    @apply w-full h-full rounded-full bg-gradient-to-br flex items-center justify-center shadow-[4px_4px_8px_0px_rgba(209,217,230,0.8),_-4px_-4px_8px_0px_rgba(255,255,255,0.8)] border border-white/40;
+  }
+  
+  .clay-server {
+    @apply clay-node;
+  }
+  
+  .clay-server .clay-node-inner {
+    @apply from-clay-blue-light/80 to-clay-blue;
+  }
+  
+  .clay-client {
+    @apply clay-node;
+  }
+  
+  .clay-client .clay-node-inner {
+    @apply from-clay-green-light/80 to-clay-green;
+  }
+  
+  .clay-attacker {
+    @apply clay-node;
+  }
+  
+  .clay-attacker .clay-node-inner {
+    @apply from-clay-red-light/80 to-clay-red;
+  }
+  
+  /* Animation keyframes */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes packet-move {
+    0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+    10% { transform: translate(0, 0) scale(1); opacity: 1; }
+    90% { transform: translate(var(--travel-x), var(--travel-y)) scale(1); opacity: 1; }
+    100% { transform: translate(var(--travel-x), var(--travel-y)) scale(0.5); opacity: 0; }
+  }
+  
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .pulsing {
+    animation: pulse 3s ease-in-out infinite;
+  }
+  
+  .packet {
+    @apply absolute w-4 h-4 rounded-full bg-clay-purple z-10;
+    animation: packet-move 2s ease-in-out forwards;
+  }
+  
+  .packet-secure {
+    @apply bg-clay-green;
+  }
+  
+  .packet-compromised {
+    @apply bg-clay-red;
+  }
+}
+
+/* Canvas styles for the network builder */
+.network-canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #f2f5f9;
+  background-image: 
+    radial-gradient(circle at 1px 1px, #d1d9e6 1px, transparent 0);
+  background-size: 20px 20px;
 }
