@@ -25,34 +25,34 @@ const Index = () => {
       <FloatingEmojis />
       <div className="min-h-screen w-full py-12 px-4 sm:px-6 lg:px-8 overflow-auto relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 clay-card p-8">
-            <h1 className="text-4xl font-bold mb-4 text-gradient hover:scale-105 transition-transform">
+          <div className="text-center mb-12 clay-card p-8 hover-lift">
+            <h1 className="text-4xl font-bold mb-4 text-3d text-gradient">
               Welcome to BytesSizedShrey
             </h1>
-            <p className="text-xl text-gray-600 mb-8 hover:text-gray-800 transition-colors">
+            <p className="text-xl text-gray-600 mb-8 hover:text-gray-800 transition-all duration-300 hover:tracking-wide">
               Play with my interactive 3D Robot
             </p>
           </div>
           
-          <div className="mb-16 hover:scale-[1.01] transition-transform">
+          <div className="mb-16 hover-lift">
             <SplineSceneBasic />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            <div className="clay-card p-8 group">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800 group-hover:text-gradient transition-all">
+            <div className="clay-card p-8 group hover-lift">
+              <h2 className="text-2xl font-semibold mb-4 text-3d text-gradient">
                 Feature One
               </h2>
-              <p className="text-gray-600 group-hover:text-gray-800 transition-colors">
+              <p className="text-gray-600 group-hover:text-gray-800 transition-all duration-300 group-hover:tracking-wide">
                 Meowww!!!
               </p>
             </div>
             
-            <div className="clay-card p-8 group">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800 group-hover:text-gradient transition-all">
+            <div className="clay-card p-8 group hover-lift">
+              <h2 className="text-2xl font-semibold mb-4 text-3d text-gradient">
                 Feature Two
               </h2>
-              <p className="text-gray-600 group-hover:text-gray-800 transition-colors">
+              <p className="text-gray-600 group-hover:text-gray-800 transition-all duration-300 group-hover:tracking-wide">
                 Wooff!!!
               </p>
             </div>
