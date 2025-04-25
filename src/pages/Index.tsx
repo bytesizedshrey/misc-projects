@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { SparklesPreviewDark } from "@/components/ui/sparkles-preview";
 import { SplineSceneBasic } from "@/components/ui/spline-demo";
 import { FloatingEmojis } from "@/components/ui/floating-emojis";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,9 @@ const Index = () => {
     <>
       <div className="animated-bg" />
       <FloatingEmojis />
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeSwitcher />
+      </div>
       <div className="min-h-screen w-full py-12 px-4 sm:px-6 lg:px-8 overflow-auto relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 clay-card p-8 hover-lift">
