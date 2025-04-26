@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Robot, CircleSlash, CirclePlay, Zap } from "lucide-react";
+import { Bot, CircleSlash, CirclePlay, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RoboModeToggleProps {
@@ -45,7 +45,7 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
         {enabled ? (
           <Zap className="h-4 w-4" />
         ) : (
-          <Robot className="h-4 w-4" />
+          <Bot className="h-4 w-4" />
         )}
       </Button>
       

@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Headphones, HeadphonesFilled, Volume2, VolumeX } from "lucide-react";
+import { Headphones, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AudioControlsProps {
@@ -68,7 +68,7 @@ export function AudioControls({ isPlaying, onToggle }: AudioControlsProps) {
         )}
       >
         {isPlaying ? (
-          <HeadphonesFilled className="h-[1.2rem] w-[1.2rem] text-primary" />
+          <Headphones className="h-[1.2rem] w-[1.2rem] text-primary" />
         ) : (
           <Headphones className="h-[1.2rem] w-[1.2rem]" />
         )}
