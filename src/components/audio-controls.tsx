@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Headphones, Volume2, VolumeX } from "lucide-react";
@@ -64,7 +63,7 @@ export function AudioControls({ isPlaying, onToggle }: AudioControlsProps) {
         onClick={onToggle}
         className={cn(
           "clay-button relative overflow-hidden",
-          isPlaying && "border-primary"
+          isPlaying && "border-primary shadow-[0_0_15px_rgba(0,255,198,0.2)]"
         )}
       >
         {isPlaying ? (
@@ -78,12 +77,15 @@ export function AudioControls({ isPlaying, onToggle }: AudioControlsProps) {
         variant="outline" 
         size="icon" 
         onClick={toggleMute}
-        className="clay-button"
+        className={cn(
+          "clay-button",
+          volume === 0 && "border-secondary shadow-[0_0_15px_rgba(255,107,129,0.2)]"
+        )}
       >
         {volume > 0 ? (
           <Volume2 className="h-[1.2rem] w-[1.2rem]" />
         ) : (
-          <VolumeX className="h-[1.2rem] w-[1.2rem]" />
+          <VolumeX className="h-[1.2rem] w-[1.2rem] text-secondary" />
         )}
       </Button>
     </div>

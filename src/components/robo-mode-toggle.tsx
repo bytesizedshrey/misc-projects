@@ -25,9 +25,9 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
   return (
     <div 
       className={cn(
-        "flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1",
-        "border border-border transition-all duration-300",
-        enabled ? "border-primary shadow-glow" : "hover:border-accent",
+        "flex items-center gap-2 bg-background/40 backdrop-blur-sm rounded-full px-3 py-1",
+        "border transition-all duration-300",
+        enabled ? "border-primary shadow-[0_0_15px_rgba(0,255,198,0.2)]" : "border-border hover:border-primary/30",
         isAnimating && "animate-pulse"
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -38,7 +38,7 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
         size="icon"
         className={cn(
           "h-8 w-8 rounded-full transition-all duration-300",
-          enabled && "bg-primary text-primary-foreground"
+          enabled && "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(0,255,198,0.3)]"
         )}
         onClick={onToggle}
       >
@@ -52,6 +52,7 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
       <div className="flex flex-col">
         <span className={cn(
           "text-xs font-medium transition-all duration-300",
+          "font-poppins tracking-wide",
           enabled ? "text-primary" : "text-foreground"
         )}>
           {enabled ? "ROBO MODE" : "ROBO MODE"}
@@ -63,10 +64,10 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
             onCheckedChange={onToggle}
             className={cn(
               "data-[state=checked]:bg-primary",
-              enabled && "animate-pulse"
+              enabled && "animate-pulse shadow-[0_0_10px_rgba(0,255,198,0.3)]"
             )}
           />
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[10px] text-muted font-inter">
             {enabled ? "ON" : "OFF"}
           </span>
         </div>
@@ -82,7 +83,7 @@ export function RoboModeToggle({ enabled, onToggle }: RoboModeToggleProps) {
       )}
       
       {!enabled && isHovered && (
-        <CircleSlash className="h-4 w-4 text-muted-foreground" />
+        <CircleSlash className="h-4 w-4 text-muted" />
       )}
     </div>
   );
