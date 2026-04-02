@@ -15,4 +15,9 @@ main {
   background-image: url("wallpaper.avif");
   background-size: cover;
   background-position: center;
+
+  position: relative;
+
+  overflow: hidden;
+  
 }
