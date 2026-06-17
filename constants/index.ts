@@ -4,56 +4,56 @@ export const frontEnd = [
   "React",
   "Nextjs",
   "Shadcn",
-  "SCSS",
   "Tailwindcss",
   "Framer-Motion",
-  "Recoil",
+  "Redux",
   "Tanstack Query",
+  "TypeScript",
 ];
 
-export const backEnd = ["Nodejs", "Honojs", "Expressjs", "NPM"];
+export const backEnd = ["Nodejs", "Expressjs", "MongoDB", "REST APIs"];
 
 export const services = [
-  "Cloudflare Workers",
   "Docker",
-  "Appwrite",
+  "AWS",
   "Supabase",
   "Prisma ORM",
   "Postman",
   "Postgres",
   "MongoDB",
+  "Firebase",
 ];
 
-export const currentlyLearning = ["Rust"];
+export const currentlyLearning = ["AWS", "Docker", "System Design"];
 
 export const Socials = [
   {
     name: "github",
-    href: "https://github.com/zzzzshawn",
+    href: "https://github.com/bytesizedshrey",
     logo: "/icons/github.svg",
     className: "dark:invert",
   },
   {
     name: "x.com",
-    href: "https://x.com/zzzzshawn",
+    href: "https://x.com/bytesizedshrey",
     logo: "/icons/x.svg",
     className: "dark:invert p-1",
   },
   {
     name: "gmail",
-    href: "mailto:shawndsilva.mail@gmail.com",
+    href: "mailto:shreyashgajbhiye@gmail.com",
     logo: "/icons/gmail.svg",
     className: "",
   },
   {
     name: "discord",
-    href: "https://discordapp.com/users/816919689350742026",
+    href: "https://discord.com/users/bytesizedshrey",
     logo: "/icons/discord.svg",
     className: "dark:invert py-2",
   },
   {
     name: "linkedIn",
-    href: "https://www.linkedin.com/in/zzshawndsilva/",
+    href: "https://www.linkedin.com/in/bytesizedshrey/",
     logo: "/icons/linkdin.svg",
     className: "dark:invert",
   },

@@ -29,16 +29,17 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Shawn.",
-  description: "I dont even know man",
-  metadataBase: new URL('https://www.zzzzshawn.cloud/'),
-  authors: [{ name: "Shawn." }],
+  title: "Shrey.",
+  description: "full stack dev · mern · cooked 24/7",
+  metadataBase: new URL('https://localhostshrey.vercel.app/'),
+  authors: [{ name: "Shrey." }],
   keywords: [
     "portfolio",
     "portfolio website",
     "minimal portfolio",
     "animated portfolio",
-    "sexy portfolio design",
+    "full stack developer portfolio",
+    "MERN stack portfolio",
     "Framer Motion portfolio",
     "minimalist web portfolio",
     "animated portfolio website",
@@ -51,10 +52,12 @@ export const metadata: Metadata = {
     "Framer Motion animations",
     "elegant portfolio design",
     "interactive portfolio website",
-    "minimal interactive portfolio"
+    "minimal interactive portfolio",
+    "bytesizedshrey",
+    "shreyash gajbhiye"
   ],
-  creator: "Shawn.",
-  publisher: "Shawn",
+  creator: "Shrey.",
+  publisher: "Shrey",
   category: "Creative Portfolio",
   robots: {
     index: true,
@@ -67,28 +70,28 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.zzzzshawn.cloud/",
-    title: "Shawn.",
-    description: "I dont even know man",
+    url: "https://localhostshrey.vercel.app/",
+    title: "Shrey.",
+    description: "full stack dev · mern · cooked 24/7",
     images: [
       {
-        url: "/assets/shawn.png",
+        url: "/assets/pfp.jpg",
         width: 1200,
         height: 630,
-        alt: "Shawn.",
+        alt: "Shrey.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shawn.",
-    description: "I dont even know man",
-    images: ["/assets/shawn.png"],
-    creator: "@zzzzshawn",
-    site: "@zzzzshawn",
+    title: "Shrey.",
+    description: "full stack dev · mern · cooked 24/7",
+    images: ["/assets/pfp.jpg"],
+    creator: "@bytesizedshrey",
+    site: "@bytesizedshrey",
   },
   alternates: {
-    canonical: "https://www.zzzzshawn.cloud",
+    canonical: "https://localhostshrey.vercel.app",
   },
   icons: [
     { rel: "icon", url: "/favicon.ico" },

@@ -13,7 +13,7 @@ export default function ProjectDisplay() {
   const router = useRouter();
 
   const navigate = () => {
-    router.push("/"); // Replace '/your-page' with the route you want to navigate to
+    router.push("/");
   };
 
   return (
@@ -24,9 +24,6 @@ export default function ProjectDisplay() {
       >
         <ArrowLeft className="text-zinc-700 dark:text-dark-1 " />
       </Button>
-      {/* <h2 className="pl-4 mx-auto text-xl md:text-5xl font-bold dark:text-neutral-800 text-neutral-200 font-sans">
-        Take a look at my Work
-      </h2> */}
       <Carousel items={cards} />
     </div>
   );
@@ -34,84 +31,75 @@ export default function ProjectDisplay() {
 
 const data = [
   {
-    category: "A component library for React",
-    title: "Nxttp",
-    src: "/assets/nxttp.webp",
-    link: "https://www.nxttp.cloud/",
-    // github: "https://github.com/zzzzshawn/gitwrapped", 
-    tags: ["Nextjs", "Tailwindcss", "Framer-Motion", "Shadcn"],
-    content: <></>,
-  },
-  {
-    category: "Landing Page",
-    title: "Millennial Studio",
+    category: "Real-time Communication App",
+    title: "Snitch",
     src: "/assets/project1.png",
-    link: "https://millennialstudio.vercel.app/",
-    // github: "",
-    tags: ["Nextjs", "Framer-Motion", "Shadcn", "Tailwindcss"],
+    link: "https://snitch-two.vercel.app",
+    github: "https://github.com/bytesizedshrey/snitch",
+    tags: ["Nextjs", "Tailwindcss", "Shadcn", "MongoDB", "Socket.io"],
     content: <></>,
   },
   {
-    category: "Create Graffiti style images",
-    title: "Griddy",
-    src: "/assets/griddyy.png",
-    link: "https://griddy-v1.vercel.app/",
-    github: "https://github.com/zzzzshawn/Griddy",
-    tags: ["Turborepo", "Cloudflare wrokers", "Honojs", "TanstackQuery", "Supabase", "Workers AI", "Nextjs"],
-    content: <></>,
-  },
-  {
-    category: "Share your photos here",
-    title: "Socialzz",
-    src: "/assets/socialzz.png",
-    link: "https://socialzz.zzzzshawn.cloud/",
-    github: "https://github.com/zzzzshawn/Socialzz",
-    tags: ["Vitejs", "Tailwindcss", "Shadcn", "TanstackQuery", "Appwrite"],
-    content: <></>,
-  },
-  {
-    category: "Questionnaire Platform",
-    title: "Rotōs",
+    category: "Interactive Battle Game",
+    title: "Battle Arena",
     src: "/assets/project2.png",
-    link: "https://rotos.zzzzshawn.cloud/",
-    github: "https://github.com/zzzzshawn/Rotos",
-    tags: ["Nextjs", "MongoDB", "Tailwindcss", "Shadcn", "Clerk Authentication"],
+    link: "https://github.com/bytesizedshrey/battle-arena",
+    github: "https://github.com/bytesizedshrey/battle-arena",
+    tags: ["JavaScript", "HTML5", "CSS3", "Canvas API"],
     content: <></>,
   },
   {
-    category: "Minimap for ChatGPT",
-    title: "Chart",
+    category: "State Management Playground",
+    title: "Redux Toolkit",
+    src: "/assets/griddyy.png",
+    link: "https://github.com/bytesizedshrey/redux",
+    github: "https://github.com/bytesizedshrey/redux",
+    tags: ["React", "Redux Toolkit", "JavaScript", "Vite"],
+    content: <></>,
+  },
+  {
+    category: "UI Component Exploration",
+    title: "ShadCN Basics",
+    src: "/assets/nxttp.webp",
+    link: "https://github.com/bytesizedshrey/shadCN-basics",
+    github: "https://github.com/bytesizedshrey/shadCN-basics",
+    tags: ["Nextjs", "TypeScript", "Tailwindcss", "Shadcn"],
+    content: <></>,
+  },
+  {
+    category: "OAuth Integration",
+    title: "Google OAuth",
+    src: "/assets/socialzz.png",
+    link: "https://github.com/bytesizedshrey/google-oauth",
+    github: "https://github.com/bytesizedshrey/google-oauth",
+    tags: ["Nodejs", "Expressjs", "Passport.js", "OAuth2"],
+    content: <></>,
+  },
+  {
+    category: "Containerized App Setup",
+    title: "Docker",
     src: "/assets/chart.png",
-    link: "https://chromewebstore.google.com/detail/chart/fgmpanjdodgeeioebcngeamnijalodng",
-    github: "https://github.com/zzzzshawn/Chart",
-    tags: ["Chrome Extension", "Typescript", "Html2canvas"],
+    link: "https://github.com/bytesizedshrey/docker",
+    github: "https://github.com/bytesizedshrey/docker",
+    tags: ["Docker", "Nodejs", "JavaScript", "DevOps"],
     content: <></>,
   },
   {
-    category: "Ecommerce",
-    title: "Zin Store",
+    category: "Express Backend Fundamentals",
+    title: "Basics Backend",
     src: "/assets/show.png",
-    link: "https://zinstore.vercel.app/",
-    github: "https://github.com/zzzzshawn/Ecommerce-v1",
-    tags: ["Vitejs", "MongoDB", "Framer-Motion", "Tailwindcss", "Shadcn"],
+    link: "https://github.com/bytesizedshrey/basicsBackend",
+    github: "https://github.com/bytesizedshrey/basicsBackend",
+    tags: ["Nodejs", "Expressjs", "MongoDB", "REST API"],
     content: <></>,
   },
   {
-    category: "Portfolio Template",
-    title: "Template",
+    category: "Tailwind UI Experiments",
+    title: "Tailwind",
     src: "/assets/template.png",
-    link: "https://portfolio-templatev3.vercel.app/",
-    github: "https://github.com/zzzzshawn/template-portfolio",
-    tags: ["Vitejs", "Framer-Motion", "Tailwindcss", "Shadcn"],
-    content: <></>,
-  },
-  {
-    category: "Web3 wallet",
-    title: "Pandora",
-    src: "/assets/pandora.png",
-    link: "https://pandorasvault.zzzzshawn.cloud/",
-    github: "https://github.com/zzzzshawn/Pandora",
-    tags: ["Nextjs", "Framer-Motion", "Tailwindcss", "Shadcn", '@Solana/web3.js', "Ethers"],
+    link: "https://github.com/bytesizedshrey/tailwind",
+    github: "https://github.com/bytesizedshrey/tailwind",
+    tags: ["Tailwindcss", "HTML", "CSS", "JavaScript"],
     content: <></>,
   },
 ];

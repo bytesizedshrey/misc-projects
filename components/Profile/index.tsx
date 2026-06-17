@@ -6,7 +6,7 @@ import { availableForWork } from "@/constants";
 import ThemeToggler from "../theme/theme-toggler";
 
 const Profile = () => {
-  const texts = ["WebApps", "Backends",];
+  const texts = ["WebApps", "Backends", "APIs"];
 
   return (
     <div className="flex flex-col overflow-hidden size-full relative z-10 p-5 items-start justify-start gap-8 max-sm:h-[275px] max-sm:gap-4 dark:text-dark-4 text-white border border-dark-3 dark:border-0 rounded-xl dark:bg-[#FDFDFD]">
@@ -20,8 +20,8 @@ const Profile = () => {
             className="size-16 rounded-3xl opacity-90 dark:opacity-100 [box-shadow:2px_2px_85px_0px_#ffffff]/90 dark:[box-shadow:0px_0px_65px_45px_#ffffff40]"
           />
           <div className="">
-            <p className="font-bold text-lg">Shawn.</p>
-            <p className="text-md font-mono dark:text-black/70 text-zinc-400/80">@zzzzshawn</p>
+            <p className="font-bold text-lg">Shrey.</p>
+            <p className="text-md font-mono dark:text-black/70 text-zinc-400/80">@bytesizedshrey</p>
           </div>
         </div>
         <ThemeToggler />
@@ -37,7 +37,7 @@ const Profile = () => {
         </div>
         <div className="w-full">
           <p className="text-sm">
-            Hello, I’m Shawn! a 22 year old developer based in Goa - India.
+            Hey, I&apos;m Shrey! a full stack dev based in India — cooked 24/7.
           </p>
         </div>
       </div>
@@ -55,7 +55,7 @@ const Profile = () => {
       <div className="absolute bottom-5 left-5 max-sm:hidden">
         <div className="w-full">
           <p className="text-xs font-mono dark:text-black/70 text-zinc-400/70">
-            &ldquo;How do i center <br /> a div again??&quot;
+            &ldquo;npm install && pray&rdquo;
           </p>
         </div>
       </div>
