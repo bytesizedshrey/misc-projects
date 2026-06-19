@@ -43,7 +43,8 @@ const BentoCard = ({
   initial,
   animate,
   transition,
-  whileHover
+  whileHover,
+  noGlass,
 }: {
   className: string;
   initial: object;
@@ -51,6 +52,7 @@ const BentoCard = ({
   transition: object;
   background: ReactNode;
   whileHover?: object;
+  noGlass?: boolean;
 }) => {
   const constraintsRef = useRef(null);
   const [, setIsDragging] = useState(false);
@@ -93,7 +95,8 @@ const BentoCard = ({
       animate={animate}
       transition={transition}
       className={cn(
-        "relative flex w-full rounded-xl cursor-grab glass",
+        "relative flex w-full rounded-xl cursor-grab",
+        !noGlass && "glass",
         className
       )}
     >
