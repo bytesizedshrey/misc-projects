@@ -9,7 +9,7 @@ const Profile = () => {
   const texts = ["WebApps", "Backends", "APIs"];
 
   return (
-    <div className="flex flex-col overflow-hidden size-full relative z-10 p-5 items-start justify-start gap-8 max-sm:h-[275px] max-sm:gap-4 dark:text-dark-4 text-white border border-dark-3 dark:border-0 rounded-xl dark:bg-[#FDFDFD]">
+    <div className="flex flex-col overflow-hidden size-full relative z-10 p-5 items-start justify-start gap-8 max-sm:h-[275px] max-sm:gap-4 text-white rounded-xl">
       <div className="w-full flex justify-between items-start">
         <div className="flex gap-3">
           <Image
@@ -21,7 +21,7 @@ const Profile = () => {
           />
           <div className="">
             <p className="font-bold text-lg">Shrey.</p>
-            <p className="text-md font-mono dark:text-black/70 text-zinc-400/80">@bytesizedshrey</p>
+            <p className="text-md font-mono text-white/60">@bytesizedshrey</p>
           </div>
         </div>
         <ThemeToggler />
@@ -42,7 +42,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="absolute bottom-5 right-5 b">
-        <div className="font-mono flex justify-end items-center gap-1 text-sm text-zinc-400 dark:text-black/70">
+        <div className="font-mono flex justify-end items-center gap-1 text-sm text-white/60">
           <div
             className={`size-1.5 rounded-full ${
               availableForWork ? "bg-green" : "bg-red"
@@ -54,7 +54,7 @@ const Profile = () => {
       </div>
       <div className="absolute bottom-5 left-5 max-sm:hidden">
         <div className="w-full">
-          <p className="text-xs font-mono dark:text-black/70 text-zinc-400/70">
+          <p className="text-xs font-mono text-white/60">
             &ldquo;npm install && pray&rdquo;
           </p>
         </div>

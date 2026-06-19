@@ -93,9 +93,7 @@ const BentoCard = ({
       animate={animate}
       transition={transition}
       className={cn(
-        "relative flex w-full rounded-xl border dark:border-dark-5 border-dark-3",
-        "transform-gpu bg-dark-1 [box-shadow:0_0px_60px_-20px_#ffffff1f_inset] dark:[box-shadow:3px_3px_40px_5px_#c6c6c635_inset] cursor-grab",
-        "dark:bg-white",
+        "relative flex w-full rounded-xl cursor-grab glass",
         className
       )}
     >

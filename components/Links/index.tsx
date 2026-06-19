@@ -7,7 +7,7 @@ const Links = () => {
   return (
     <div className="relative h-full p-0.5 gap-0.5 flex flex-col max-sm:flex-row max-sm:justify-center justify-between mr-auto bg-transparent">
       <ul className="flex w-max justify-center gap-0.5 items-center h-1/2">
-        <li className="m-0 flex items-center justify-center p-2 max-lg:size-[3.4rem] lg:size-[3.8rem] max-sm:text-[1.7rem] lg:text-[2.2rem] max-lg:text-[1.7rem] font-bold leading-7 lg:leading-8 max-sm:hidden text-white dark:text-dark-4">
+        <li className="m-0 flex items-center justify-center p-2 max-lg:size-[3.4rem] lg:size-[3.8rem] max-sm:text-[1.7rem] lg:text-[2.2rem] max-lg:text-[1.7rem] font-bold leading-7 lg:leading-8 max-sm:hidden text-white">
           <h2>
             LIN
             <br />
@@ -21,7 +21,7 @@ const Links = () => {
               target="_blank"
               className="border dark:border-0 border-dark-4 rounded-2xl flex items-center justify-center p-0.5 max-lg:size-[3.4rem] lg:size-[3.8rem] max-sm:size-[3.2rem]"
             >
-              <div className="border dark:border-0 border-dark-3 size-full flex items-center justify-center p-2 rounded-xl dark:bg-[#fdfdfd]">
+              <div className="border border-white/30 size-full flex items-center justify-center p-2 rounded-xl bg-white/20 backdrop-blur-sm">
                 <Image
                   src={item.logo}
                   alt={`${item.name} logo`}
@@ -49,7 +49,7 @@ const Links = () => {
               target="_blank"
               className="border dark:border-0 bg- border-dark-4 rounded-2xl flex items-center justify-center p-0.5 max-lg:size-[3.4rem] lg:size-[3.8rem] max-sm:size-[3.2rem]"
             >
-              <div className="border dark:border-0 border-dark-3 size-full flex items-center justify-center p-2 rounded-xl dark:bg-[#fdfdfd]">
+              <div className="border border-white/30 size-full flex items-center justify-center p-2 rounded-xl bg-white/20 backdrop-blur-sm">
                 <Image
                   src={item.logo}
                   alt={`${item.name} logo`}

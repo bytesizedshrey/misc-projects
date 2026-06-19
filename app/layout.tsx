@@ -5,9 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 import { Space_Grotesk } from "next/font/google";
-import GridPattern from "@/components/magicui/animated-grid-pattern";
 import { Analytics } from "@vercel/analytics/next";
-import Clouds from "@/components/ui/Clouds";
 
 
 const Glancyr = localFont({
@@ -125,25 +123,12 @@ export default function RootLayout({
           Glancyr.variable,
           Glancyr700.variable,
           spaceGrotesk.variable,
-          "bg-dark-1 dark:bg-white"
+          "bg-dark-1 dark:bg-white xp-bg"
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="light">
+        <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
           <Analytics />
-          <div className="absolute inset-0 size-full overflow-hidden dark:hidden ">
-            <GridPattern
-              numSquares={45}
-              maxOpacity={0.1}
-              duration={5}
-              repeatDelay={0}
-              className={cn(
-                "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] w-full",
-                "inset-x-0 inset-y-[-0%] h-[105%] max-sm:h-[90%] skew-y-12"
-              )}
-            />
-          </div>
-          <Clouds />
         </ThemeProvider>
       </body>
     </html>

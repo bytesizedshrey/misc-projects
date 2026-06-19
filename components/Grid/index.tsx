@@ -14,7 +14,7 @@ const features = [
     animate: { opacity: 1, y: 0 },
     transition: { duration: 1 },
     className:
-      "sm:col-start-3 sm:col-end-7 sm:row-start-1 sm:row-end-3 z-10 max-sm:h-max dark:p-1 p-0.5 !border-dark-3/70 dark:!border-0 dark:bg-white/30",
+      "sm:col-start-3 sm:col-end-7 sm:row-start-1 sm:row-end-3 z-10 max-sm:h-max",
     background: <Profile />,
   },
   {
@@ -22,7 +22,7 @@ const features = [
     animate: { opacity: 1, x: 0 },
     transition: { duration: 1 },
     className:
-      "sm:col-start-1 sm:col-end-3 sm:row-start-1 sm:row-end-5 z-[8] max-sm:h-max relative !border-dark-3 dark:!border-0 [box-shadow:0_0px_60px_-25px_#ffffff1f_inset] dark:[box-shadow:0px_0px_40px_5px_#c6c6c635_inset] dark:p-1 p-0.5 dark:bg-white/30",
+      "sm:col-start-1 sm:col-end-3 sm:row-start-1 sm:row-end-5 z-[8] max-sm:h-max relative",
     background: <Techstack />,
   },
   {
@@ -30,7 +30,7 @@ const features = [
     animate: { opacity: 1, y: 0 },
     transition: { duration: 1 },
     className:
-      "sm:col-start-3 sm:col-end-7 sm:row-start-3 sm:row-end-6 border-none dark:bg-transparent [box-shadow:0_0px_0px_-0px_#ffffff1f_inset] dark:[box-shadow:0_0px_0px_-0px_#ffffff1f_inset] z-[9] bg-transparent max-sm:h-max",
+      "sm:col-start-3 sm:col-end-7 sm:row-start-3 sm:row-end-6 z-[9] max-sm:h-max",
     background: <Spam />,
   },
   {
@@ -38,7 +38,7 @@ const features = [
     animate: { opacity: 1, x: 0 },
     transition: { duration: 1 },
     className:
-      " row-start-2 sm:col-start-7 sm:col-end-9 sm:row-start-1 sm:row-end-2 w-full sm:h-max sm:mt-auto sm:mr-auto border-none bg-transparent   [box-shadow:0_0px_0px_-0px_#ffffff1f_inset] dark:[box-shadow:0_0px_0px_-0px_#ffffff1f_inset] z-[7] max-sm:h-max dark:bg-transparent",
+      "row-start-2 sm:col-start-7 sm:col-end-9 sm:row-start-1 sm:row-end-2 w-full sm:h-max sm:mt-auto sm:mr-auto z-[7] max-sm:h-max",
     background: <Links />,
   },
   {
@@ -47,7 +47,7 @@ const features = [
     transition: { opacity: { duration: 1 }, x: { duration: 1 } },
     whileHover: { scale: 0.95, transition: { duration: 0.15 } },
     className:
-      "row-start-4 sm:col-start-7 sm:col-end-9 sm:row-start-2 sm:row-end-4 dark:p-1 p-0 dark:bg-white bg-purple-600 border-none relative hover:scale-125 z-[8] max-sm:h-max mx-auto overflow-hidden",
+      "row-start-4 sm:col-start-7 sm:col-end-9 sm:row-start-2 sm:row-end-4 relative hover:scale-125 z-[8] max-sm:h-max mx-auto overflow-hidden",
     background: (
       <Link href="/projects">
         <Projects />
