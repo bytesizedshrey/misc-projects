@@ -2,42 +2,44 @@ export const availableForWork = true;
 
 export const frontEnd = [
   "React",
-  "Nextjs",
-  "Shadcn",
-  "Tailwindcss",
-  "Framer-Motion",
-  "Redux",
-  "Tanstack Query",
+  "Next.js",
   "TypeScript",
+  "Tailwind CSS",
+  "Redux",
+  "Framer Motion",
+  "ShadCN UI",
 ];
 
-export const backEnd = ["Nodejs", "Expressjs", "MongoDB", "REST APIs"];
+export const backEnd = [
+  "Node.js",
+  "Express.js",
+  "REST APIs",
+  "JWT Auth",
+];
 
 export const services = [
+  "MongoDB",
+  "PostgreSQL",
   "Docker",
   "AWS",
-  "Supabase",
-  "Prisma ORM",
-  "Postman",
-  "Postgres",
-  "MongoDB",
   "Firebase",
+  "Postman",
 ];
 
-export const currentlyLearning = ["AWS", "Docker", "System Design"];
+export const currentlyLearning = ["System Design", "Redis", "gRPC"];
 
 export const Socials = [
   {
     name: "github",
     href: "https://github.com/bytesizedshrey",
     logo: "/icons/github.svg",
-    className: "dark:invert",
+    className: "invert",
   },
   {
     name: "x.com",
     href: "https://x.com/bytesizedshrey",
     logo: "/icons/x.svg",
-    className: "dark:invert p-1",
+    className: "invert p-1",
   },
   {
     name: "gmail",
@@ -49,12 +51,12 @@ export const Socials = [
     name: "discord",
     href: "https://discord.com/users/bytesizedshrey",
     logo: "/icons/discord.svg",
-    className: "dark:invert py-2",
+    className: "invert py-2",
   },
   {
     name: "linkedIn",
     href: "https://www.linkedin.com/in/bytesizedshrey/",
     logo: "/icons/linkdin.svg",
-    className: "dark:invert",
+    className: "invert",
   },
 ];
