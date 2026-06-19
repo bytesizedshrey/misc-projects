@@ -2,10 +2,11 @@
 import React from "react";
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 export default function ProjectDisplay() {
+  notFound();
   const cards = data.map((card, index) => (
     <Card key={card.src} card={card} index={index} />
   ));
