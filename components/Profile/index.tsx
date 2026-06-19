@@ -13,7 +13,7 @@ const Profile = () => {
       <div className="w-full flex justify-between items-start">
         <div className="flex gap-3">
           <Image
-            src={`/assets/pfp.jpg`}
+            src={`/assets/pfp-new.jpg`}
             alt="profile"
             width={1024}
             height={1024}
