@@ -4,7 +4,7 @@ import Badge from "../ui/badge";
 
 const Techstack = () => {
   return (
-    <div className="flex flex-col h-full overflow-hidden justify-start w-full group text-white pb-2.5 rounded-xl">
+    <div className="flex flex-col h-full overflow-hidden justify-start w-full group text-white pb-2.5 rounded-xl p-0.5">
       <div className="h-max ">
         <div className="flex pt-2.5">
           <p className="text-4xl px-2.5 font-bold"> {"{ "}</p>
