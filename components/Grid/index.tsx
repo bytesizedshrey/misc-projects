@@ -38,7 +38,7 @@ const features = [
     animate: { opacity: 1, x: 0 },
     transition: { duration: 1 },
     className:
-      "row-start-2 sm:col-start-7 sm:col-end-9 sm:row-start-1 sm:row-end-2 w-full sm:h-max sm:mt-auto sm:mr-auto z-[7] max-sm:h-max !bg-transparent !backdrop-blur-none !border-none !shadow-none",
+      "row-start-2 sm:col-start-7 sm:col-end-9 sm:row-start-1 sm:row-end-2 w-fit sm:h-max sm:mt-auto sm:mr-auto z-[7] max-sm:h-max !bg-transparent !backdrop-blur-none !border-none !shadow-none",
     background: <Links />,
   },
   {

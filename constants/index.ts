@@ -6,7 +6,6 @@ export const frontEnd = [
   "TypeScript",
   "Tailwind CSS",
   "Redux",
-  "Framer Motion",
   "ShadCN UI",
 ];
 
@@ -22,11 +21,10 @@ export const services = [
   "PostgreSQL",
   "Docker",
   "AWS",
-  "Firebase",
   "Postman",
 ];
 
-export const currentlyLearning = ["System Design", "Redis", "gRPC"];
+export const currentlyLearning = ["System Design", "Gen-ai"];
 
 export const Socials = [
   {
@@ -43,7 +41,7 @@ export const Socials = [
   },
   {
     name: "gmail",
-    href: "mailto:shreyashgajbhiye@gmail.com",
+    href: "mailto:thisisitshrey@gmail.com",
     logo: "/icons/gmail.svg",
     className: "",
   },
@@ -55,7 +53,7 @@ export const Socials = [
   },
   {
     name: "linkedIn",
-    href: "https://www.linkedin.com/in/bytesizedshrey/",
+    href: "https://www.linkedin.com/in/localhostshrey/",
     logo: "/icons/linkdin.svg",
     className: "invert",
   },
