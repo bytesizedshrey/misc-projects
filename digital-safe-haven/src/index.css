@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Cyberpunk theme - dark by default */
+    --background: 0 0% 4%;  /* #0A0A0A */
+    --foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --card: 222 19% 14%;  /* #1A1F2C */
+    --card-foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --popover: 222 19% 14%;  /* #1A1F2C */
+    --popover-foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --primary: 270 100% 50%;  /* #8000FF */
+    --primary-foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --secondary: 180 100% 50%;  /* #00FFFF */
+    --secondary-foreground: 0 0% 4%;  /* #0A0A0A */
+
+    --muted: 222 19% 14%;  /* #1A1F2C */
+    --muted-foreground: 0 0% 70%;  /* #B3B3B3 */
+
+    --accent: 342 100% 60%;  /* #FF3366 */
+    --accent-foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --destructive: 342 100% 60%;  /* #FF3366 */
+    --destructive-foreground: 0 0% 94%;  /* #F1F1F1 */
+
+    --border: 270 100% 50%;  /* #8000FF */
+    --input: 222 19% 14%;  /* #1A1F2C */
+    --ring: 270 100% 50%;  /* #8000FF */
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 222 19% 14%;  /* #1A1F2C */
+    --sidebar-foreground: 0 0% 94%;  /* #F1F1F1 */
+    --sidebar-primary: 270 100% 50%;  /* #8000FF */
+    --sidebar-primary-foreground: 0 0% 94%;  /* #F1F1F1 */
+    --sidebar-accent: 180 100% 50%;  /* #00FFFF */
+    --sidebar-accent-foreground: 0 0% 4%;  /* #0A0A0A */
+    --sidebar-border: 270 100% 50%;  /* #8000FF */
+    --sidebar-ring: 180 100% 50%;  /* #00FFFF */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-cyber-background text-cyber-light font-cyberpunk;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-orbitron;
+  }
+}
+
+@layer components {
+  .cyber-border {
+    @apply border border-cyber-purple shadow-[0_0_10px_rgba(128,0,255,0.5)];
+  }
+  
+  .cyber-border-cyan {
+    @apply border border-cyber-cyan shadow-[0_0_10px_rgba(0,255,255,0.5)];
+  }
+  
+  .cyber-button {
+    @apply bg-cyber-dark border border-cyber-purple py-2 px-4 font-orbitron text-cyber-light hover:text-cyber-cyan
+           shadow-[0_0_10px_rgba(128,0,255,0.5)] hover:shadow-[0_0_15px_rgba(0,255,255,0.7)] 
+           transition-all duration-300;
+  }
+  
+  .cyber-panel {
+    @apply bg-cyber-dark/80 border border-cyber-purple rounded p-4 shadow-[0_0_20px_rgba(128,0,255,0.3)];
+  }
+  
+  .cyber-text-glow {
+    @apply animate-glow;
+  }
+
+  .cyber-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .glitch {
+    @apply animate-flicker;
+  }
+
+  .cyber-input {
+    @apply bg-cyber-dark border border-cyber-purple text-cyber-light p-2 
+           focus:border-cyber-cyan focus:outline-none focus:ring-1 focus:ring-cyber-cyan
+           transition-all duration-300;
+  }
+}
