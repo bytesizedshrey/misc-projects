@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 162 100% 50%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 348 100% 71%;
+    --secondary-foreground: 0 0% 5%;
+    --muted: 0 0% 63%;
+    --muted-foreground: 0 0% 94%;
+    --accent: 162 100% 50%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 162 100% 50%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border selection:bg-primary/20 selection:text-primary;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased font-inter;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-poppins font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .clay-card {
+    @apply bg-background/90 backdrop-blur-lg rounded-xl border border-border 
+           shadow-[0_0_15px_rgba(0,255,198,0.1)]
+           transform-gpu transition-all duration-500 ease-out
+           hover:shadow-[0_0_30px_rgba(0,255,198,0.2)]
+           hover:border-primary/30
+           hover:translate-y-[-10px];
+  }
+
+  .clay-button {
+    @apply bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-border 
+           shadow-[0_0_10px_rgba(0,255,198,0.1)]
+           transform-gpu transition-all duration-300 ease-out
+           hover:shadow-[0_0_20px_rgba(0,255,198,0.2)]
+           hover:border-primary/30
+           hover:translate-y-[-5px];
+  }
+
+  .animated-bg {
+    @apply fixed inset-0 -z-10;
+    background: radial-gradient(circle at center,
+      rgba(0,255,198,0.03) 0%,
+      rgba(0,0,0,0) 70%
+    );
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/90 to-secondary
+           hover:from-secondary hover:via-primary/90 hover:to-primary
+           transition-all duration-300;
+  }
+
+  .text-3d {
+    text-shadow: 0 0 10px rgba(0,255,198,0.5),
+                 0 0 20px rgba(0,255,198,0.2);
+    @apply transition-all duration-300
+           hover:tracking-wider;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out
+           hover:translate-y-[-8px] hover:scale-[1.02]
+           active:translate-y-[-2px] active:scale-[0.98];
+  }
+  
+  /* Cyberpunk & ROBO MODE Styles */
+  .cyberpunk-text {
+    @apply font-bold tracking-widest;
+    text-shadow: 0 0 5px hsl(var(--primary)),
+                0 0 10px hsl(var(--primary)),
+                0 0 15px hsl(var(--primary)),
+                0 0 20px hsl(var(--primary));
+  }
+  
+  .cyberpunk-glow {
+    @apply font-medium;
+    text-shadow: 0 0 5px hsl(var(--foreground)),
+                0 0 10px hsl(var(--foreground));
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 5px hsl(var(--primary)),
+               0 0 10px hsl(var(--primary) / 0.5);
+  }
+  
+  .robo-mode {
+    @apply transform-gpu transition-all duration-500;
+    perspective: 1000px;
+    transform: perspective(1000px) rotate3d(1, 0, 0, 1deg);
+  }
+  
+  .robo-mode-bg {
+    @apply bg-background;
+    background: linear-gradient(45deg, 
+      hsl(var(--background)), 
+      hsl(var(--primary) / 0.15), 
+      hsl(var(--background))
+    );
+    background-size: 200% 200%;
+    animation: gradient 5s ease infinite;
+  }
+  
+  .robo-mode-card {
+    @apply bg-background/70 border-primary/30;
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.3),
+                inset 0 0 10px hsl(var(--primary) / 0.1);
+    animation: pulse-subtle 3s infinite;
+  }
+  
+  .robo-mode-container {
+    @apply relative overflow-hidden;
+    &::before {
+      content: '';
+      @apply absolute inset-0 z-0;
+      background: linear-gradient(45deg,
+        transparent 0%,
+        hsl(var(--primary) / 0.05) 25%,
+        transparent 50%
+      );
+      background-size: 200% 200%;
+      animation: gradient 3s ease infinite;
+    }
+  }
+  
+  .robo-dance {
+    animation: dance 5s ease-in-out infinite;
+  }
+  
+  .pulse-subtle {
+    animation: pulse-subtle 4s infinite;
+  }
+  
+  .bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
+  }
+  
+  .sway-subtle {
+    animation: sway-subtle 3s ease-in-out infinite;
+  }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-100px) rotate(10deg);
+  }
+}
+
+.animate-float {
+  animation: float 10s ease-in-out infinite;
+}
+
+/* New Cyberpunk Animations */
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.01);
+    opacity: 0.95;
+  }
+}
+
+@keyframes dance {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes sway-subtle {
+  0%, 100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-2deg);
+  }
+  75% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+    text-shadow: 0 0 0 transparent;
+  }
+  25% {
+    transform: translate(-1px, 1px);
+    text-shadow: -1px 0 hsl(var(--primary)), 
+                 1px 0 hsl(var(--accent));
+  }
+  50% {
+    transform: translate(1px, -1px);
+    text-shadow: 0 -1px hsl(var(--primary)), 
+                 0 1px hsl(var(--accent));
+  }
+  75% {
+    transform: translate(-1px, -1px);
+    text-shadow: -1px -1px hsl(var(--primary)), 
+                 1px 1px hsl(var(--accent));
+  }
+}
