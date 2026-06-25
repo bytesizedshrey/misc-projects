@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark terminal-inspired theme */
+    --background: 222 25% 12%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 20% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 25% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 262 83% 75%; /* Neon purple */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 199 95% 53%; /* Neon blue */
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 142 84% 55%; /* Neon green */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 223 25% 20%;
+    --muted-foreground: 210 40% 80%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 223 25% 25%;
+    --input: 223 25% 18%;
+    --ring: 262 83% 75%;
+
+    --radius: 0.5rem;
+
+    /* Extra cybersecurity accent colors */
+    --terminal-green: 142 84% 55%;
+    --matrix-green: 120 100% 50%;
+    --neon-blue: 199 95% 75%;
+    --neon-purple: 262 83% 75%;
+    --dark-bg: 222 25% 10%;
+    --darker-bg: 225 30% 8%;
+    --terminal-text: 0 0% 85%;
+    --code-syntax: 200 100% 60%;
+    --error-red: 0 100% 65%;
+    --warning-yellow: 47 100% 65%;
+    --success-green: 142 76% 55%;
+    
+    /* Neumorphic effects */
+    --neu-shadow-light: 225 25% 16%;
+    --neu-shadow-dark: 220 25% 6%;
+    --neu-highlight: 220 15% 24%;
+  }
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&display=swap');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+  font-display: swap;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
