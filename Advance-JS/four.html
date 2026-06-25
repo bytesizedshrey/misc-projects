@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM : edit and remove</title>
+</head>
+<body style="background-color: brown; color: bisque;">
+    <ul class="language">
+        <li>JavaScript</li>
+    </ul>
+</body>
+<script>
+    function addLanguage(langName){
+        const li = document.createElement('li');
+        li.innerHTML = `${langName}`
+        document.querySelector('.language').appendChild(li)
+    }
+    addLanguage('python')
+    addLanguage('typescript')
+
+    function addOptiLanguage(langName){
+        const li = document.createElement('li');
+        li.appendChild(document.createTextNode(langName))
+        document.querySelector('.language').appendChild(li)
+    }
+    addOptiLanguage('Swift')
+
+    //Edit
+    const secondLang = document.querySelector('li:nth-child(2)')
+    console.log(secondLang)
+    const newli = document.createElement('li')
+    newli.textContent = 'Mojo'
+    secondLang.replaceWith(newli)
+
+    //Remove 
+
+</script>
+</html>

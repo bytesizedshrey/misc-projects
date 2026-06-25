@@ -1,0 +1,30 @@
+<!DOCTYPE html> <!-- Declares the document type and version of HTML -->
+<html lang="en"> <!-- Specifies the language of the document -->
+<head>
+    <meta charset="UTF-8"> <!-- Defines the character encoding for the document -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Sets the viewport properties for responsive design -->
+    <title>DOM || Chai aur Code</title> <!-- Sets the title of the document -->
+</head>
+<body style="background-color: #212121; color: #fff;"> <!-- Defines the body of the document with background and text color -->
+    <div class="parent"> <!-- Creates a div element with the class "parent" -->
+        <div class="day">Monday</div> <!-- Creates a div element with the class "day" containing the text "Monday" -->
+        <div class="day">Tuesday</div> <!-- Creates a div element with the class "day" containing the text "Tuesday" -->
+        <div class="day">Wednesday</div> <!-- Creates a div element with the class "day" containing the text "Wednesday" -->
+        <div class="day">Thursday</div> <!-- Creates a div element with the class "day" containing the text "Thursday" -->
+    </div>
+</body>
+<script>
+    const parent = document.querySelector('.parent') // Selects the element with the class "parent" and assigns it to the variable parent
+    //console.log(parent); // Outputs the parent element to the console
+    //console.log(parent.children[1].innerHTML); // Outputs the inner HTML of the second child of the parent element to the console
+
+    for (let i = 0; i < parent.children.length; i++) { // Loops through each child element of the parent element
+        // console.log(parent.children[i].innerHTML); // Outputs the inner HTML of each child element to the console
+    }
+    parent.children[1].style.color = "orange" // Changes the text color of the second child element of the parent to orange
+    // console.log(parent.firstElementChild); // Outputs the first child element of the parent to the console
+    // console.log(parent.lastElementChild); // Outputs the last child element of the parent to the console
+
+    console.log("NODES : ", parent.childNodes); // Outputs the child nodes of the parent element to the console
+</script>
+</html>
