@@ -208,7 +208,7 @@ export default function Home() {
 
   return (
     <main className="v2" data-astro-cid-j7pv25f6>
-      <h3 data-astro-cid-j7pv25f6 className="text-xl font-bold tracking-tight text-neutral-900">
+      <h3 data-astro-cid-j7pv25f6 className="text-[1.35rem] font-medium tracking-tight text-neutral-900" style={{ fontFamily: "var(--font-scholar)" }}>
         localhostshrey
       </h3>
       <p className="v2-updated" data-astro-cid-j7pv25f6>
