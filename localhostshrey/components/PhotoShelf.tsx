@@ -129,7 +129,7 @@ export default function PhotoShelf() {
     {
       src: "/assets/spiderman.jpg?v=3",
       alt: "Spiderman",
-      bubble: "spiderman",
+      bubble: "with great powers comes great responsibilities",
       style: {
         "--r": "9.3deg",
         "--y": "3.5px",
