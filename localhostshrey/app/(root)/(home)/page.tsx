@@ -52,7 +52,6 @@ const PROJECTS: ProjectItem[] = [
     tag: { label: "Starred", color: "#b45309" },
   },
   {
-    year: "2025",
     title: "battle-arena",
     description: "Retro 2D battle arena game using HTML5 Canvas",
     meta: "HTML5 Canvas, JavaScript",

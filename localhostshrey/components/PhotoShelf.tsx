@@ -1,119 +1,145 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { playAudio } from "@/lib/audio";
 
-interface FrameData {
-  label: string;
-  image: string;
+interface PhotoFrameProps {
+  src: string;
   alt: string;
-  style: {
-    r: number;
-    y: number;
-    sx: number;
-    z: number;
-  };
+  bubbleText: string;
+  style: React.CSSProperties;
 }
 
-const frames: FrameData[] = [
-  {
-    label: "My cloud of fluff",
-    image: "/assets/dog.jpg",
-    alt: "Dog",
-    style: { r: -14, y: 8, sx: -24, z: 1 },
-  },
-  {
-    label: "London GOATED view",
-    image: "/assets/london.jpg",
-    alt: "London",
-    style: { r: -9.3, y: 3.5, sx: -16, z: 2 },
-  },
-  {
-    label: "that's me",
-    image: "/assets/pfp-new.jpg",
-    alt: "Shrey",
-    style: { r: -4.6, y: 0.9, sx: -8, z: 3 },
-  },
-  {
-    label: "favourite meme",
-    image: "/assets/theL.gif",
-    alt: "Meme",
-    style: { r: 0, y: 0, sx: 0, z: 4 },
-  },
-  {
-    label: "random pic of the sun",
-    image: "/assets/sun.jpg",
-    alt: "Sun",
-    style: { r: 4.6, y: 0.9, sx: 8, z: 5 },
-  },
-  {
-    label: "sunset in Tuscany",
-    image: "/assets/sunset.jpg",
-    alt: "Sunset",
-    style: { r: 9.3, y: 3.5, sx: 16, z: 6 },
-  },
-  {
-    label: "beautiful sea view",
-    image: "/assets/water.jpg",
-    alt: "Water",
-    style: { r: 14, y: 8, sx: 24, z: 7 },
-  },
-];
+const PhotoFrame: React.FC<PhotoFrameProps> = ({ src, alt, bubbleText, style }) => {
+  const [hovered, setHovered] = useState(false);
+
+  const handlePointerEnter = () => {
+    setHovered(true);
+    playAudio("tick");
+  };
+
+  const handlePointerLeave = () => {
+    setHovered(false);
+  };
+
+  const handlePointerDown = () => {
+    playAudio("press");
+  };
+
+  return (
+    <button
+      className="v2-frame"
+      style={style}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onPointerDown={handlePointerDown}
+      aria-label={`View photo of ${alt}`}
+    >
+      <span className="v2-frame__paper">
+        <Image
+          src={src}
+          alt={alt}
+          width={100}
+          height={120}
+          className="object-cover"
+          unoptimized
+        />
+      </span>
+      <span className={`bubble ${hovered ? "is-visible" : ""}`}>
+        {bubbleText.split("").map((char, index) => (
+          <span key={index} style={{ "--i": index } as React.CSSProperties}>
+            {char}
+          </span>
+        ))}
+      </span>
+    </button>
+  );
+};
 
 export default function PhotoShelf() {
-  return (
-    <section className="v2-shelf" aria-label="Photos" data-astro-cid-yks6mgkh>
-      <h2 data-astro-cid-yks6mgkh>Off screen</h2>
-      <div className="v2-shelf__row" data-astro-cid-yks6mgkh>
-        {frames.map((frame, index) => {
-          const inlineStyle = {
-            "--r": `${frame.style.r}deg`,
-            "--y": `${frame.style.y}px`,
-            "--sx": `${frame.style.sx}px`,
-            "--z": frame.style.z,
-          } as React.CSSProperties;
+  const photos = [
+    {
+      src: "/assets/pfp-new.jpg",
+      alt: "Shrey",
+      bubble: "that's me",
+      style: {
+        "--sx": "0px",
+        "--y": "0px",
+        "--r": "-4deg",
+        "--z": 1,
+      } as React.CSSProperties,
+    },
+    {
+      src: "/assets/sadie.jpg",
+      alt: "Sadie Sink",
+      bubble: "sadie sink",
+      style: {
+        "--sx": "2px",
+        "--y": "-2px",
+        "--r": "2deg",
+        "--z": 2,
+      } as React.CSSProperties,
+    },
+    {
+      src: "/assets/taylor.jpg",
+      alt: "Taylor Swift",
+      bubble: "taylor swift",
+      style: {
+        "--sx": "-1px",
+        "--y": "4px",
+        "--r": "-3deg",
+        "--z": 3,
+      } as React.CSSProperties,
+    },
+    {
+      src: "/assets/ferrari.jpg",
+      alt: "Ferrari meme",
+      bubble: "must be the water",
+      style: {
+        "--sx": "3px",
+        "--y": "-4px",
+        "--r": "4deg",
+        "--z": 4,
+      } as React.CSSProperties,
+    },
+    {
+      src: "/assets/hamilton.jpg",
+      alt: "Lewis Hamilton",
+      bubble: "remember who you are",
+      style: {
+        "--sx": "-2px",
+        "--y": "1px",
+        "--r": "-1deg",
+        "--z": 5,
+      } as React.CSSProperties,
+    },
+    {
+      src: "/assets/spiderman.jpg",
+      alt: "Spiderman",
+      bubble: "spiderman",
+      style: {
+        "--sx": "1px",
+        "--y": "-3px",
+        "--r": "3deg",
+        "--z": 6,
+      } as React.CSSProperties,
+    },
+  ];
 
-          return (
-            <button
-              key={index}
-              type="button"
-              className="v2-frame"
-              style={inlineStyle}
-              onPointerEnter={() => playAudio("tick")}
-              onPointerDown={() => playAudio("press")}
-              aria-label={frame.alt}
-              data-astro-cid-da7pukvc
-            >
-              <span
-                className="bubble v2-frame__bubble"
-                data-astro-cid-da7pukvc="true"
-                data-astro-cid-erjq6yp3
-              >
-                {Array.from(frame.label).map((char, cIndex) => (
-                  <span
-                    key={cIndex}
-                    style={{ "--i": cIndex } as React.CSSProperties}
-                    data-astro-cid-erjq6yp3
-                  >
-                    {char === " " ? "\u00A0" : char}
-                  </span>
-                ))}
-              </span>
-              <span className="v2-frame__paper" data-astro-cid-da7pukvc>
-                <Image
-                  src={frame.image}
-                  alt={frame.alt}
-                  width={150}
-                  height={180}
-                  loading="eager"
-                  className="w-[100px] h-[120px] max-[480px]:w-[72px] max-[480px]:h-[88px] object-cover"
-                  data-astro-cid-da7pukvc
-                />
-              </span>
-            </button>
-          );
-        })}
+  return (
+    <section className="v2-shelf" aria-label="Photo gallery">
+      <h2>Off screen</h2>
+      <div className="v2-shelf__row">
+        {photos.map((photo, i) => (
+          <PhotoFrame
+            key={i}
+            src={photo.src}
+            alt={photo.alt}
+            bubbleText={photo.bubble}
+            style={photo.style}
+          />
+        ))}
       </div>
     </section>
   );
