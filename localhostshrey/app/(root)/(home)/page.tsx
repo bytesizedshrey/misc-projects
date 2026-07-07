@@ -89,16 +89,22 @@ export default function Home() {
       audio.play().then(() => setMusicPlaying(true)).catch(() => {});
       window.removeEventListener("click", startOnInteraction);
       window.removeEventListener("keydown", startOnInteraction);
+      window.removeEventListener("mousemove", startOnInteraction);
+      window.removeEventListener("touchstart", startOnInteraction);
     };
 
     window.addEventListener("click", startOnInteraction);
     window.addEventListener("keydown", startOnInteraction);
+    window.addEventListener("mousemove", startOnInteraction, { once: true });
+    window.addEventListener("touchstart", startOnInteraction, { once: true });
 
     return () => {
       audio.pause();
       audio.src = "";
       window.removeEventListener("click", startOnInteraction);
       window.removeEventListener("keydown", startOnInteraction);
+      window.removeEventListener("mousemove", startOnInteraction);
+      window.removeEventListener("touchstart", startOnInteraction);
     };
   }, []);
 
