@@ -72,7 +72,7 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ src, alt, bubbleText, style }) 
 export default function PhotoShelf() {
   const photos = [
     {
-      src: "/assets/sadie.jpg?v=3",
+      src: "/assets/sadie.jpg?v=4",
       alt: "Sadie Sink",
       bubble: "fav actress",
       style: {
