@@ -39,21 +39,21 @@ const PROJECTS: ProjectItem[] = [
   {
     year: "2026",
     title: "snitch",
-    description: "Real-time communication app built with Socket.io",
+    description: "real-time websocket chat",
     meta: "React, Node.js, Socket.io",
     link: "https://github.com/bytesizedshrey/snitch",
     tag: { label: "Starred", color: "#2563eb" },
   },
   {
     title: "perplexity",
-    description: "AI-powered search engine wrapper using Perplexity API",
+    description: "ai search engine",
     meta: "Fullstack + GenAI",
     link: "https://github.com/bytesizedshrey/perplexity",
     tag: { label: "Starred", color: "#b45309" },
   },
   {
     title: "battle-arena",
-    description: "Retro 2D battle arena game using HTML5 Canvas",
+    description: "2d canvas action game",
     meta: "HTML5 Canvas, JavaScript",
     link: "https://github.com/bytesizedshrey/battle-arena",
     tag: { label: "Starred", color: "#b45309" },
@@ -219,7 +219,8 @@ export default function Home() {
                   {project.year || ""}
                 </span>
                 <span className="v2-row__title" data-astro-cid-xurrqhsc>
-                  {project.title} — {project.description}
+                  <span className="font-semibold text-neutral-900 mr-2">{project.title}</span>
+                  <span className="text-neutral-400 font-normal">{project.description}</span>
                   {project.tag && <Tag label={project.tag.label} color={project.tag.color} />}
                 </span>
                 <span className="v2-row__meta" data-astro-cid-xurrqhsc>
