@@ -38,55 +38,40 @@ interface ProjectItem {
 const PROJECTS: ProjectItem[] = [
   {
     year: "2026",
-    title: "Snitch",
-    description: "Real-time communication app with WebSocket connections",
-    meta: "Full stack",
-    link: "https://snitch-two.vercel.app",
-    tag: { label: "Live", color: "#2563eb" },
+    title: "snitch",
+    description: "Real-time communication app built with Socket.io",
+    meta: "JavaScript",
+    link: "https://github.com/bytesizedshrey/snitch",
+    tag: { label: "Starred", color: "#2563eb" },
   },
   {
-    title: "Battle Arena",
-    description: "Interactive canvas battle game using Canvas API",
-    meta: "Open source",
+    title: "perplexity",
+    description: "AI-powered search engine wrapper using Perplexity API",
+    meta: "JavaScript",
+    link: "https://github.com/bytesizedshrey/perplexity",
+    tag: { label: "Starred", color: "#b45309" },
+  },
+  {
+    title: "battle-arena",
+    description: "Retro 2D battle arena game using HTML5 Canvas",
+    meta: "JavaScript",
     link: "https://github.com/bytesizedshrey/battle-arena",
-    tag: { label: "Game", color: "#b45309" },
+    tag: { label: "Starred", color: "#b45309" },
   },
   {
     year: "2025",
-    title: "Redux Toolkit",
-    description: "Interactive state management playground",
-    meta: "Frontend",
-    link: "https://github.com/bytesizedshrey/redux",
+    title: "maximalism-ui-skill",
+    description: "Maximalist UI custom skill template for Antigravity",
+    meta: "Markdown",
+    link: "https://github.com/bytesizedshrey/maximalism-ui-skill",
+    tag: { label: "Starred", color: "#16a34a" },
   },
   {
-    title: "ShadCN Basics",
-    description: "UI component exploration and styling experiments",
-    meta: "Frontend",
-    link: "https://github.com/bytesizedshrey/shadCN-basics",
-  },
-  {
-    title: "Google OAuth",
-    description: "Secure OAuth integration with Passport.js",
-    meta: "Backend",
-    link: "https://github.com/bytesizedshrey/google-oauth",
-  },
-  {
-    title: "Docker Setup",
-    description: "Containerized application environment configurations",
-    meta: "DevOps",
-    link: "https://github.com/bytesizedshrey/docker",
-  },
-  {
-    title: "Basics Backend",
-    description: "Express and MongoDB backend API boilerplate",
-    meta: "Backend",
-    link: "https://github.com/bytesizedshrey/basicsBackend",
-  },
-  {
-    title: "Tailwind UI",
-    description: "Custom Tailwind CSS layouts and templates",
-    meta: "Design",
-    link: "https://github.com/bytesizedshrey/tailwind",
+    title: "neo-brutalism-ui-skill",
+    description: "Neo-brutalist UI custom skill template for Antigravity",
+    meta: "Markdown",
+    link: "https://github.com/bytesizedshrey/neo-brutalism-ui-skill",
+    tag: { label: "Starred", color: "#16a34a" },
   },
 ];
 
@@ -129,7 +114,7 @@ export default function Home() {
   return (
     <main className="v2" data-astro-cid-j7pv25f6>
       <h3 data-astro-cid-j7pv25f6 className="text-xl font-bold tracking-tight text-neutral-900">
-        Shrey
+        localhostshrey
       </h3>
       <p className="v2-updated" data-astro-cid-j7pv25f6>
         {getFormattedDate()}
@@ -137,13 +122,13 @@ export default function Home() {
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
         <p data-astro-cid-j7pv25f6>
-          I'm a full stack developer based in India. I build robust web applications and APIs that are clean, performant, and delightful to use.
+          I'm a full stack developer based in India. full stack dev · mern · cooked 24/7.
         </p>
         <p data-astro-cid-j7pv25f6>
           In the open I've shipped{" "}
           <a
             className="basic-link"
-            href="https://snitch-two.vercel.app"
+            href="https://github.com/bytesizedshrey/snitch"
             target="_blank"
             rel="noopener noreferrer"
             onPointerEnter={() => playAudio("tick")}
@@ -156,6 +141,19 @@ export default function Home() {
           ,{" "}
           <a
             className="basic-link"
+            href="https://github.com/bytesizedshrey/perplexity"
+            target="_blank"
+            rel="noopener noreferrer"
+            onPointerEnter={() => playAudio("tick")}
+            onPointerDown={() => playAudio("press")}
+            data-astro-cid-j7pv25f6="true"
+            data-astro-cid-rq52bn6l
+          >
+            perplexity
+          </a>
+          , and{" "}
+          <a
+            className="basic-link"
             href="https://github.com/bytesizedshrey/battle-arena"
             target="_blank"
             rel="noopener noreferrer"
@@ -165,19 +163,6 @@ export default function Home() {
             data-astro-cid-rq52bn6l
           >
             battle-arena
-          </a>
-          , and{" "}
-          <a
-            className="basic-link"
-            href="https://github.com/bytesizedshrey/redux"
-            target="_blank"
-            rel="noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
-          >
-            redux-toolkit
           </a>
           . By day I experiment with system design and full-stack architecture.
         </p>
@@ -226,7 +211,7 @@ export default function Home() {
 
       <section className="v2-index" aria-labelledby="v2-work-heading" data-astro-cid-q257azvz>
         <h2 id="v2-work-heading" data-astro-cid-q257azvz>
-          Work & Projects
+          Projects
         </h2>
         <div className="v2-index__table" data-astro-cid-q257azvz>
           {PROJECTS.map((project, index) => {
