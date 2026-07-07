@@ -29,29 +29,41 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ src, alt, bubbleText, style }) 
 
   return (
     <button
+      type="button"
       className="v2-frame"
       style={style}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
       aria-label={`View photo of ${alt}`}
+      data-astro-cid-da7pukvc
     >
-      <span className="v2-frame__paper">
+      <span
+        className={`bubble v2-frame__bubble ${hovered ? "is-visible" : ""}`}
+        data-astro-cid-da7pukvc="true"
+        data-astro-cid-erjq6yp3
+      >
+        {bubbleText.split("").map((char, index) => (
+          <span
+            key={index}
+            style={{ "--i": index } as React.CSSProperties}
+            data-astro-cid-erjq6yp3
+          >
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </span>
+      <span className="v2-frame__paper" data-astro-cid-da7pukvc>
         <Image
           src={src}
           alt={alt}
-          width={100}
-          height={120}
-          className="object-cover"
+          width={150}
+          height={180}
+          loading="eager"
+          className="w-[100px] h-[120px] max-[480px]:w-[72px] max-[480px]:h-[88px] object-cover"
           unoptimized
+          data-astro-cid-da7pukvc
         />
-      </span>
-      <span className={`bubble ${hovered ? "is-visible" : ""}`}>
-        {bubbleText.split("").map((char, index) => (
-          <span key={index} style={{ "--i": index } as React.CSSProperties}>
-            {char}
-          </span>
-        ))}
       </span>
     </button>
   );
@@ -60,77 +72,77 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ src, alt, bubbleText, style }) 
 export default function PhotoShelf() {
   const photos = [
     {
-      src: "/assets/sadie.jpg?v=2",
+      src: "/assets/sadie.jpg?v=3",
       alt: "Sadie Sink",
       bubble: "sadie sink",
       style: {
-        "--sx": "-2px",
-        "--y": "1px",
-        "--r": "-4deg",
+        "--r": "-14deg",
+        "--y": "8px",
+        "--sx": "-24px",
         "--z": 1,
       } as React.CSSProperties,
     },
     {
-      src: "/assets/taylor.jpg?v=2",
+      src: "/assets/taylor.jpg?v=3",
       alt: "Taylor Swift",
       bubble: "taylor swift",
       style: {
-        "--sx": "-1px",
-        "--y": "-3px",
-        "--r": "2deg",
+        "--r": "-9.3deg",
+        "--y": "3.5px",
+        "--sx": "-16px",
         "--z": 2,
       } as React.CSSProperties,
     },
     {
-      src: "/assets/pfp-new.jpg?v=2",
+      src: "/assets/pfp-new.jpg?v=3",
       alt: "Shrey",
       bubble: "that's me",
       style: {
-        "--sx": "0px",
-        "--y": "0px",
-        "--r": "-1deg",
-        "--z": 6, // Make that's me stack on top when initialized
+        "--r": "-4.6deg",
+        "--y": "0.9px",
+        "--sx": "-8px",
+        "--z": 6, // Top priority stack
       } as React.CSSProperties,
     },
     {
-      src: "/assets/ferrari.jpg?v=2",
+      src: "/assets/ferrari.jpg?v=3",
       alt: "Ferrari meme",
       bubble: "must be the water",
       style: {
-        "--sx": "1px",
-        "--y": "4px",
-        "--r": "-3deg",
+        "--r": "0deg",
+        "--y": "0px",
+        "--sx": "0px",
         "--z": 3,
       } as React.CSSProperties,
     },
     {
-      src: "/assets/hamilton.jpg?v=2",
+      src: "/assets/hamilton.jpg?v=3",
       alt: "Lewis Hamilton",
       bubble: "remember who you are",
       style: {
-        "--sx": "2px",
-        "--y": "-2px",
-        "--r": "3deg",
+        "--r": "4.6deg",
+        "--y": "0.9px",
+        "--sx": "8px",
         "--z": 4,
       } as React.CSSProperties,
     },
     {
-      src: "/assets/spiderman.jpg?v=2",
+      src: "/assets/spiderman.jpg?v=3",
       alt: "Spiderman",
       bubble: "spiderman",
       style: {
-        "--sx": "3px",
-        "--y": "-4px",
-        "--r": "-2deg",
+        "--r": "9.3deg",
+        "--y": "3.5px",
+        "--sx": "16px",
         "--z": 5,
       } as React.CSSProperties,
     },
   ];
 
   return (
-    <section className="v2-shelf" aria-label="Photo gallery">
-      <h2>Off screen</h2>
-      <div className="v2-shelf__row">
+    <section className="v2-shelf" aria-label="Photos" data-astro-cid-yks6mgkh>
+      <h2 data-astro-cid-yks6mgkh>Off screen</h2>
+      <div className="v2-shelf__row" data-astro-cid-yks6mgkh>
         {photos.map((photo, i) => (
           <PhotoFrame
             key={i}
