@@ -752,3 +752,42 @@ body {
     opacity: 1;
   }
 }
+.fat-link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  color: var(--v2-ink);
+  text-decoration: underline;
+  text-decoration-color: #11111138;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2.5px;
+  transition: text-decoration-color 0.2s var(--ease-smooth);
+}
+
+.fat-link:hover,
+.fat-link:focus-visible {
+  text-decoration-color: var(--v2-ink);
+  outline: none;
+}
+
+.fat-link__hidden {
+  font-weight: 700;
+  visibility: hidden;
+  white-space: pre;
+}
+
+.fat-link__visible {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  transition: font-weight 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: pre;
+}
+
+.fat-link:hover .fat-link__visible,
+.fat-link:focus-visible .fat-link__visible {
+  font-weight: 700;
+}

@@ -23,6 +23,24 @@ const Tag: React.FC<TagProps> = ({ label, color }) => (
   </span>
 );
 
+interface FatLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  children: React.ReactNode;
+}
+
+const FatLink: React.FC<FatLinkProps> = ({ href, children, ...props }) => (
+  <a
+    href={href}
+    className="fat-link"
+    onPointerEnter={() => playAudio("tick")}
+    onPointerDown={() => playAudio("press")}
+    {...props}
+  >
+    <span className="fat-link__hidden">{children}</span>
+    <span className="fat-link__visible">{children}</span>
+  </a>
+);
+
 interface ProjectItem {
   year?: string;
   title: string;
@@ -200,73 +218,48 @@ export default function Home() {
         </p>
         <p data-astro-cid-j7pv25f6>
           In the open I've shipped{" "}
-          <a
-            className="basic-link"
+          <FatLink
             href="https://github.com/bytesizedshrey/snitch"
             target="_blank"
             rel="noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
           >
             snitch
-          </a>
+          </FatLink>
           ,{" "}
-          <a
-            className="basic-link"
+          <FatLink
             href="https://github.com/bytesizedshrey/perplexity"
             target="_blank"
             rel="noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
           >
             perplexity
-          </a>
+          </FatLink>
           , and{" "}
-          <a
-            className="basic-link"
+          <FatLink
             href="https://github.com/bytesizedshrey/battle-arena"
             target="_blank"
             rel="noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
           >
             battle-arena
-          </a>
+          </FatLink>
           . By day I experiment with system design and full-stack architecture.
         </p>
         <p data-astro-cid-j7pv25f6>
           Say hi on{" "}
-          <a
-            className="basic-link"
+          <FatLink
             href="https://github.com/bytesizedshrey"
             target="_blank"
             rel="me noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
           >
             GitHub
-          </a>
+          </FatLink>
           ,{" "}
-          <a
-            className="basic-link"
+          <FatLink
             href="https://www.linkedin.com/in/localhostshrey/"
             target="_blank"
             rel="me noopener noreferrer"
-            onPointerEnter={() => playAudio("tick")}
-            onPointerDown={() => playAudio("press")}
-            data-astro-cid-j7pv25f6="true"
-            data-astro-cid-rq52bn6l
           >
             LinkedIn
-          </a>
+          </FatLink>
           , or{" "}
           <button
             className="inline-flex cursor-pointer bg-[#ef4444] text-white px-1"
