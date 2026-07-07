@@ -753,11 +753,18 @@ body {
   }
 }
 .fat-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--v2-ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fat-link__text {
   position: relative;
   display: inline-flex;
   align-items: baseline;
   justify-content: center;
-  color: var(--v2-ink);
   text-decoration: underline;
   text-decoration-color: #11111138;
   text-decoration-thickness: 1px;
@@ -765,10 +772,9 @@ body {
   transition: text-decoration-color 0.2s var(--ease-smooth);
 }
 
-.fat-link:hover,
-.fat-link:focus-visible {
+.fat-link:hover .fat-link__text,
+.fat-link:focus-visible .fat-link__text {
   text-decoration-color: var(--v2-ink);
-  outline: none;
 }
 
 .fat-link__hidden {
