@@ -269,7 +269,7 @@ export default function Home() {
           </a>
           , or{" "}
           <button
-            className="basic-link inline-flex cursor-pointer"
+            className="inline-flex cursor-pointer bg-red-500 text-white px-1"
             onClick={handleEmailClick}
             onPointerEnter={() => playAudio("tick")}
             onPointerDown={() => playAudio("press")}
