@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PhotoShelf from "@/components/PhotoShelf";
 import PetCat from "@/components/PetCat";
 import { playAudio } from "@/lib/audio";
@@ -65,6 +65,8 @@ export default function Home() {
   const emailSlotRef = useRef<any>(null);
   const headerClockRef = useRef<HTMLSpanElement>(null);
   const headerClockSlotRef = useRef<any>(null);
+  const bgMusicRef = useRef<HTMLAudioElement | null>(null);
+  const [musicPlaying, setMusicPlaying] = useState(false);
 
   useEffect(() => {
     if (emailRef.current) {
@@ -76,6 +78,41 @@ export default function Home() {
       emailSlotRef.current?.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    const audio = new Audio("/assets/alltoowell.mp3");
+    audio.loop = true;
+    audio.volume = 0.18;
+    bgMusicRef.current = audio;
+
+    const startOnInteraction = () => {
+      audio.play().then(() => setMusicPlaying(true)).catch(() => {});
+      window.removeEventListener("click", startOnInteraction);
+      window.removeEventListener("keydown", startOnInteraction);
+    };
+
+    window.addEventListener("click", startOnInteraction);
+    window.addEventListener("keydown", startOnInteraction);
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+      window.removeEventListener("click", startOnInteraction);
+      window.removeEventListener("keydown", startOnInteraction);
+    };
+  }, []);
+
+  const toggleMusic = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const audio = bgMusicRef.current;
+    if (!audio) return;
+    if (musicPlaying) {
+      audio.pause();
+      setMusicPlaying(false);
+    } else {
+      audio.play().then(() => setMusicPlaying(true)).catch(() => {});
+    }
+  };
 
   useEffect(() => {
     const updateTime = () => {
@@ -123,6 +160,23 @@ export default function Home() {
       </h3>
       <p className="v2-updated" data-astro-cid-j7pv25f6>
         <span ref={headerClockRef}>00:00:00 am</span> in Mumbai, India
+        <button
+          onClick={toggleMusic}
+          title={musicPlaying ? "Pause music" : "Play music"}
+          style={{
+            marginLeft: "0.6rem",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "0.75rem",
+            opacity: 0.5,
+            verticalAlign: "middle",
+            padding: 0,
+            lineHeight: 1,
+          }}
+        >
+          {musicPlaying ? "⏸" : "♪"}
+        </button>
       </p>
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
