@@ -85,18 +85,27 @@ export default function Home() {
     audio.volume = 0.18;
     bgMusicRef.current = audio;
 
+    let playAttempted = false;
+
     const startOnInteraction = () => {
-      audio.play().then(() => setMusicPlaying(true)).catch(() => {});
-      window.removeEventListener("click", startOnInteraction);
-      window.removeEventListener("keydown", startOnInteraction);
-      window.removeEventListener("mousemove", startOnInteraction);
-      window.removeEventListener("touchstart", startOnInteraction);
+      if (playAttempted) return;
+      playAttempted = true;
+      
+      audio.play().then(() => {
+        setMusicPlaying(true);
+        window.removeEventListener("click", startOnInteraction);
+        window.removeEventListener("keydown", startOnInteraction);
+        window.removeEventListener("mousemove", startOnInteraction);
+        window.removeEventListener("touchstart", startOnInteraction);
+      }).catch(() => {
+        playAttempted = false;
+      });
     };
 
     window.addEventListener("click", startOnInteraction);
     window.addEventListener("keydown", startOnInteraction);
-    window.addEventListener("mousemove", startOnInteraction, { once: true });
-    window.addEventListener("touchstart", startOnInteraction, { once: true });
+    window.addEventListener("mousemove", startOnInteraction);
+    window.addEventListener("touchstart", startOnInteraction);
 
     return () => {
       audio.pause();
