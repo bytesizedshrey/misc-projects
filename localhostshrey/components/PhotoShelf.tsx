@@ -74,7 +74,7 @@ export default function PhotoShelf() {
     {
       src: "/assets/sadie.jpg?v=3",
       alt: "Sadie Sink",
-      bubble: "sadie sink",
+      bubble: "fav actress",
       style: {
         "--r": "-14deg",
         "--y": "8px",
@@ -85,7 +85,7 @@ export default function PhotoShelf() {
     {
       src: "/assets/taylor.jpg?v=3",
       alt: "Taylor Swift",
-      bubble: "taylor swift",
+      bubble: "fav singer",
       style: {
         "--r": "-9.3deg",
         "--y": "3.5px",
