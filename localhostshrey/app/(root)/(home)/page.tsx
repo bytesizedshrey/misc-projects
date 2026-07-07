@@ -127,7 +127,7 @@ export default function Home() {
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
         <p data-astro-cid-j7pv25f6>
-          I'm a full stack developer based in India. full stack dev · mern · cooked 24/7.
+          I'm a full stack developer based in India. cooked 24/7.
         </p>
         <p data-astro-cid-j7pv25f6>
           In the open I've shipped{" "}
