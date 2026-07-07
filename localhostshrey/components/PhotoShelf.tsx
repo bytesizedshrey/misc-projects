@@ -83,7 +83,7 @@ export default function PhotoShelf() {
       } as React.CSSProperties,
     },
     {
-      src: "/assets/taylor.jpg?v=3",
+      src: "/assets/taylor.jpg?v=4",
       alt: "Taylor Swift",
       bubble: "fav singer",
       style: {

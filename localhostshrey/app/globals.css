@@ -30,8 +30,8 @@ body {
 }
 
 ::selection {
-  background: var(--sun-yellow);
-  color: var(--v2-ink);
+  background: #ef4444;
+  color: var(--white);
 }
 
 .v2 {
