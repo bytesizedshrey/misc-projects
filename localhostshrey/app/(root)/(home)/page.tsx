@@ -63,6 +63,8 @@ const PROJECTS: ProjectItem[] = [
 export default function Home() {
   const emailRef = useRef<HTMLButtonElement>(null);
   const emailSlotRef = useRef<any>(null);
+  const headerClockRef = useRef<HTMLSpanElement>(null);
+  const headerClockSlotRef = useRef<any>(null);
 
   useEffect(() => {
     if (emailRef.current) {
@@ -72,6 +74,32 @@ export default function Home() {
     }
     return () => {
       emailSlotRef.current?.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      };
+      const kolkataTime = new Intl.DateTimeFormat("en-US", options).format(new Date()).toLowerCase();
+      
+      if (headerClockSlotRef.current) {
+        headerClockSlotRef.current.update(kolkataTime);
+      } else if (headerClockRef.current) {
+        headerClockSlotRef.current = slotText(headerClockRef.current, kolkataTime);
+      }
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => {
+      clearInterval(interval);
+      headerClockSlotRef.current?.destroy();
     };
   }, []);
 
@@ -88,21 +116,13 @@ export default function Home() {
     }
   };
 
-  const getFormattedDate = () => {
-    const today = new Date();
-    const day = today.getDate();
-    const month = today.toLocaleString("en-US", { month: "short" });
-    const year = today.getFullYear();
-    return `Updated ${day} ${month} ${year}`;
-  };
-
   return (
     <main className="v2" data-astro-cid-j7pv25f6>
       <h3 data-astro-cid-j7pv25f6 className="text-xl font-bold tracking-tight text-neutral-900">
         localhostshrey
       </h3>
       <p className="v2-updated" data-astro-cid-j7pv25f6>
-        {getFormattedDate()}
+        <span ref={headerClockRef}>00:00:00 am</span> in Mumbai, India
       </p>
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
