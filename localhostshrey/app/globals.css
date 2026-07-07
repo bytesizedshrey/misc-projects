@@ -779,15 +779,17 @@ body {
 
 .fat-link__visible {
   position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  transition: font-weight 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: font-weight 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s var(--ease-smooth);
   white-space: pre;
 }
 
 .fat-link:hover .fat-link__visible,
 .fat-link:focus-visible .fat-link__visible {
   font-weight: 700;
+  color: var(--v2-accent);
 }
