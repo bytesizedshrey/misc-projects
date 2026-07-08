@@ -43,6 +43,7 @@ body {
   font-weight: 460;
   line-height: 1.25rem;
   letter-spacing: -0.00563rem;
+  font-feature-settings: "cv05", "cv11";
   color: var(--v2-ink);
 }
 
