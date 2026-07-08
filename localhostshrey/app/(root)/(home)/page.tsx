@@ -35,39 +35,6 @@ const LinkedinIcon = () => (
   </svg>
 );
 
-const GmailEnvelope = () => (
-  <svg className="w-[1.25em] h-[1.25em] overflow-visible" viewBox="0 0 28 24" fill="none">
-    <defs>
-      <linearGradient id="envelope-back" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#d1d5db" />
-        <stop offset="100%" stopColor="#9ca3af" />
-      </linearGradient>
-      <linearGradient id="envelope-front" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#f3f4f6" />
-        <stop offset="100%" stopColor="#e5e7eb" />
-      </linearGradient>
-      <linearGradient id="envelope-flap" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#ef4444" />
-        <stop offset="100%" stopColor="#dc2626" />
-      </linearGradient>
-      <filter id="flap-shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="1" stdDeviation="1" floodOpacity="0.3" />
-      </filter>
-    </defs>
-    <rect x="2" y="8" width="24" height="14" rx="1" fill="url(#envelope-back)" />
-    <g className="transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] delay-75 group-hover:-translate-y-2">
-      <rect x="4" y="6" width="20" height="14" rx="1" fill="#ffffff" stroke="#e5e7eb" strokeWidth="0.5" />
-      <line x1="8" y1="10" x2="20" y2="10" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="8" y1="13" x2="16" y2="13" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" />
-      <rect x="18" y="14" width="4" height="4" fill="#ef4444" opacity="0.8" rx="0.5" />
-    </g>
-    <path d="M2 8 L14 15.5 L26 8 L26 21 C26 21.5 25.5 22 25 22 L3 22 C2.5 22 2 21.5 2 21 Z" fill="url(#envelope-front)" stroke="#d1d5db" strokeWidth="0.5" />
-    <g className="origin-[center_10px] transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:[transform:rotateX(180deg)]">
-      <path d="M2 9 L14 16 L26 9 C26 8.5 25.5 8 25 8 L3 8 C2.5 8 2 8.5 2 9 Z" fill="url(#envelope-flap)" filter="url(#flap-shadow)" stroke="#b91c1c" strokeWidth="0.5" strokeLinejoin="round" />
-    </g>
-  </svg>
-);
-
 interface FatLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children: React.ReactNode;
@@ -132,7 +99,7 @@ const PROJECTS: ProjectItem[] = [
 ];
 
 export default function Home() {
-  const emailRef = useRef<HTMLSpanElement>(null);
+  const emailRef = useRef<HTMLButtonElement>(null);
   const emailSlotRef = useRef<any>(null);
   const headerClockRef = useRef<HTMLSpanElement>(null);
   const headerClockSlotRef = useRef<any>(null);
@@ -317,15 +284,15 @@ export default function Home() {
           </FatLink>
           , or{" "}
           <button
-            className="group inline-flex items-center gap-[0.35rem] cursor-pointer bg-gradient-to-b from-[#fdfbfb] to-[#ebedee] text-[#374151] font-semibold px-2 py-0.5 rounded border border-[#d1d5db] border-b-[#9ca3af] shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)] active:translate-y-[1px] active:shadow-[0_1px_2px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(0,0,0,0.1)] transition-all"
+            className="inline-flex cursor-pointer bg-[#ef4444] text-white px-1"
             onClick={handleEmailClick}
             onPointerEnter={() => playAudio("tick")}
             onPointerDown={() => playAudio("press")}
             data-astro-cid-j7pv25f6="true"
             data-astro-cid-rq52bn6l
+            ref={emailRef}
           >
-            <GmailEnvelope />
-            <span ref={emailRef}>email</span>
+            email
           </button>{" "}
           if you want to talk.
         </p>
