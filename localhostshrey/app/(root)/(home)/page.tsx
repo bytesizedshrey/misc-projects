@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import PhotoShelf from "@/components/PhotoShelf";
-import PetCat from "@/components/PetCat";
+import MiniCar from "@/components/MiniCar";
 import { playAudio } from "@/lib/audio";
 import { slotText } from "@/lib/slotText";
 
@@ -335,7 +335,7 @@ export default function Home() {
       </section>
 
       <PhotoShelf />
-      <PetCat />
+      <MiniCar />
     </main>
   );
 }

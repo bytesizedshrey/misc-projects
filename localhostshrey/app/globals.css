@@ -357,7 +357,7 @@ body {
   }
 }
 
-.v2-pet {
+.v2-car {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -369,27 +369,27 @@ body {
   color: #11111173;
   cursor: pointer;
   transition: color 0.2s var(--ease-smooth);
-  animation: v2PetPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) 0.62s both;
+  animation: v2CarPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) 0.62s both;
 }
 
-.v2-pet:after {
+.v2-car:after {
   content: "";
   position: absolute;
   inset: -12px;
 }
 
-.v2-pet:hover {
+.v2-car:hover {
   color: #111111b3;
 }
 
-.v2-pet__svg {
+.v2-car__svg {
   display: block;
   width: 3.25em;
   height: 2.6em;
   overflow: visible;
 }
 
-@keyframes v2PetPop {
+@keyframes v2CarPop {
   0% {
     opacity: 0;
     transform: scale(0.4);
@@ -400,21 +400,21 @@ body {
   }
 }
 
-.v2-pet .cat-body {
+.v2-car .car-body {
   transform-box: fill-box;
   transform-origin: center;
 }
 
-.v2-pet .cat-tail {
+.v2-car .car-wheels {
   transform-box: fill-box;
   transform-origin: bottom left;
 }
 
-.v2-pet:not(.is-asleep) .cat-tail {
-  animation: v2TailSway 8s ease-in-out 3s infinite;
+.v2-car:not(.is-parked) .car-wheels {
+  animation: v2CarBounce 8s ease-in-out 3s infinite;
 }
 
-@keyframes v2TailSway {
+@keyframes v2CarBounce {
   0%,
   38%,
   100% {
@@ -428,11 +428,11 @@ body {
   }
 }
 
-.v2-pet.is-booped .cat-body {
-  animation: v2PetBoop 0.36s var(--ease-smooth);
+.v2-car.is-honked .car-body {
+  animation: v2CarHonk 0.36s var(--ease-smooth);
 }
 
-@keyframes v2PetBoop {
+@keyframes v2CarHonk {
   0%,
   100% {
     transform: scale(1);
@@ -445,11 +445,11 @@ body {
   }
 }
 
-.v2-pet.is-booped .cat-tail {
-  animation: v2TailFlick 0.4s var(--ease-smooth);
+.v2-car.is-honked .car-wheels {
+  animation: v2CarHonkBounce 0.4s var(--ease-smooth);
 }
 
-@keyframes v2TailFlick {
+@keyframes v2CarHonkBounce {
   0%,
   100% {
     transform: rotate(0);
@@ -462,15 +462,15 @@ body {
   }
 }
 
-.v2-pet.is-eating .cat-eye {
+.v2-car.is-refueling .car-headlight {
   opacity: 0;
 }
 
-.v2-pet.is-eating .cat-body {
-  animation: v2Munch 0.72s var(--ease-smooth);
+.v2-car.is-refueling .car-body {
+  animation: v2CarRefuel 0.72s var(--ease-smooth);
 }
 
-@keyframes v2Munch {
+@keyframes v2CarRefuel {
   0%,
   100% {
     transform: scaleY(1);
@@ -485,25 +485,25 @@ body {
   }
 }
 
-.v2-pet .cat-eye {
+.v2-car .car-headlight {
   transition: opacity 0.12s ease;
 }
 
-.v2-pet.is-blinking .cat-eye,
-.v2-pet.is-asleep .cat-eye {
+.v2-car.is-flashing .car-headlight,
+.v2-car.is-parked .car-headlight {
   opacity: 0;
 }
 
-.v2-pet .cat-eyes {
+.v2-car .car-headlights {
   transform-box: fill-box;
   transform-origin: center;
 }
 
-.v2-pet:not(.is-asleep) .cat-eyes {
-  animation: v2EyeLook 9s ease-in-out 2s infinite;
+.v2-car:not(.is-parked) .car-headlights {
+  animation: v2CarFlash 9s ease-in-out 2s infinite;
 }
 
-@keyframes v2EyeLook {
+@keyframes v2CarFlash {
   0%,
   16%,
   52%,
@@ -521,20 +521,20 @@ body {
   }
 }
 
-.v2-pet .cat-dreams {
+.v2-car .car-smoke {
   opacity: 0;
   transition: opacity 0.24s ease;
 }
 
-.v2-pet.is-asleep .cat-dreams {
+.v2-car.is-parked .car-smoke {
   opacity: 1;
 }
 
-.v2-pet.is-asleep .cat-body {
-  animation: v2PetSleep 4.5s ease-in-out infinite;
+.v2-car.is-parked .car-body {
+  animation: v2CarParked 4.5s ease-in-out infinite;
 }
 
-@keyframes v2PetSleep {
+@keyframes v2CarParked {
   0%,
   100% {
     transform: rotate(0);
@@ -544,20 +544,20 @@ body {
   }
 }
 
-.v2-pet .cat-z-1,
-.v2-pet .cat-z-2 {
+.v2-car .smoke-1,
+.v2-car .smoke-2 {
   opacity: 0;
 }
 
-.v2-pet.is-asleep .cat-z-1 {
-  animation: v2ZFloat1 3s ease-out infinite;
+.v2-car.is-parked .smoke-1 {
+  animation: v2SmokeFloat1 3s ease-out infinite;
 }
 
-.v2-pet.is-asleep .cat-z-2 {
-  animation: v2ZFloat2 3s ease-out 1s infinite;
+.v2-car.is-parked .smoke-2 {
+  animation: v2SmokeFloat2 3s ease-out 1s infinite;
 }
 
-@keyframes v2ZFloat1 {
+@keyframes v2SmokeFloat1 {
   0% {
     opacity: 0;
     transform: translate(0) scale(0.7);
@@ -574,7 +574,7 @@ body {
   }
 }
 
-@keyframes v2ZFloat2 {
+@keyframes v2SmokeFloat2 {
   0% {
     opacity: 0;
     transform: translate(0) scale(0.6);
@@ -592,7 +592,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .v2-pet .bubble {
+  .v2-car .bubble {
     left: auto;
     right: -8px;
     transform: none;
@@ -652,17 +652,17 @@ body {
   transform: scale(0.9);
 }
 
-.v2-feed__fish {
+.v2-feed__fuel {
   display: block;
   width: 1.25em;
   height: 0.8em;
 }
 
-.v2-feed.is-thrown .v2-feed__fish {
-  animation: v2FishThrow 0.48s ease-in forwards;
+.v2-feed.is-thrown .v2-feed__fuel {
+  animation: v2FuelThrow 0.48s ease-in forwards;
 }
 
-@keyframes v2FishThrow {
+@keyframes v2FuelThrow {
   30% {
     transform: translate(-12px, -7px) rotate(-14deg);
     opacity: 1;

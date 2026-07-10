@@ -5,9 +5,9 @@ import { playAudio } from "@/lib/audio";
 import { slotText } from "@/lib/slotText";
 
 const AMBIENT_DIALOUGES = [
-  "everything here ships by hand",
-  "he rebuilt this page twice",
-  "details are the whole point",
+  "v8 engine purring",
+  "ready for a drive",
+  "premium fuel only",
   "the clock is real, by the way",
   "say hi. he actually replies.",
   "I own this site. he pays hosting.",
@@ -17,24 +17,24 @@ const AMBIENT_DIALOUGES = [
 ];
 
 const BOOP_DIALOGUES = [
-  "noted. continue.",
-  "that's one treat you owe",
-  "careful, fresh paint",
+  "honk honk",
+  "hey, watch the paint",
+  "ready to race?",
   "ok, that was nice",
   "I allow this. once.",
 ];
 
 const SLEEP_DIALOGUES = [
-  "asleep. Mumbai time.",
-  "five more minutes",
+  "parked in the garage",
+  "engine off",
   "come back tomorrow",
 ];
 
 const FEED_DIALOGUES = [
-  "purr. acceptable.",
-  "finally. service.",
-  "five stars. one fish.",
-  "you may stay",
+  "glug glug",
+  "full tank",
+  "premium only",
+  "ready to race",
 ];
 
 function getFormattedTime() {
@@ -59,17 +59,17 @@ function getLocalHour() {
   return parseInt(new Date().toLocaleTimeString("en-GB", options), 10);
 }
 
-export default function PetCat() {
+export default function MiniCar() {
   const clockRef = useRef<HTMLSpanElement>(null);
   const slotTextInstance = useRef<any>(null);
 
   const [timeStr, setTimeStr] = useState("");
   const [bubbleText, setBubbleText] = useState("");
   const [bubbleVisible, setBubbleVisible] = useState(false);
-  const [isAsleep, setIsAsleep] = useState(false);
-  const [isBooped, setIsBooped] = useState(false);
-  const [isEating, setIsEating] = useState(false);
-  const [isBlinking, setIsBlinking] = useState(false);
+  const [isParked, setIsParked] = useState(false);
+  const [isHonked, setIsHonked] = useState(false);
+  const [isRefueling, setIsRefueling] = useState(false);
+  const [isFlashingLights, setIsFlashingLights] = useState(false);
   const [isThrown, setIsThrown] = useState(false);
 
   const bubbleTimeoutRef = useRef<number | null>(null);
@@ -100,7 +100,7 @@ export default function PetCat() {
 
     const checkAsleep = () => {
       const hr = getLocalHour();
-      setIsAsleep(hr >= 23 || hr < 7);
+      setIsParked(hr >= 23 || hr < 7);
     };
     checkAsleep();
 
@@ -120,15 +120,15 @@ export default function PetCat() {
     };
   }, []);
 
-  // Blinking loop (only when awake)
+  // Flashing loop (only when not parked)
   useEffect(() => {
     let blinkTimer: number;
 
     const runBlink = () => {
-      if (!isAsleep) {
-        setIsBlinking(true);
+      if (!isParked) {
+        setIsFlashingLights(true);
         window.setTimeout(() => {
-          setIsBlinking(false);
+          setIsFlashingLights(false);
         }, 160);
       }
       blinkTimer = window.setTimeout(runBlink, 4200 + Math.random() * 2000) as unknown as number;
@@ -139,12 +139,12 @@ export default function PetCat() {
     return () => {
       window.clearTimeout(blinkTimer);
     };
-  }, [isAsleep]);
+  }, [isParked]);
 
   // Ambient Dialogues
   useEffect(() => {
     const ambientInterval = window.setInterval(() => {
-      if (isAsleep || bubbleVisible || Math.random() >= 0.4) return;
+      if (isParked || bubbleVisible || Math.random() >= 0.4) return;
       const idx = Math.floor(Math.random() * AMBIENT_DIALOUGES.length);
       showBubble(AMBIENT_DIALOUGES[idx]);
     }, 16000);
@@ -152,17 +152,17 @@ export default function PetCat() {
     return () => {
       window.clearInterval(ambientInterval);
     };
-  }, [isAsleep, bubbleVisible]);
+  }, [isParked, bubbleVisible]);
 
-  // Boop handler
-  const handleBoop = () => {
+  // Honk handler
+  const handleHonk = () => {
     playAudio("droplet");
-    setIsBooped(true);
+    setIsHonked(true);
     window.setTimeout(() => {
-      setIsBooped(false);
+      setIsHonked(false);
     }, 400);
 
-    if (isAsleep) {
+    if (isParked) {
       const idx = Math.floor(Math.random() * SLEEP_DIALOGUES.length);
       showBubble(SLEEP_DIALOGUES[idx], 1600);
     } else {
@@ -171,17 +171,17 @@ export default function PetCat() {
     }
   };
 
-  // Feed handler
-  const handleFeed = () => {
-    if (isAsleep) {
-      showBubble("asleep. leave it by the door.", 1800);
+  // Fuel handler
+  const handleFuel = () => {
+    if (isParked) {
+      showBubble("parked. leave it by the door.", 1800);
       return;
     }
 
     const now = Date.now();
     if (now - lastFeedTimeRef.current < 6000) {
       playAudio("whisper");
-      showBubble("I'm full. save it.", 1400);
+      showBubble("tank is full. save it.", 1400);
       return;
     }
 
@@ -192,23 +192,23 @@ export default function PetCat() {
     window.setTimeout(() => {
       setIsThrown(false);
       playAudio("success");
-      setIsEating(true);
+      setIsRefueling(true);
       const idx = Math.floor(Math.random() * FEED_DIALOGUES.length);
       showBubble(FEED_DIALOGUES[idx], 2000);
 
       window.setTimeout(() => {
-        setIsEating(false);
+        setIsRefueling(false);
       }, 800);
     }, 440);
   };
 
   // Classes combination
-  const catClasses = [
-    "v2-pet",
-    isAsleep ? "is-asleep" : "",
-    isBooped ? "is-booped" : "",
-    isEating ? "is-eating" : "",
-    isBlinking ? "is-blinking" : "",
+  const carClasses = [
+    "v2-car",
+    isParked ? "is-parked" : "",
+    isHonked ? "is-honked" : "",
+    isRefueling ? "is-refueling" : "",
+    isFlashingLights ? "is-flashing" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -223,13 +223,13 @@ export default function PetCat() {
         </span>{" "}
         in Mumbai, India
         <span
-          className={catClasses}
-          onClick={handleBoop}
+          className={carClasses}
+          onClick={handleHonk}
           aria-hidden="true"
           data-astro-cid-fevfxcpg
         >
           <span
-            className={`bubble v2-pet__bubble ${bubbleVisible ? "is-visible" : ""}`}
+            className={`bubble v2-car__bubble ${bubbleVisible ? "is-visible" : ""}`}
             data-v2-bubble="true"
             data-astro-cid-fevfxcpg="true"
             data-astro-cid-erjq6yp3
@@ -244,64 +244,55 @@ export default function PetCat() {
               </span>
             ))}
           </span>
-          <svg className="v2-pet__svg" viewBox="0 0 40 32" fill="none" aria-hidden="true">
+          <svg className="v2-car__svg" viewBox="0 0 40 32" fill="none" aria-hidden="true">
             <g
-              className="cat-dreams"
+              className="car-smoke"
               stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
             >
-              <g className="cat-z-1" strokeWidth="1.5">
-                <path d="M34 1 L38 1 L34 5 L38 5"></path>
+              <g className="smoke-1" strokeWidth="1.5">
+                <path d="M4 25 Q2 20 6 15"></path>
               </g>
-              <g className="cat-z-2" strokeWidth="1.3">
-                <path d="M37 -1.2 L40 -1.2 L37 1.8 L40 1.8"></path>
+              <g className="smoke-2" strokeWidth="1.3">
+                <path d="M8 26 Q12 21 7 16"></path>
               </g>
             </g>
-            <g className="cat-body">
-              {/* Whiskers */}
-              <g className="cat-whiskers" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" fill="none">
-                <path d="M8.5 10.5 L2 8.6"></path>
-                <path d="M8 12.8 L1.2 12.6"></path>
-                <path d="M8.5 15 L2.2 16.8"></path>
-                <path d="M25.5 10.5 L32 8.6"></path>
-                <path d="M26 12.8 L32.8 12.6"></path>
-                <path d="M25.5 15 L31.8 16.8"></path>
-              </g>
-              {/* Tail */}
-              <path
-                className="cat-tail"
-                d="M26.8 26 C30.2 25 32 21 31.2 16.8"
-                stroke="currentColor"
-                strokeWidth="2.7"
-                strokeLinecap="round"
-                fill="none"
-              ></path>
+            <g className="car-body">
               {/* Body */}
               <path
                 fill="currentColor"
-                d="M10.3 9 L8.6 2.8 L13.6 5 C15.6 4.3 18.4 4.3 20.4 5 L25.4 2.8 L23.7 9 C24.6 10.8 24.9 13 24.2 15 C26.3 17.2 27.4 20.4 27.3 23.6 C27.3 25.8 26 27.6 23.5 28.3 C19.5 29.3 14.5 29.3 11.5 28.2 C8.9 27 7.8 24 8.2 21 C8.5 18.5 9.3 16.4 10.6 14.9 C9.6 12.9 9.7 10.9 10.3 9 Z"
+                d="M7 18 L10 12 L20 12 L28 15 L34 16 L35 20 C35 22 34 23 32 23 L31 23 C31 20 27 20 27 23 L15 23 C15 20 11 20 11 23 L8 23 C6 23 5 21 5 19 Z"
               ></path>
-              {/* Eyes */}
-              <g className="cat-eyes">
-                <circle className="cat-eye" cx="13.9" cy="11.6" r="2.1" fill="rgb(251, 250, 249)"></circle>
-                <circle className="cat-eye" cx="20.1" cy="11.6" r="2.1" fill="rgb(251, 250, 249)"></circle>
-              </g>
+              {/* Windows */}
+              <path fill="rgb(var(--color-bg))" d="M11 13 L17 13 L17 17 L9 17 Z"></path>
+              <path fill="rgb(var(--color-bg))" d="M19 13 L24 13 L26 16 L19 16 Z"></path>
+              {/* Headlight */}
+              <path className="car-headlight" fill="rgb(var(--color-bg))" d="M33 17 L35 17 L35 19 L33 19 Z"></path>
+            </g>
+            <g className="car-wheels">
+              {/* Wheels */}
+              <circle cx="13" cy="23" r="3" fill="currentColor"></circle>
+              <circle cx="29" cy="23" r="3" fill="currentColor"></circle>
+              <circle cx="13" cy="23" r="1.5" fill="rgb(var(--color-bg))"></circle>
+              <circle cx="29" cy="23" r="1.5" fill="rgb(var(--color-bg))"></circle>
             </g>
           </svg>
         </span>
         <button
           type="button"
           className={feedClasses}
-          onClick={handleFeed}
+          onClick={handleFuel}
           onPointerEnter={() => playAudio("tick")}
-          aria-label="Feed the cat"
+          aria-label="Refuel the car"
           data-astro-cid-f5r2mlfl
         >
-          <svg className="v2-feed__fish" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-            <path d="M1.5 5 C4 1.5 8 1 11 3.2 L14.5 1 L13.5 5 L14.5 9 L11 6.8 C8 9 4 8.5 1.5 5 Z" fill="currentColor"></path>
-            <circle cx="4.5" cy="4.2" r="0.7" fill="rgb(251, 250, 249)"></circle>
+          <svg className="v2-feed__fuel" viewBox="0 0 16 12" fill="none" aria-hidden="true">
+            <path d="M4 2 L4 10 L10 10 L10 2 Z" fill="currentColor"></path>
+            <path d="M5 0 L9 0 L9 2 L5 2 Z" fill="currentColor"></path>
+            <path d="M10 5 L14 5 L14 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"></path>
+            <rect x="5.5" y="4" width="3" height="4" fill="rgb(var(--color-bg))"></rect>
           </svg>
         </button>
       </span>
