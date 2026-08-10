@@ -76,25 +76,16 @@ interface ProjectItem {
 const PROJECTS: ProjectItem[] = [
   {
     year: "2026",
-    title: "snitch",
-    description: "marketplace to buy or sell anything",
-    meta: "React, Node.js, Socket.io",
-    link: "https://github.com/bytesizedshrey/snitch",
-    tag: { label: "Starred", color: "#2563eb" },
+    title: "Velora",
+    description: "web application",
+    meta: "Live App",
+    link: "https://velora-git-main-bytesizedshreys-projects.vercel.app/",
   },
   {
-    title: "perplexity",
-    description: "ai you can ask anything",
-    meta: "Fullstack + GenAI",
-    link: "https://github.com/bytesizedshrey/perplexity",
-    tag: { label: "Starred", color: "#b45309" },
-  },
-  {
-    title: "battle-arena",
-    description: "multi-agent ai monitoring system",
-    meta: "HTML5 Canvas, JavaScript",
-    link: "https://github.com/bytesizedshrey/battle-arena",
-    tag: { label: "Starred", color: "#b45309" },
+    title: "hatable",
+    description: "capstone project",
+    meta: "GitHub Repository",
+    link: "https://github.com/bytesizedshrey/longLiveCapstone",
   },
 ];
 
