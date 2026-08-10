@@ -255,7 +255,7 @@ export default function Home() {
           </FatLink>
           , or{" "}
           <button
-            className="inline-flex cursor-pointer bg-[#ef4444] text-white px-1"
+            className="inline-flex cursor-pointer"
             onClick={handleEmailClick}
             onPointerEnter={() => playAudio("tick")}
             onPointerDown={() => playAudio("press")}
