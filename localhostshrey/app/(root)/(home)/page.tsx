@@ -208,7 +208,7 @@ export default function Home() {
 
   return (
     <main className="v2" data-astro-cid-j7pv25f6>
-      <h3 data-astro-cid-j7pv25f6>localhostshrey</h3>
+      <h3 data-astro-cid-j7pv25f6>Shreyash Gajbhiye</h3>
       <p className="v2-updated" data-astro-cid-j7pv25f6>
         <span ref={headerClockRef}>00:00:00 am</span> in Mumbai, India
         <button
