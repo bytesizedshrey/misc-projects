@@ -88,7 +88,7 @@ const PROJECTS: ProjectItem[] = [
     title: "Velora",
     description: "its a fashion e-commerce",
     meta: "Live App",
-    link: "https://velora-git-main-bytesizedshreys-projects.vercel.app/",
+    link: "https://velora-one-rouge.vercel.app",
   },
   {
     title: "hatable",
