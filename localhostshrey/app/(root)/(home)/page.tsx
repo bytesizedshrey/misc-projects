@@ -232,7 +232,7 @@ export default function Home() {
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
         <p data-astro-cid-j7pv25f6>
-          I'm a design engineer building interfaces and full-stack products. I care about the details, from pixels to architecture.
+          I'm a <span className="bg-black text-white px-1">design engineer</span> building interfaces and full-stack products. I care about the details, from pixels to architecture.
         </p>
         <p data-astro-cid-j7pv25f6>
           Say hi on{" "}
