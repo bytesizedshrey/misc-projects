@@ -223,34 +223,7 @@ export default function Home() {
 
       <div className="v2-prose" data-astro-cid-j7pv25f6>
         <p data-astro-cid-j7pv25f6>
-          I'm a full stack developer based in India. cooked 24/7.
-        </p>
-        <p data-astro-cid-j7pv25f6>
-          In the open I've shipped{" "}
-          <FatLink
-            href="https://github.com/bytesizedshrey/snitch"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            snitch
-          </FatLink>
-          ,{" "}
-          <FatLink
-            href="https://github.com/bytesizedshrey/perplexity"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            perplexity
-          </FatLink>
-          , and{" "}
-          <FatLink
-            href="https://github.com/bytesizedshrey/battle-arena"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            battle-arena
-          </FatLink>
-          . By day I experiment with system design and full-stack architecture.
+          I'm a design engineer building interfaces and full-stack products. I care about the details, from pixels to architecture.
         </p>
         <p data-astro-cid-j7pv25f6>
           Say hi on{" "}
