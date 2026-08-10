@@ -73,6 +73,15 @@ interface ProjectItem {
   };
 }
 
+const EXPERIENCE: ProjectItem[] = [
+  {
+    year: "2026",
+    title: "VoltLink",
+    description: "Design Engineer",
+    meta: "Aug 01 — present",
+  },
+];
+
 const PROJECTS: ProjectItem[] = [
   {
     year: "2026",
@@ -259,6 +268,44 @@ export default function Home() {
           if you want to talk.
         </p>
       </div>
+
+      <section className="v2-index" aria-labelledby="v2-experience-heading" data-astro-cid-q257azvz>
+        <h2 id="v2-experience-heading" data-astro-cid-q257azvz>
+          Experience
+        </h2>
+        <div className="v2-index__table" data-astro-cid-q257azvz>
+          {EXPERIENCE.map((exp, index) => {
+            const rowStyle = { "--row-i": index } as React.CSSProperties;
+            const isYearStart = !!exp.year;
+
+            return (
+              <a
+                key={index}
+                style={rowStyle}
+                onPointerEnter={() => playAudio("tick")}
+                onPointerDown={() => playAudio("press")}
+                href={exp.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-astro-cid-xurrqhsc="true"
+                className={`v2-row ${isYearStart ? "v2-row--year-start" : ""}`}
+              >
+                <span className="v2-row__year" data-astro-cid-xurrqhsc>
+                  {exp.year || ""}
+                </span>
+                <span className="v2-row__title" data-astro-cid-xurrqhsc>
+                  <span className="font-semibold text-neutral-900 mr-2">{exp.title}</span>
+                  <span className="text-neutral-400 font-normal">{exp.description}</span>
+                  {exp.tag && <Tag label={exp.tag.label} color={exp.tag.color} />}
+                </span>
+                <span className="v2-row__meta" data-astro-cid-xurrqhsc>
+                  {exp.meta}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
 
       <section className="v2-index" aria-labelledby="v2-work-heading" data-astro-cid-q257azvz>
         <h2 id="v2-work-heading" data-astro-cid-q257azvz>
