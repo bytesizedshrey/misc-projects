@@ -77,13 +77,13 @@ const PROJECTS: ProjectItem[] = [
   {
     year: "2026",
     title: "Velora",
-    description: "web application",
+    description: "its a fashion e-commerce",
     meta: "Live App",
     link: "https://velora-git-main-bytesizedshreys-projects.vercel.app/",
   },
   {
     title: "hatable",
-    description: "capstone project",
+    description: "AI frontend builder",
     meta: "GitHub Repository",
     link: "https://github.com/bytesizedshrey/longLiveCapstone",
   },
