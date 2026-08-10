@@ -9,13 +9,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Shrey",
-  description: "Shrey — full stack developer based in India",
+  title: "localhostshrey",
+  description: "localhostshrey — design engineer based in India",
   metadataBase: new URL("https://localhostshrey.vercel.app/"),
-  authors: [{ name: "Shrey" }],
+  authors: [{ name: "localhostshrey" }],
   keywords: [
     "portfolio",
-    "full stack developer",
+    "design engineer",
     "India",
     "software engineer",
     "TypeScript",
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     "React",
     "Node.js",
   ],
-  creator: "Shrey",
-  publisher: "Shrey",
+  creator: "localhostshrey",
+  publisher: "localhostshrey",
   robots: {
     index: true,
     follow: true,
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: "https://localhostshrey.vercel.app/",
-    title: "Shrey",
-    description: "Shrey — full stack developer based in India",
+    title: "localhostshrey",
+    description: "localhostshrey — design engineer based in India",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shrey",
-    description: "Shrey — full stack developer based in India",
+    title: "localhostshrey",
+    description: "localhostshrey — design engineer based in India",
     creator: "@bytesizedshrey",
   },
 };
