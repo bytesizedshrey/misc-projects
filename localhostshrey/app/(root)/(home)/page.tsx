@@ -91,10 +91,10 @@ const PROJECTS: ProjectItem[] = [
     link: "https://velora-one-rouge.vercel.app",
   },
   {
-    title: "hatable",
-    description: "AI frontend builder",
-    meta: "GitHub Repository",
-    link: "https://github.com/bytesizedshrey/longLiveCapstone",
+    title: "usual-ui",
+    description: "UI component library",
+    meta: "Live App",
+    link: "https://usual-ui.vercel.app/",
   },
 ];
 
