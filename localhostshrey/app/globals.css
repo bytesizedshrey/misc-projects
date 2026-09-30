@@ -152,6 +152,7 @@ body {
 /* Off screen */
 .base {
   --w: clamp(58px, 10vh, 104px);
+  justify-self: end;
 }
 
 .offscreen {
@@ -402,6 +403,7 @@ body {
   }
   .base {
     --w: 56px;
+    justify-self: start;
   }
   .offscreen {
     flex-direction: column;
