@@ -20,6 +20,7 @@ export default function OffScreen() {
       <h2 id="off-screen" className="section__label">
         Off screen
       </h2>
+      <div className="shelf-wrap">
       <div className="shelf" onPointerLeave={() => setActive(null)}>
         {PHOTOS.map((p, i) => (
           <button
@@ -45,8 +46,9 @@ export default function OffScreen() {
         ))}
       </div>
       <p className="shelf__caption" aria-live="polite">
-        {active === null ? " " : PHOTOS[active].caption}
+        {active === null ? "" : PHOTOS[active].caption}
       </p>
+      </div>
     </section>
   );
 }

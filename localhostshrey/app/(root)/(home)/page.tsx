@@ -48,11 +48,8 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="enter" style={delay(3)}>
+      <div className="foot enter" style={delay(3)}>
         <OffScreen />
-      </div>
-
-      <div className="enter" style={delay(4)}>
         <ContactCTA />
       </div>
     </>

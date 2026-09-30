@@ -23,7 +23,7 @@ export default function ContactCTA() {
   }, [open]);
 
   return (
-    <div className="cta">
+    <>
       <p className="cta__line">
         got something in mind?
         <br />
@@ -53,6 +53,6 @@ export default function ContactCTA() {
           ))}
         </ul>
       </div>
-    </div>
+    </>
   );
 }
