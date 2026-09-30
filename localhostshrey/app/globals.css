@@ -191,27 +191,123 @@ body {
   color: var(--soft);
 }
 
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 18px;
+.cta {
   margin: 0;
-  padding: 0;
-  list-style: none;
   font-size: 14px;
+  line-height: 1.5;
+  color: var(--soft);
 }
 
-.links a {
+.cta__btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
   color: var(--ink);
+  cursor: pointer;
   text-decoration: underline;
   text-decoration-color: var(--faint);
-  text-underline-offset: 0.18em;
+  text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
   transition: text-decoration-color 0.2s var(--ease);
 }
 
-.links a:hover {
+.cta__btn:hover {
   text-decoration-color: var(--ink);
+}
+
+.card {
+  width: min(380px, calc(100vw - 32px));
+  margin: auto;
+  padding: 16px 18px 6px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+}
+
+.card[open] {
+  animation: fade 0.18s var(--ease) both;
+}
+
+.card::backdrop {
+  background: #00000066;
+}
+
+.card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 12px;
+}
+
+.card__head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.card__close {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.card__close:hover {
+  color: var(--ink);
+}
+
+.card__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card__list a {
+  display: grid;
+  grid-template-columns: 76px 1fr auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--soft);
+  text-decoration: none;
+}
+
+.card__name {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.card__handle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__arrow {
+  color: var(--faint);
+  transition: transform 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.card__list a:hover .card__handle {
+  color: var(--ink);
+}
+
+.card__list a:hover .card__arrow {
+  color: var(--ink);
+  transform: translate(1px, -1px);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
 }
 
 .enter {
@@ -230,9 +326,13 @@ body {
   .enter {
     animation: none;
   }
+  .card[open] {
+    animation: none;
+  }
   .shelf__item,
   .prose a,
-  .links a {
+  .cta__btn,
+  .card__arrow {
     transition: none;
   }
 }

@@ -1,17 +1,8 @@
 import Image from "next/image";
 import Clock from "@/components/Clock";
+import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import { availableForWork, currentlyLearning } from "@/constants";
-
-const EMAIL = "thisisitshrey@gmail.com";
-
-const ELSEWHERE = [
-  { label: "GitHub", href: "https://github.com/bytesizedshrey" },
-  { label: "X", href: "https://x.com/bytesizedshrey" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/localhostshrey/" },
-  { label: "Discord", href: "https://discord.com/users/bytesizedshrey" },
-  { label: EMAIL, href: `mailto:${EMAIL}`, internal: true },
-];
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -61,17 +52,9 @@ export default function Home() {
         <OffScreen />
       </div>
 
-      <nav className="enter" style={delay(4)} aria-label="Elsewhere">
-        <ul className="links">
-          {ELSEWHERE.map((l) => (
-            <li key={l.label}>
-              <a href={l.href} {...(l.internal ? {} : ext)}>
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <div className="enter" style={delay(4)}>
+        <ContactCTA />
+      </div>
     </>
   );
 }
