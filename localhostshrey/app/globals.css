@@ -151,7 +151,7 @@ body {
 
 /* Off screen */
 .base {
-  --w: clamp(58px, 10vh, 104px);
+  --w: clamp(84px, 13.5vh, 140px);
   justify-self: end;
 }
 
@@ -171,7 +171,7 @@ body {
 
 .shelf {
   display: flex;
-  padding: 10px 0 4px;
+  padding: 6px 0 0;
 }
 
 .shelf__item {
@@ -402,7 +402,7 @@ body {
     height: 64px;
   }
   .base {
-    --w: 56px;
+    --w: 76px;
     justify-self: start;
   }
   .offscreen {

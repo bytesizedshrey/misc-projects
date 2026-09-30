@@ -41,7 +41,14 @@ export default function OffScreen() {
             onBlur={() => setActive(null)}
             onClick={() => setActive(i)}
           >
-            <Image src={p.src} alt="" width={112} height={140} sizes="56px" />
+            <Image
+              src={p.src}
+              alt=""
+              width={400}
+              height={500}
+              sizes="(max-width: 560px) 120px, 200px"
+              quality={92}
+            />
           </button>
         ))}
       </div>
