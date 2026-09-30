@@ -49,33 +49,33 @@ body {
 }
 
 .page {
-  max-width: 600px;
+  max-width: 520px;
   min-height: 100svh;
   margin: 0 auto;
   padding: 24px 24px 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 22px;
-  padding-top: clamp(24px, 6vh, 72px);
+  gap: 20px;
+  padding-top: clamp(20px, 5vh, 72px);
 }
 
 .who {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .who__photo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   object-fit: cover;
   display: block;
 }
 
 .who__name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.3;
   margin: 0;
@@ -90,9 +90,9 @@ body {
 }
 
 .prose p {
-  margin: 0 0 0.7em;
-  font-size: clamp(19px, 4.8vw, 22px);
-  line-height: 1.38;
+  margin: 0 0 0.6em;
+  font-size: clamp(19px, 4.8vw, 21px);
+  line-height: 1.36;
   letter-spacing: -0.045em;
   color: var(--soft);
   text-wrap: pretty;
@@ -248,7 +248,7 @@ body {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  padding: 1px 0;
+  padding: 0;
   color: inherit;
   text-decoration: none;
 }
