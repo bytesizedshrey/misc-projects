@@ -2,6 +2,7 @@ import Image from "next/image";
 import Clock from "@/components/Clock";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
+import ThemeToggle from "@/components/ThemeToggle";
 import { availableForWork, currentlyLearning } from "@/constants";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
@@ -19,10 +20,11 @@ export default function Home() {
           height={80}
           priority
         />
-        <div>
+        <div className="who__text">
           <h1 className="who__name">Shreyash Gajbhiye</h1>
           <Clock />
         </div>
+        <ThemeToggle />
       </header>
 
       <div className="mid">
