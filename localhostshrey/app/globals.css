@@ -49,43 +49,56 @@ body {
 }
 
 .page {
-  max-width: 480px;
+  max-width: 600px;
+  min-height: 100svh;
   margin: 0 auto;
-  padding: 72px 24px 56px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
 }
 
 .who {
-  display: block;
-  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .who__photo {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   object-fit: cover;
   display: block;
-  margin-bottom: 14px;
 }
 
 .who__name {
+  font-size: 15px;
   font-weight: 500;
+  line-height: 1.3;
   margin: 0;
 }
 
 .who__place {
   margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
   color: var(--soft);
   font-variant-numeric: tabular-nums;
 }
 
 .prose p {
-  margin: 0 0 1.05em;
-  font-size: clamp(25px, 7vw, 30px);
-  line-height: 1.35;
-  letter-spacing: -0.06em;
+  margin: 0 0 0.7em;
+  font-size: clamp(19px, 4.8vw, 22px);
+  line-height: 1.38;
+  letter-spacing: -0.045em;
   color: var(--soft);
   text-wrap: pretty;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
 }
 
 .prose strong {
@@ -115,35 +128,30 @@ body {
   -webkit-box-decoration-break: clone;
 }
 
-.small {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--soft);
-}
-
-.section {
-  margin-top: 64px;
-}
-
 .section__label {
-  margin: 0 0 14px;
-  font-size: 14px;
+  margin: 0;
+  font-size: 13px;
   font-weight: 400;
   color: var(--faint);
 }
 
 /* Off screen */
+.offscreen {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .shelf {
   display: flex;
-  justify-content: center;
-  padding: 10px 0 6px;
+  padding: 6px 0 4px;
 }
 
 .shelf__item {
   position: relative;
   flex: 0 0 auto;
-  width: 84px;
-  margin-left: -14px;
+  width: 56px;
+  margin-left: -10px;
   padding: 0;
   border: 0;
   background: none;
@@ -160,51 +168,37 @@ body {
 .shelf__item img {
   display: block;
   width: 100%;
-  height: 104px;
+  height: 70px;
   object-fit: cover;
-  border: 3px solid var(--paper);
+  border: 2px solid var(--paper);
   border-radius: 3px;
-  box-shadow: 0 0 0 1px var(--line), 0 2px 8px #00000014;
+  box-shadow: 0 0 0 1px var(--line), 0 2px 6px #00000014;
 }
 
 .shelf__item:hover,
 .shelf__item:focus-visible,
 .shelf__item[data-on="true"] {
-  transform: translateY(calc(var(--y) - 10px)) rotate(0deg);
+  transform: translateY(calc(var(--y) - 8px)) rotate(0deg);
   z-index: 20;
 }
 
 .shelf__caption {
-  min-height: 1.6em;
-  margin: 14px 0 0;
-  text-align: center;
-  font-size: 14px;
+  margin: 0;
+  min-height: 2.8em;
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
   color: var(--soft);
 }
 
-.list {
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.list li {
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-top: 1px solid var(--line);
   font-size: 14px;
-  color: var(--soft);
-}
-
-.list li:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.list b {
-  font-weight: 500;
-  color: var(--ink);
 }
 
 .links a {
@@ -220,32 +214,15 @@ body {
   text-decoration-color: var(--ink);
 }
 
-.links dt {
-  color: var(--faint);
-}
-
-.links dl {
-  display: grid;
-  grid-template-columns: 2ch 1fr;
-  column-gap: 10px;
-  row-gap: 2px;
-  margin: 0;
-  font-size: 16px;
-}
-
-.links dd {
-  margin: 0;
-}
-
 .enter {
-  animation: rise 0.7s var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 70ms);
+  animation: rise 0.6s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
 }
 
@@ -262,13 +239,15 @@ body {
 
 @media (max-width: 420px) {
   .page {
-    padding-top: 48px;
+    padding: 24px 20px;
+    gap: 22px;
   }
-  .shelf__item {
-    width: 62px;
-    margin-left: -10px;
+  .offscreen {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
-  .shelf__item img {
-    height: 78px;
+  .shelf__caption {
+    min-height: 1.4em;
   }
 }

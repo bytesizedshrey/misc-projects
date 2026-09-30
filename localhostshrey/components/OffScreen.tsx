@@ -16,7 +16,7 @@ export default function OffScreen() {
   const [active, setActive] = useState<number | null>(null);
 
   return (
-    <section className="section" aria-labelledby="off-screen">
+    <section className="offscreen" aria-labelledby="off-screen">
       <h2 id="off-screen" className="section__label">
         Off screen
       </h2>
@@ -40,7 +40,7 @@ export default function OffScreen() {
             onBlur={() => setActive(null)}
             onClick={() => setActive(i)}
           >
-            <Image src={p.src} alt="" width={168} height={208} sizes="84px" />
+            <Image src={p.src} alt="" width={112} height={140} sizes="56px" />
           </button>
         ))}
       </div>
