@@ -25,32 +25,36 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="prose">
-        <p className="enter" style={delay(1)}>
-          <strong>Hey, I&apos;m Shrey.</strong> I&apos;m a{" "}
-          <span className="mark">design engineer</span> building interfaces and
-          full-stack products. I care about the details, from pixels to
-          architecture. Since Aug 2026 I&apos;ve been a design engineer at{" "}
-          <strong>VoltLink</strong>.
-        </p>
-        <p className="enter" style={delay(2)}>
-          I made{" "}
-          <a href="https://velora-one-rouge.vercel.app" {...ext}>
-            Velora
-          </a>
-          , a fashion e-commerce, and{" "}
-          <a href="https://usual-ui.vercel.app/" {...ext}>
-            usual-ui
-          </a>
-          , a UI component library. Right now I&apos;m learning{" "}
-          {currentlyLearning.join(" and ")}.
-          {availableForWork && " I'm available for work."}
-        </p>
+      <div className="mid">
+        <div className="prose">
+          <p className="enter" style={delay(1)}>
+            <strong>Hey, I&apos;m Shrey.</strong> I&apos;m a{" "}
+            <span className="mark">design engineer</span> building interfaces and
+            full-stack products. I care about the details, from pixels to
+            architecture. Since Aug 2026 I&apos;ve been a design engineer at{" "}
+            <strong>VoltLink</strong>.
+          </p>
+          <p className="enter" style={delay(2)}>
+            I made{" "}
+            <a href="https://velora-one-rouge.vercel.app" {...ext}>
+              Velora
+            </a>
+            , a fashion e-commerce, and{" "}
+            <a href="https://usual-ui.vercel.app/" {...ext}>
+              usual-ui
+            </a>
+            , a UI component library. Right now I&apos;m learning{" "}
+            {currentlyLearning.join(" and ")}.
+            {availableForWork && " I'm available for work."}
+          </p>
+        </div>
+        <div className="enter" style={delay(3)}>
+          <ContactCTA />
+        </div>
       </div>
 
-      <div className="foot enter" style={delay(3)}>
+      <div className="base enter" style={delay(4)}>
         <OffScreen />
-        <ContactCTA />
       </div>
     </>
   );
