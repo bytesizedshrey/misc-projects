@@ -11,7 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "localhostshrey",
   description: "localhostshrey — design engineer based in India",
-  metadataBase: new URL("https://localhostshrey.vercel.app/"),
+  metadataBase: new URL("https://localhostshrey.in/"),
   authors: [{ name: "localhostshrey" }],
   keywords: [
     "portfolio",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://localhostshrey.vercel.app/",
+    url: "https://localhostshrey.in/",
     title: "localhostshrey",
     description: "localhostshrey — design engineer based in India",
   },
