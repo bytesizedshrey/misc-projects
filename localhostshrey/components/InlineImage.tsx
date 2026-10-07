@@ -25,6 +25,7 @@ export default function InlineImage({ src, label, position = "50% 50%", width, h
     >
       <span className="ii" role="img" aria-label={label} tabIndex={0}>
         <Image src={src} alt="" width={width} height={height} sizes="48px" quality={92} />
+        <span className="card__inset" aria-hidden="true" />
       </span>
       <span className="ii-pop" aria-hidden="true">
         <Image src={src} alt="" width={width} height={height} sizes="140px" quality={92} />
