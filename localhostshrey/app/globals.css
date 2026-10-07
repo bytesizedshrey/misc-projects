@@ -252,6 +252,11 @@ body {
 }
 
 /* invisible bridge so the pointer can travel from the trigger up to the preview */
+.ii-pop--wide {
+  width: min(150px, 40vw);
+  aspect-ratio: 16 / 10;
+}
+
 .ii-pop::after {
   content: "";
   position: absolute;

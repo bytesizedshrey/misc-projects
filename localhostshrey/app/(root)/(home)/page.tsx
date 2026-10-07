@@ -3,9 +3,9 @@ import Clock from "@/components/Clock";
 import InlineImage from "@/components/InlineImage";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
+import PreviewLink from "@/components/PreviewLink";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
 export default function Home() {
@@ -37,13 +37,19 @@ export default function Home() {
           </p>
           <p className="enter" style={delay(2)}>
             Currently at <strong>VoltLink</strong>. I&apos;ve also built{" "}
-            <a href="https://velora-one-rouge.vercel.app" {...ext}>
+            <PreviewLink
+              href="https://velora-one-rouge.vercel.app"
+              src="/assets/preview-velora.jpg"
+            >
               Velora
-            </a>{" "}
+            </PreviewLink>{" "}
             and{" "}
-            <a href="https://usual-ui.vercel.app/" {...ext}>
+            <PreviewLink
+              href="https://usual-ui.vercel.app/"
+              src="/assets/preview-usual-ui.jpg"
+            >
               usual-ui
-            </a>
+            </PreviewLink>
             .
           </p>
           <p className="enter" style={delay(3)}>
