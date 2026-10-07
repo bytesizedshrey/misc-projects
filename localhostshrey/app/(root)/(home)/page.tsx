@@ -50,33 +50,33 @@ export default function Home() {
             <span className="nowrap">
               code{" "}
               <InlineImage
-                src="/assets/inline-code.jpg"
-                label="Margaret Hamilton next to the Apollo guidance software printouts"
-                position="50% 22%"
-                width={700}
-                height={871}
+                src="/assets/pin-code.jpg"
+                label="A kitten at an old computer, with an arrow labelled full of knowledge"
+                position="42% 38%"
+                width={900}
+                height={693}
               />
             </span>
             , designing{" "}
             <span className="nowrap">
               things{" "}
               <InlineImage
-                src="/assets/inline-design.jpg"
-                label="Goethe's 1809 hand-painted colour wheel"
-                position="50% 50%"
-                width={600}
-                height={913}
+                src="/assets/pin-design.jpg"
+                label="A man sketching in a notebook while hanging upside down on a wall"
+                position="50% 52%"
+                width={735}
+                height={616}
               />
             </span>
             , or fixing something that was perfectly fine five minutes{" "}
             <span className="nowrap">
               ago{" "}
               <InlineImage
-                src="/assets/inline-bug.jpg"
-                label="The first computer bug: a moth taped into a 1947 logbook"
-                position="18% 62%"
-                width={900}
-                height={712}
+                src="/assets/pin-fix.jpg"
+                label="Max Verstappen saying what"
+                position="72% 30%"
+                width={340}
+                height={283}
               />
               .
             </span>
