@@ -191,7 +191,7 @@ body {
   white-space: nowrap;
 }
 
-/* inline kitten (idea after ruru.build) */
+/* inline kitten (idea after ruru.build): tiny trigger, preview blooms to its left on hover */
 .kitten-wrap {
   position: relative;
   display: inline-block;
@@ -203,14 +203,11 @@ body {
   width: 0.95em;
   height: 0.95em;
   margin: 0 0.06em 0 0.12em;
-  padding: 0;
-  border: 0;
-  background: none;
   vertical-align: -0.14em;
-  cursor: pointer;
   border-radius: 0.2em;
   transform: rotate(-6deg);
-  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline-offset: 3px;
 }
 
 .kitten img {
@@ -221,27 +218,19 @@ body {
   border-radius: 0.2em;
 }
 
-.kitten:hover,
-.kitten:focus-visible {
-  transform: rotate(5deg) scale(1.18);
-}
-
-.kitten:active {
-  transform: rotate(0deg) scale(0.88);
-  transition-duration: 0.08s;
-}
-
-.kitten-wrap[data-open="true"] .kitten {
-  transform: rotate(3deg) scale(1.12);
+.kitten-wrap:hover .kitten,
+.kitten-wrap:focus-within .kitten {
+  transform: rotate(5deg) scale(1.15);
 }
 
 .kitten-pop {
   position: absolute;
-  right: -0.3em;
-  bottom: calc(100% + 12px);
+  right: calc(100% - 0.1em);
+  top: 50%;
   z-index: 30;
-  width: min(220px, 56vw);
+  width: min(190px, 42vw);
   aspect-ratio: 1;
+  margin-right: 12px;
   padding: 5px;
   border-radius: 18px;
   background: var(--paper);
@@ -250,14 +239,25 @@ body {
     0 2px 4px rgb(var(--card-sh) / 0.2),
     0 8px 12px rgb(var(--card-sh) / 0.14),
     0 20px 24px rgb(var(--card-sh) / 0.1);
-  transform-origin: calc(100% - 1.2em) 100%;
-  transform: translateY(6px) scale(0.82) rotate(-5deg);
+  transform-origin: right center;
+  transform: translateY(-50%) scale(0.88);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.16s ease,
-    visibility 0s linear 0.3s;
+    transform 0.17s ease-out,
+    opacity 0.15s ease-out,
+    visibility 0s linear 0.17s;
+}
+
+/* invisible bridge so the pointer can travel from the kitten to the preview */
+.kitten-pop::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 14px;
 }
 
 .kitten-pop img {
@@ -268,10 +268,12 @@ body {
   border-radius: 13px;
 }
 
-.kitten-wrap[data-open="true"] .kitten-pop {
-  transform: rotate(-2deg);
+.kitten-wrap:hover .kitten-pop,
+.kitten-wrap:focus-within .kitten-pop {
+  transform: translateY(-50%) scale(1);
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
   transition-delay: 0s;
 }
 
@@ -575,8 +577,10 @@ body {
   .kitten-pop {
     transition: none;
   }
-  .kitten-pop {
-    transform: none;
+  .kitten-pop,
+  .kitten-wrap:hover .kitten-pop,
+  .kitten-wrap:focus-within .kitten-pop {
+    transform: translateY(-50%);
   }
   .replies,
   .replies__list li,
