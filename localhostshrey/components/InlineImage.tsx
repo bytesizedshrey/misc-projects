@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 type Props = {
   src: string;
@@ -15,14 +15,26 @@ type Props = {
 export default function InlineImage({ src, label, position = "50% 50%", width, height }: Props) {
   const wrap = useRef<HTMLSpanElement>(null);
 
-  /* open to the left of the trigger; flip right when the left side would leave the screen */
-  const place = () => {
+  /* preview sits centred above the trigger; nudge sideways only if it would leave the screen */
+  const place = useCallback(() => {
     const el = wrap.current;
     const pop = el?.querySelector<HTMLElement>(".ii-pop");
-    if (!el || !pop) return;
-    const room = el.getBoundingClientRect().left - pop.offsetWidth - 12;
-    el.dataset.side = room < 8 ? "right" : "left";
-  };
+    const trig = el?.querySelector<HTMLElement>(".ii");
+    if (!el || !pop || !trig) return;
+    const t = trig.getBoundingClientRect();
+    const w = pop.offsetWidth;
+    const left = t.left + t.width / 2 - w / 2;
+    const dx = Math.max(8 - left, Math.min(0, window.innerWidth - 8 - (left + w)));
+    el.style.setProperty("--dx", `${Math.round(dx)}px`);
+  }, []);
+
+  /* clamp from the start (and on resize) so a hidden preview never widens the page */
+  useEffect(() => {
+    place();
+    document.fonts?.ready.then(place);
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [place]);
 
   return (
     <span
@@ -36,7 +48,7 @@ export default function InlineImage({ src, label, position = "50% 50%", width, h
         <Image src={src} alt="" width={width} height={height} sizes="48px" quality={92} />
       </span>
       <span className="ii-pop" aria-hidden="true">
-        <Image src={src} alt="" width={width} height={height} sizes="200px" quality={92} />
+        <Image src={src} alt="" width={width} height={height} sizes="140px" quality={92} />
       </span>
     </span>
   );

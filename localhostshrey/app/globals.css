@@ -68,6 +68,7 @@ body {
 }
 
 .page {
+  overflow-x: clip;
   --fs: clamp(22px, min(2.6vw, 3.6vh), 44px);
   --pad: clamp(20px, 4.5vh, 56px);
   width: 100%;
@@ -226,53 +227,38 @@ body {
 
 .ii-pop {
   position: absolute;
-  right: calc(100% - 0.1em);
-  top: 50%;
+  left: 50%;
+  bottom: 100%;
   z-index: 30;
-  width: min(190px, 42vw);
-  aspect-ratio: 1;
-  margin-right: 12px;
-  padding: 5px;
-  border-radius: 18px;
+  width: min(130px, 38vw);
+  aspect-ratio: 4 / 3;
+  padding: 4px;
+  border-radius: 14px;
   background: var(--paper);
   box-shadow:
     0 0 0 1px var(--line),
     0 2px 4px rgb(var(--card-sh) / 0.2),
     0 8px 12px rgb(var(--card-sh) / 0.14),
     0 20px 24px rgb(var(--card-sh) / 0.1);
-  transform-origin: right center;
-  transform: translateY(-50%) scale(0.88);
+  transform-origin: 50% 100%;
+  transform: translate(calc(-50% + var(--dx, 0px)), 4px) scale(0.9);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition:
-    transform 0.17s ease-out,
+    transform 0.15s ease-out,
     opacity 0.15s ease-out,
-    visibility 0s linear 0.17s;
+    visibility 0s linear 0.15s;
 }
 
-/* flipped to the right when there is no room on the left */
-.ii-wrap[data-side="right"] .ii-pop {
-  right: auto;
-  left: calc(100% - 0.1em);
-  margin-right: 0;
-  margin-left: 12px;
-  transform-origin: left center;
-}
-
-.ii-wrap[data-side="right"] .ii-pop::after {
-  left: auto;
-  right: 100%;
-}
-
-/* invisible bridge so the pointer can travel from the trigger to the preview */
+/* invisible bridge so the pointer can travel from the trigger up to the preview */
 .ii-pop::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 100%;
-  width: 14px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 14px;
 }
 
 .ii-pop img {
@@ -281,12 +267,12 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: var(--pos);
-  border-radius: 13px;
+  border-radius: 10px;
 }
 
 .ii-wrap:hover .ii-pop,
 .ii-wrap:focus-within .ii-pop {
-  transform: translateY(-50%) scale(1);
+  transform: translate(calc(-50% + var(--dx, 0px)), -8px) scale(1);
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -596,7 +582,7 @@ body {
   .ii-pop,
   .ii-wrap:hover .ii-pop,
   .ii-wrap:focus-within .ii-pop {
-    transform: translateY(-50%);
+    transform: translate(calc(-50% + var(--dx, 0px)), -8px);
   }
   .replies,
   .replies__list li,

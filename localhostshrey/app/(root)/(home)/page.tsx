@@ -53,7 +53,7 @@ export default function Home() {
               <InlineImage
                 src="/assets/inline-code.jpg"
                 label="Margaret Hamilton next to the Apollo guidance software printouts"
-                position="50% 38%"
+                position="50% 22%"
                 width={700}
                 height={871}
               />
