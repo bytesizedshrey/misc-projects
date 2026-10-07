@@ -227,7 +227,7 @@ body {
   outline-offset: 3px;
 }
 
-/* miniature of the Off screen bezel: same tokens, scaled to the tiny trigger */
+/* tiny inline images: the photo fills the frame; only a thin edge and soft shadow, like the Off screen cards */
 .ii {
   position: relative;
 }
@@ -236,17 +236,15 @@ body {
 .ii::after {
   content: "";
   position: absolute;
-  inset: -2px;
-  border-radius: 0.34em;
+  inset: 0;
+  border-radius: 0.2em;
   pointer-events: none;
 }
 
 .ii::before {
   z-index: -2;
-  background: var(--bezel);
   box-shadow:
-    inset 0 1px 0 var(--bezel-hi),
-    inset 0 0 0 1px var(--bezel-edge),
+    0 0 0 1px var(--bezel-edge),
     0 1px 2px rgb(var(--card-sh) / 0.25),
     0 3px 3px rgb(var(--card-sh) / 0.15),
     0 7px 5px rgb(var(--card-sh) / 0.1),
@@ -254,8 +252,9 @@ body {
   transition: box-shadow 0.28s var(--ease);
 }
 
+/* 1px lit hairline edge over the photo */
 .ii::after {
-  z-index: -1;
+  z-index: 1;
   border: 1px solid transparent;
   background: linear-gradient(180deg, var(--rim-a), var(--rim-b) 41%, var(--rim-b) 75%, var(--rim-c)) border-box;
   -webkit-mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000);
@@ -266,16 +265,13 @@ body {
 
 .ii .card__inset {
   border-radius: 0.2em;
-  box-shadow:
-    inset 0 1px 2px rgb(0 0 0 / 0.5),
-    inset 0 0 0 1px rgb(0 0 0 / 0.3);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
 }
 
 .ii-wrap:hover .ii::before,
 .ii-wrap:focus-within .ii::before {
   box-shadow:
-    inset 0 1px 0 var(--bezel-hi),
-    inset 0 0 0 1px var(--bezel-edge),
+    0 0 0 1px var(--bezel-edge),
     0 2px 3px rgb(var(--card-sh) / 0.28),
     0 6px 5px rgb(var(--card-sh) / 0.18),
     0 12px 8px rgb(var(--card-sh) / 0.1),
