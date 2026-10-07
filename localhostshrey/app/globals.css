@@ -54,6 +54,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   transition: background-color 0.18s ease, color 0.18s ease;
+  overflow-x: clip;
 }
 
 ::selection {
@@ -68,7 +69,6 @@ body {
 }
 
 .page {
-  overflow-x: clip;
   --fs: clamp(24px, min(2.9vw, 4vh), 48px);
   --pad: clamp(20px, 4.5vh, 56px);
   width: 100%;
@@ -115,6 +115,14 @@ body {
   display: block;
   width: 13px;
   height: 13px;
+}
+
+.who__photowrap {
+  position: relative;
+  display: block;
+  flex: none;
+  line-height: 0;
+  white-space: normal;
 }
 
 .who__photo {
@@ -252,9 +260,56 @@ body {
 }
 
 /* invisible bridge so the pointer can travel from the trigger up to the preview */
+/* beside variant: opens to the left of its trigger (right when there is no room) */
+.ii-pop.ii-pop--beside {
+  bottom: auto;
+  left: auto;
+  top: 50%;
+  right: calc(100% + 12px);
+  width: min(140px, 34vw);
+  aspect-ratio: 1;
+  transform-origin: right center;
+  transform: translate(4px, -50%) scale(0.9);
+}
+
+.ii-wrap:hover .ii-pop.ii-pop--beside,
+.ii-wrap:focus-within .ii-pop.ii-pop--beside {
+  transform: translate(0, -50%) scale(1);
+}
+
+.ii-wrap[data-side="right"] .ii-pop.ii-pop--beside {
+  right: auto;
+  left: calc(100% + 12px);
+  transform-origin: left center;
+  transform: translate(-4px, -50%) scale(0.9);
+}
+
+.ii-wrap[data-side="right"]:hover .ii-pop.ii-pop--beside,
+.ii-wrap[data-side="right"]:focus-within .ii-pop.ii-pop--beside {
+  transform: translate(0, -50%) scale(1);
+}
+
+.ii-pop.ii-pop--beside::after {
+  top: 0;
+  bottom: 0;
+  height: auto;
+  left: 100%;
+  right: auto;
+  width: 14px;
+}
+
+.ii-wrap[data-side="right"] .ii-pop.ii-pop--beside::after {
+  left: auto;
+  right: 100%;
+}
+
 .ii-pop--wide {
   width: min(150px, 40vw);
   aspect-ratio: 16 / 10;
+}
+
+.ii-wrap:not([data-ready]) .ii-pop {
+  display: none;
 }
 
 .ii-pop::after {
@@ -584,6 +639,13 @@ body {
   .ii-pop {
     transition: none;
   }
+  .ii-pop.ii-pop--beside,
+  .ii-wrap:hover .ii-pop.ii-pop--beside,
+  .ii-wrap:focus-within .ii-pop.ii-pop--beside,
+  .ii-wrap[data-side="right"] .ii-pop.ii-pop--beside,
+  .ii-wrap[data-side="right"]:hover .ii-pop.ii-pop--beside {
+    transform: translateY(-50%);
+  }
   .ii-pop,
   .ii-wrap:hover .ii-pop,
   .ii-wrap:focus-within .ii-pop {
@@ -605,6 +667,7 @@ body {
 
 @media (max-width: 560px) {
   .page {
+    overflow-x: clip;
     --fs: clamp(22px, 6.2vw, 28px);
     padding: clamp(20px, 5vh, 48px) 20px 24px;
     row-gap: 24px;

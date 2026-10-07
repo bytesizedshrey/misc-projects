@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Clock from "@/components/Clock";
 import InlineImage from "@/components/InlineImage";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import PreviewLink from "@/components/PreviewLink";
+import ProfilePhoto from "@/components/ProfilePhoto";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -12,14 +12,7 @@ export default function Home() {
   return (
     <>
       <header className="who enter">
-        <Image
-          className="who__photo"
-          src="/assets/pfp-new.jpg"
-          alt="Shrey"
-          width={80}
-          height={80}
-          priority
-        />
+        <ProfilePhoto />
         <div className="who__text">
           <h1 className="who__name">Shreyash Gajbhiye</h1>
           <Clock />
