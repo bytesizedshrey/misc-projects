@@ -191,14 +191,14 @@ body {
   white-space: nowrap;
 }
 
-/* inline kitten (idea after ruru.build): tiny trigger, preview blooms to its left on hover */
-.kitten-wrap {
+/* inline images (idea after ruru.build): tiny trigger, preview blooms to its left on hover */
+.ii-wrap {
   position: relative;
   display: inline-block;
   white-space: nowrap;
 }
 
-.kitten {
+.ii {
   display: inline-block;
   width: 0.95em;
   height: 0.95em;
@@ -210,20 +210,21 @@ body {
   outline-offset: 3px;
 }
 
-.kitten img {
+.ii img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--pos);
   border-radius: 0.2em;
 }
 
-.kitten-wrap:hover .kitten,
-.kitten-wrap:focus-within .kitten {
+.ii-wrap:hover .ii,
+.ii-wrap:focus-within .ii {
   transform: rotate(5deg) scale(1.15);
 }
 
-.kitten-pop {
+.ii-pop {
   position: absolute;
   right: calc(100% - 0.1em);
   top: 50%;
@@ -250,8 +251,22 @@ body {
     visibility 0s linear 0.17s;
 }
 
-/* invisible bridge so the pointer can travel from the kitten to the preview */
-.kitten-pop::after {
+/* flipped to the right when there is no room on the left */
+.ii-wrap[data-side="right"] .ii-pop {
+  right: auto;
+  left: calc(100% - 0.1em);
+  margin-right: 0;
+  margin-left: 12px;
+  transform-origin: left center;
+}
+
+.ii-wrap[data-side="right"] .ii-pop::after {
+  left: auto;
+  right: 100%;
+}
+
+/* invisible bridge so the pointer can travel from the trigger to the preview */
+.ii-pop::after {
   content: "";
   position: absolute;
   top: 0;
@@ -260,16 +275,17 @@ body {
   width: 14px;
 }
 
-.kitten-pop img {
+.ii-pop img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--pos);
   border-radius: 13px;
 }
 
-.kitten-wrap:hover .kitten-pop,
-.kitten-wrap:focus-within .kitten-pop {
+.ii-wrap:hover .ii-pop,
+.ii-wrap:focus-within .ii-pop {
   transform: translateY(-50%) scale(1);
   opacity: 1;
   visibility: visible;
@@ -573,13 +589,13 @@ body {
   .enter {
     animation: none;
   }
-  .kitten,
-  .kitten-pop {
+  .ii,
+  .ii-pop {
     transition: none;
   }
-  .kitten-pop,
-  .kitten-wrap:hover .kitten-pop,
-  .kitten-wrap:focus-within .kitten-pop {
+  .ii-pop,
+  .ii-wrap:hover .ii-pop,
+  .ii-wrap:focus-within .ii-pop {
     transform: translateY(-50%);
   }
   .replies,

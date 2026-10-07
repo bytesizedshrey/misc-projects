@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Clock from "@/components/Clock";
-import Kitten from "@/components/Kitten";
+import InlineImage from "@/components/InlineImage";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -47,9 +47,39 @@ export default function Home() {
             .
           </p>
           <p className="enter" style={delay(3)}>
-            I like good design, smooth interactions, computers, and{" "}
+            Most days you&apos;ll find me writing{" "}
             <span className="nowrap">
-              cats <Kitten />.
+              code{" "}
+              <InlineImage
+                src="/assets/inline-code.jpg"
+                label="Margaret Hamilton next to the Apollo guidance software printouts"
+                position="50% 38%"
+                width={700}
+                height={871}
+              />
+            </span>
+            , designing{" "}
+            <span className="nowrap">
+              things{" "}
+              <InlineImage
+                src="/assets/inline-design.jpg"
+                label="Goethe's 1809 hand-painted colour wheel"
+                position="50% 50%"
+                width={600}
+                height={913}
+              />
+            </span>
+            , or fixing something that was perfectly fine five minutes{" "}
+            <span className="nowrap">
+              ago{" "}
+              <InlineImage
+                src="/assets/inline-bug.jpg"
+                label="The first computer bug: a moth taped into a 1947 logbook"
+                position="18% 62%"
+                width={900}
+                height={712}
+              />
+              .
             </span>
           </p>
           <p className="enter" style={delay(4)}>
