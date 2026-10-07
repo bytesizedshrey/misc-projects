@@ -30,13 +30,13 @@ export default function Home() {
       <div className="mid">
         <div className="prose">
           <p className="enter" style={delay(1)}>
-            <strong>I&apos;m Shrey.</strong>{" "}
-            <span className="mark">Design Engineer</span> who likes making
-            interfaces feel nice, code behave, and buttons unnecessarily
-            satisfying to click.
+            <strong>I&apos;m Shrey.</strong> I&apos;m a{" "}
+            <span className="mark">Design Engineer</span>. I make interfaces,
+            write code, and spend an unreasonable amount of time making small
+            things feel right.
           </p>
           <p className="enter" style={delay(2)}>
-            Currently at <strong>VoltLink</strong>. I also made{" "}
+            Currently at <strong>VoltLink</strong>. I&apos;ve also built{" "}
             <a href="https://velora-one-rouge.vercel.app" {...ext}>
               Velora
             </a>{" "}
@@ -47,10 +47,9 @@ export default function Home() {
             .
           </p>
           <p className="enter" style={delay(3)}>
-            Most days you&apos;ll find me writing code, designing things, or
-            fixing something that was perfectly fine five minutes ago.{" "}
+            I like good design, smooth interactions, computers, and{" "}
             <span className="nowrap">
-              I love <Kitten />.
+              cats <Kitten />.
             </span>
           </p>
           <p className="enter" style={delay(4)}>
