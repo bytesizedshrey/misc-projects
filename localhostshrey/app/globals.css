@@ -684,6 +684,28 @@ body {
     inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 
+/* WebGL metal surface; the CSS face below is the fallback when WebGL is unavailable */
+.xcard__gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.xcard[data-gl] .xcard__gl {
+  display: block;
+}
+
+.xcard[data-gl] .xcard__x,
+.xcard[data-gl] .xcard__sheen {
+  display: none;
+}
+
+.xcard[data-gl] .xcard__face {
+  box-shadow: none;
+}
+
 /* the X: embossed black on black */
 .xcard__x {
   position: absolute;

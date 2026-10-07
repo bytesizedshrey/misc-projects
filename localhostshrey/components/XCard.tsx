@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { createMetal, type Metal } from "./metal";
 
 /**
  * A black physical card (after the card on shwn.design) in the same material
@@ -12,11 +13,30 @@ export default function XCard() {
   const card = useRef<HTMLAnchorElement>(null);
   const s = useRef({ x: 0, y: 0, l: 0, vx: 0, vy: 0, vl: 0, tx: 0, ty: 0, tl: 0, raf: 0, t: 0 });
   const reduce = useRef(false);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const metal = useRef<Metal | null>(null);
 
   useEffect(() => {
     reduce.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const st = s.current;
-    return () => cancelAnimationFrame(st.raf);
+    const cv = canvas.current;
+    let ro: ResizeObserver | undefined;
+    if (cv) {
+      const m = createMetal(cv);
+      if (m) {
+        metal.current = m;
+        card.current?.setAttribute("data-gl", "1");
+        /* the card is display:none until placed, so wait for it to get a size */
+        ro = new ResizeObserver(() => m.resize());
+        ro.observe(cv);
+      }
+    }
+    return () => {
+      cancelAnimationFrame(st.raf);
+      ro?.disconnect();
+      metal.current?.destroy();
+      metal.current = null;
+    };
   }, []);
 
   const tick = (now: number) => {
@@ -36,6 +56,7 @@ export default function XCard() {
     el.style.setProperty("--nx", st.x.toFixed(4));
     el.style.setProperty("--ny", st.y.toFixed(4));
     el.style.setProperty("--lift", Math.max(0, st.l).toFixed(4));
+    metal.current?.render(st.x, st.y, st.l);
     const still =
       Math.abs(st.tx - st.x) < 0.0005 && Math.abs(st.ty - st.y) < 0.0005 && Math.abs(st.tl - st.l) < 0.0005 &&
       Math.abs(st.vx) < 0.001 && Math.abs(st.vy) < 0.001 && Math.abs(st.vl) < 0.001;
@@ -83,6 +104,7 @@ export default function XCard() {
       onPointerLeave={leave}
     >
       <span className="xcard__face" aria-hidden="true">
+        <canvas ref={canvas} className="xcard__gl" />
         <svg className="xcard__x" viewBox="0 0 24 24">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
         </svg>
