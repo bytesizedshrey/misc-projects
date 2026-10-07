@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import XCard from "./XCard";
 
 const EMAIL = "thisisitshrey@gmail.com";
 
@@ -22,6 +24,8 @@ const clock = () =>
 export default function ContactCTA() {
   const [open, setOpen] = useState(false);
   const [sentAt, setSentAt] = useState("");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -30,14 +34,45 @@ export default function ContactCTA() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  /* centre the card above the button; nudge sideways only if it would leave the screen */
+  const cardWrap = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = cardWrap.current;
+    if (!el) return;
+    const place = () => {
+      const r = el.getBoundingClientRect();
+      const w = el.offsetWidth;
+      const left = r.left + r.width / 2 - w / 2;
+      const dx = Math.max(12 - left, Math.min(0, window.innerWidth - 12 - (left + w)));
+      el.style.setProperty("--cdx", `${Math.round(dx)}px`);
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [open]);
+
   const toggle = () => {
     if (!open) setSentAt(clock());
     setOpen((o) => !o);
   };
 
   return (
+    <>
+    {mounted &&
+      createPortal(
+        <div
+          className="xveil"
+          data-state={open ? "open" : "closed"}
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+        />,
+        document.body,
+      )}
     <div className="thread" data-state={open ? "open" : "closed"}>
       <div className="thread__msgs">
+        <div className="xcard-wrap" ref={cardWrap} role="dialog" aria-label="Contact card" aria-hidden={!open}>
+            <XCard interactive={open} />
+          </div>
         <div className="msg msg--in">
           <Image
             className="msg__avatar"
@@ -81,5 +116,6 @@ export default function ContactCTA() {
         </ul>
       </div>
     </div>
+    </>
   );
 }
