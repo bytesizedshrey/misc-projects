@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Clock from "@/components/Clock";
+import Kitten from "@/components/Kitten";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import ThemeToggle from "@/components/ThemeToggle";
-import { availableForWork, currentlyLearning } from "@/constants";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -30,27 +30,34 @@ export default function Home() {
       <div className="mid">
         <div className="prose">
           <p className="enter" style={delay(1)}>
-            <strong>Hey, I&apos;m Shrey.</strong> I&apos;m a{" "}
-            <span className="mark">design engineer</span> building interfaces and
-            full-stack products. I care about the details, from pixels to
-            architecture. Since Aug 2026 I&apos;ve been a design engineer at{" "}
-            <strong>VoltLink</strong>.
+            <strong>I&apos;m Shrey.</strong>{" "}
+            <span className="mark">Design Engineer</span> who likes making
+            interfaces feel nice, code behave, and buttons unnecessarily
+            satisfying to click.
           </p>
           <p className="enter" style={delay(2)}>
-            I made{" "}
+            Currently at <strong>VoltLink</strong>. I also made{" "}
             <a href="https://velora-one-rouge.vercel.app" {...ext}>
               Velora
-            </a>
-            , a fashion e-commerce, and{" "}
+            </a>{" "}
+            and{" "}
             <a href="https://usual-ui.vercel.app/" {...ext}>
               usual-ui
             </a>
-            , a UI component library. Right now I&apos;m learning{" "}
-            {currentlyLearning.join(" and ")}.
-            {availableForWork && " I'm available for work."}
+            .
+          </p>
+          <p className="enter" style={delay(3)}>
+            Most days you&apos;ll find me writing code, designing things, or
+            fixing something that was perfectly fine five minutes ago.{" "}
+            <span className="nowrap">
+              I love <Kitten />.
+            </span>
+          </p>
+          <p className="enter" style={delay(4)}>
+            <strong>Open to work. ~ probably at my desk...</strong>
           </p>
         </div>
-        <div className="enter" style={delay(3)}>
+        <div className="enter" style={delay(5)}>
           <ContactCTA />
         </div>
       </div>
