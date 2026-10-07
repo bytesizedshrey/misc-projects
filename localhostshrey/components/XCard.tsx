@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
  * language as the Off screen cards. It tilts toward the cursor on a spring,
  * lifts slightly and catches a soft moving light; all on the GPU via CSS 3D.
  */
-export default function XCard({ interactive }: { interactive: boolean }) {
+export default function XCard() {
   const card = useRef<HTMLAnchorElement>(null);
   const s = useRef({ x: 0, y: 0, l: 0, vx: 0, vy: 0, vl: 0, tx: 0, ty: 0, tl: 0, raf: 0, t: 0 });
   const reduce = useRef(false);
@@ -78,7 +78,6 @@ export default function XCard({ interactive }: { interactive: boolean }) {
       href="https://x.com/bytesizedshrey"
       target="_blank"
       rel="noopener noreferrer"
-      tabIndex={interactive ? 0 : -1}
       aria-label="Shreyash Gajbhiye, @bytesizedshrey on X"
       onPointerMove={move}
       onPointerLeave={leave}

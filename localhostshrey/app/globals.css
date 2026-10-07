@@ -558,40 +558,91 @@ body {
 }
 
 /* Black X card (after shwn.design): a physical object in the Off screen cards' material language */
-/* lift the whole contact block above neighbouring content while the card is open */
-.enter:has(> .thread[data-state="open"]) {
+/* lift the whole contact block above neighbouring content while the card is showing */
+.enter:has(.cta-hover:hover),
+.enter:has(.cta-hover:focus-within) {
   position: relative;
   z-index: 41;
 }
 
-.thread__msgs {
+.cta-hover {
   position: relative;
+  display: inline-block;
+}
+
+.cta-hover:not([data-ready]) .xcard-wrap {
+  display: none;
 }
 
 .xcard-wrap {
   position: absolute;
-  left: 50%;
-  bottom: calc(100% + 16px);
   z-index: 50;
+  display: block;
   width: min(300px, 84vw);
-  transform-origin: 50% 100%;
-  /* dropped in from slightly above and behind, then settled with a small overshoot */
-  transform: perspective(900px) translate(calc(-50% + var(--cdx, 0px)), -26px) rotateX(-26deg) scale(0.9);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition:
     transform 0.55s cubic-bezier(0.3, 1.5, 0.5, 1),
     opacity 0.2s ease,
-    visibility 0s linear 0.25s;
+    visibility 0s linear 0.3s;
 }
 
-.thread[data-state="open"] .xcard-wrap {
-  transform: perspective(900px) translate(calc(-50% + var(--cdx, 0px)), 0) rotateX(0) scale(1);
+/* beside the text: swings out from the button like a card flicked from a deck */
+.cta-hover[data-side="right"] .xcard-wrap,
+.cta-hover:not([data-side]) .xcard-wrap {
+  left: calc(100% + 16px);
+  bottom: -30px;
+  transform-origin: 0% 100%;
+  transform: perspective(900px) translate(-20px, 10px) rotateY(30deg) scale(0.88);
+}
+
+/* no room beside it (phones): drops in above the thread instead */
+.cta-hover[data-side="above"] .xcard-wrap {
+  left: 50%;
+  bottom: calc(100% + 56px);
+  transform-origin: 50% 100%;
+  transform: perspective(900px) translate(calc(-50% + var(--cdx, 0px)), -26px) rotateX(-26deg) scale(0.9);
+}
+
+.cta-hover:hover:not([data-dismissed]) .xcard-wrap,
+.cta-hover:focus-within:not([data-dismissed]) .xcard-wrap {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transition-delay: 0s;
+}
+
+.cta-hover[data-side="right"]:hover:not([data-dismissed]) .xcard-wrap,
+.cta-hover[data-side="right"]:focus-within:not([data-dismissed]) .xcard-wrap,
+.cta-hover:not([data-side]):hover:not([data-dismissed]) .xcard-wrap {
+  transform: perspective(900px) translate(0, 0) rotateY(0) scale(1);
+}
+
+.cta-hover[data-side="above"]:hover:not([data-dismissed]) .xcard-wrap,
+.cta-hover[data-side="above"]:focus-within:not([data-dismissed]) .xcard-wrap {
+  transform: perspective(900px) translate(calc(-50% + var(--cdx, 0px)), 0) rotateX(0) scale(1);
+}
+
+/* invisible bridge: the pointer can travel from the text to the card without the card closing */
+.xcard-wrap::before {
+  content: "";
+  position: absolute;
+}
+
+.cta-hover[data-side="right"] .xcard-wrap::before,
+.cta-hover:not([data-side]) .xcard-wrap::before {
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  width: 22px;
+}
+
+.cta-hover[data-side="above"] .xcard-wrap::before {
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 64px;
 }
 
 .xcard {
