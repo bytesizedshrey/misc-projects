@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { createMetal, type Metal } from "./metal";
 
@@ -111,9 +110,6 @@ export default function XCard() {
         <span className="xcard__sheen" />
       </span>
       <span className="xcard__who">
-        <span className="xcard__avatar">
-          <Image src="/assets/pfp-new.jpg" alt="" width={72} height={72} sizes="40px" quality={92} />
-        </span>
         <span className="xcard__name">Shreyash Gajbhiye</span>
         <span className="xcard__handle">@bytesizedshrey</span>
       </span>
