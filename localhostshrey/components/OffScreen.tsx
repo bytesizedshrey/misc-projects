@@ -6,7 +6,7 @@ import { useState } from "react";
 const PHOTOS = [
   { src: "/assets/joey.jpg", alt: "Joey", caption: "how u doin??", r: -14, y: 8, z: 1 },
   { src: "/assets/taylor.jpg", alt: "Taylor Swift", caption: "all too well", r: -9, y: 4, z: 2 },
-  { src: "/assets/me-offscreen.jpg", alt: "Shrey", caption: "that's me", r: -4, y: 1, z: 6 },
+  { src: "/assets/me-gym.jpg", alt: "Shrey", caption: "that's me", r: -4, y: 1, z: 6 },
   { src: "/assets/ferrari.jpg", alt: "Ferrari meme", caption: "must be the water", r: 0, y: 0, z: 3 },
   { src: "/assets/hamilton.jpg", alt: "Lewis Hamilton", caption: "remember who you are", r: 5, y: 1, z: 4 },
   { src: "/assets/spiderman.jpg", alt: "Spiderman", caption: "with great powers comes great responsibilities", r: 9, y: 4, z: 5 },
