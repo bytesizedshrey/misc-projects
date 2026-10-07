@@ -49,6 +49,7 @@ export default function OffScreen() {
               sizes="(max-width: 560px) 120px, 200px"
               quality={92}
             />
+            <span className="card__inset" aria-hidden="true" />
           </button>
         ))}
       </div>

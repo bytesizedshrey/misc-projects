@@ -10,6 +10,13 @@
   --line: #17151218;
   --bubble: #ebe7e0;
   --bubble-hover: #e1dcd3;
+  --bezel: #e8e3d9;
+  --bezel-hi: #ffffffb3;
+  --bezel-edge: #17151226;
+  --card-sh: 58 44 20;
+  --rim-a: #ffffffd9;
+  --rim-b: #17151233;
+  --rim-c: #ffffff80;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   color-scheme: light;
 }
@@ -22,6 +29,13 @@
   --line: #ffffff1c;
   --bubble: #242424;
   --bubble-hover: #2e2e2e;
+  --bezel: #171717;
+  --bezel-hi: #ffffff1a;
+  --bezel-edge: #000000e6;
+  --card-sh: 0 0 0;
+  --rim-a: #ffffff4d;
+  --rim-b: #ffffff05;
+  --rim-c: #ffffff1a;
   color-scheme: dark;
 }
 
@@ -223,14 +237,58 @@ body {
   margin-left: 0;
 }
 
+/* bezel: a raised plate the photo is set into (after Lab01 UI Experiment #01) */
+.shelf__item::before,
+.shelf__item::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+.shelf__item::before {
+  z-index: -2;
+  background: var(--bezel);
+  box-shadow:
+    inset 0 1px 0 var(--bezel-hi),
+    inset 0 0 0 1px var(--bezel-edge),
+    0 2px 4px rgb(var(--card-sh) / 0.25),
+    0 6px 6px rgb(var(--card-sh) / 0.15),
+    0 14px 9px rgb(var(--card-sh) / 0.1),
+    0 26px 10px rgb(var(--card-sh) / 0.025);
+  transition: box-shadow 0.4s var(--ease);
+}
+
+/* 1.25px specular hairline edge, light from above */
+.shelf__item::after {
+  z-index: -1;
+  border: 1.25px solid transparent;
+  background: linear-gradient(180deg, var(--rim-a), var(--rim-b) 41%, var(--rim-b) 75%, var(--rim-c)) border-box;
+  -webkit-mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000);
+  mask-composite: exclude;
+}
+
 .shelf__item img {
   display: block;
   width: 100%;
   height: calc(var(--w) * 1.25);
   object-fit: cover;
-  border: 3px solid var(--paper);
-  border-radius: 3px;
-  box-shadow: 0 0 0 1px var(--line), 0 2px 6px #00000014;
+  border-radius: 10px;
+}
+
+/* photo sits recessed in the bezel */
+.card__inset {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 0.5),
+    inset 0 0 0 1px rgb(0 0 0 / 0.3),
+    inset 0 -1px 0 rgb(255 255 255 / 0.06);
 }
 
 .shelf__item:hover,
@@ -238,6 +296,22 @@ body {
 .shelf__item[data-on="true"] {
   transform: translateY(calc(var(--y) - 10px)) rotate(0deg);
   z-index: 20;
+}
+
+.shelf__item:hover::before,
+.shelf__item:focus-visible::before,
+.shelf__item[data-on="true"]::before {
+  box-shadow:
+    inset 0 1px 0 var(--bezel-hi),
+    inset 0 0 0 1px var(--bezel-edge),
+    0 4px 6px rgb(var(--card-sh) / 0.28),
+    0 12px 10px rgb(var(--card-sh) / 0.18),
+    0 24px 14px rgb(var(--card-sh) / 0.1),
+    0 40px 16px rgb(var(--card-sh) / 0.04);
+}
+
+.shelf__item:active {
+  transform: translateY(calc(var(--y) - 9px)) rotate(0deg);
 }
 
 .shelf__caption {
@@ -417,6 +491,7 @@ body {
     transition: none;
   }
   .shelf__item,
+  .shelf__item::before,
   .prose a {
     transition: none;
   }
