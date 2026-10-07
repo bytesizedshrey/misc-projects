@@ -118,11 +118,19 @@ body {
 }
 
 .who__photowrap {
+  --bz-r: 19px;
   position: relative;
+  z-index: 5;
+  isolation: isolate;
   display: block;
   flex: none;
   line-height: 0;
   white-space: normal;
+}
+
+/* recess overlay follows the photo's own rounded shape */
+.who__photowrap .card__inset {
+  border-radius: 18%;
 }
 
 .who__photo {
@@ -391,15 +399,18 @@ body {
 
 /* bezel: a raised plate the photo is set into (after Lab01 UI Experiment #01) */
 .shelf__item::before,
-.shelf__item::after {
+.shelf__item::after,
+.who__photowrap::before,
+.who__photowrap::after {
   content: "";
   position: absolute;
   inset: -4px;
-  border-radius: 14px;
+  border-radius: var(--bz-r, 14px);
   pointer-events: none;
 }
 
-.shelf__item::before {
+.shelf__item::before,
+.who__photowrap::before {
   z-index: -2;
   background: var(--bezel);
   box-shadow:
@@ -413,7 +424,8 @@ body {
 }
 
 /* 1.25px specular hairline edge, light from above */
-.shelf__item::after {
+.shelf__item::after,
+.who__photowrap::after {
   z-index: -1;
   border: 1.25px solid transparent;
   background: linear-gradient(180deg, var(--rim-a), var(--rim-b) 41%, var(--rim-b) 75%, var(--rim-c)) border-box;
@@ -452,7 +464,9 @@ body {
 
 .shelf__item:hover::before,
 .shelf__item:focus-visible::before,
-.shelf__item[data-on="true"]::before {
+.shelf__item[data-on="true"]::before,
+.who__photowrap:hover::before,
+.who__photowrap:focus-within::before {
   box-shadow:
     inset 0 1px 0 var(--bezel-hi),
     inset 0 0 0 1px var(--bezel-edge),
