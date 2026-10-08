@@ -61,15 +61,24 @@ export default function Dial() {
     else if (e.key === " " || e.key === "Enter") (e.preventDefault(), playPause());
   };
 
+  const tip =
+    status === "signed-out"
+      ? "Connect Spotify"
+      : status === "premium"
+        ? "Spotify Premium is needed to play here"
+        : status === "error"
+          ? "Spotify couldn't connect, click to retry"
+          : "";
   const note =
     status === "signed-out" ? "connect spotify" : status === "premium" ? "premium only" : status === "error" ? "retry" : "";
 
   return (
-    <div className="dl-stage">
+    <>
       <span className="dl-hint" data-hide={playing} aria-hidden="true">
         wanna hear some songs? <i>→</i>
       </span>
-      <div className="dl" data-playing={playing} title={title || undefined}>
+      <div className="dl-stage">
+      <div className="dl" data-playing={playing} title={title || tip || undefined}>
         <span className="dl__track">
           <span
             className="dl__fill"
@@ -110,6 +119,7 @@ export default function Dial() {
           <span className="dl__cap">{volume}%</span>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

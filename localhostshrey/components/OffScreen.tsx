@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import Dial from "./Dial";
 
 const PHOTOS = [
   { src: "/assets/joey.jpg", alt: "Joey", caption: "how u doin??", r: -14, y: 8, z: 1 },
@@ -18,7 +17,6 @@ export default function OffScreen() {
 
   return (
     <section className="offscreen" aria-labelledby="off-screen">
-      <Dial />
       <h2 id="off-screen" className="section__label">
         Off screen
       </h2>

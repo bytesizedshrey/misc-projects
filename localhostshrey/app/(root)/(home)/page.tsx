@@ -4,7 +4,7 @@ import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import PreviewLink from "@/components/PreviewLink";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import MusicToggle from "@/components/MusicToggle";
+import Dial from "@/components/Dial";
 import StatusLight from "@/components/StatusLight";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -20,8 +20,8 @@ export default function Home() {
           <Clock />
         </div>
         <div className="who__ctl">
+          <Dial />
           <ThemeToggle />
-          <MusicToggle />
         </div>
       </header>
 
