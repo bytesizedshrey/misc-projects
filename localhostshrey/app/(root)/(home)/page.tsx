@@ -31,9 +31,15 @@ export default function Home() {
             </span>
           </p>
           <p className="p-meta enter" style={delay(2)}>
-            Currently at <strong>VoltLink</strong>. I&apos;ve also built{" "}
+            Currently at{" "}
+            <span className="tag tag--now">
+              <i className="tag__dot" aria-hidden="true" />
+              VoltLink
+            </span>
+            . I&apos;ve also built{" "}
             <PreviewLink
               href="https://velora-one-rouge.vercel.app"
+              tag="a"
               src="/assets/preview-velora.jpg"
             >
               Velora
@@ -41,6 +47,7 @@ export default function Home() {
             and{" "}
             <PreviewLink
               href="https://usual-ui.vercel.app/"
+              tag="b"
               src="/assets/preview-usual-ui.jpg"
             >
               usual-ui
