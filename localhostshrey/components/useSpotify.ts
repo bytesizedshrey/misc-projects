@@ -88,6 +88,9 @@ export function useSpotify() {
   const [status, setStatus] = useState<SpotifyStatus>(CLIENT_ID ? "signed-out" : "unconfigured");
   const [paused, setPaused] = useState(true);
   const [title, setTitle] = useState("");
+  const [art, setArt] = useState("");
+  const [clock, setClock] = useState({ pos: 0, dur: 0, at: 0 });
+  const [volume, setVolumeState] = useState(60);
   const player = useRef<any>(null);
   const device = useRef<string>("");
   const started = useRef(false);
@@ -105,12 +108,18 @@ export function useSpotify() {
       p.addListener("ready", ({ device_id }: { device_id: string }) => {
         device.current = device_id;
         setStatus("ready");
+        p.getVolume?.().then((v: number) => typeof v === "number" && setVolumeState(Math.round(v * 100)));
       });
       p.addListener("player_state_changed", (s: any) => {
         if (!s) return;
         setPaused(s.paused);
         const tr = s.track_window?.current_track;
-        if (tr) setTitle(tr.name);
+        if (tr) {
+          setTitle(tr.name);
+          const imgs: { url: string }[] = tr.album?.images ?? [];
+          setArt(imgs[1]?.url ?? imgs[0]?.url ?? "");
+        }
+        setClock({ pos: s.position ?? 0, dur: s.duration ?? 0, at: Date.now() });
       });
       p.addListener("account_error", () => setStatus("premium"));
       p.addListener("authentication_error", () => {
@@ -186,5 +195,11 @@ export function useSpotify() {
     if (status === "ready" && started.current) player.current?.previousTrack();
   }, [status]);
 
-  return { status, paused, title, playPause, next, prev };
+  const setVolume = useCallback((v: number) => {
+    const n = Math.max(0, Math.min(100, Math.round(v)));
+    setVolumeState(n);
+    player.current?.setVolume?.(n / 100);
+  }, []);
+
+  return { status, paused, title, art, clock, volume, setVolume, playPause, next, prev };
 }
