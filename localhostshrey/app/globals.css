@@ -1291,3 +1291,21 @@ body {
 :root[data-theme="dark"] .wm__plate {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9), inset 0 -1px 0 rgba(255, 255, 255, 0.05), 0 1px 0 rgba(255, 255, 255, 0.06);
 }
+
+/* track title on the LCD: tiny, dim, one line */
+.wm__title {
+  min-width: 0;
+  margin-left: calc(var(--H) * 0.07);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: calc(var(--H) * 0.13);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(220, 224, 222, 0.5);
+  transition: color 0.4s ease;
+}
+.wm[data-on="true"] .wm__title {
+  color: rgba(228, 232, 230, 0.92);
+}
