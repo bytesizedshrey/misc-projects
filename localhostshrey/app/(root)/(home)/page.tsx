@@ -22,13 +22,15 @@ export default function Home() {
 
       <div className="mid">
         <div className="prose">
-          <p className="enter" style={delay(1)}>
+          <p className="p-intro enter" style={delay(1)}>
             <strong>I&apos;m Shrey.</strong> I&apos;m a{" "}
-            <span className="mark">Design Engineer</span>. I make interfaces,
-            write code, and spend an unreasonable amount of time making small
-            things feel right.
+            <span className="mark">Design Engineer</span>.{" "}
+            <span className="intro-rest">
+              I make interfaces, write code, and spend an unreasonable amount
+              of time making small things feel right.
+            </span>
           </p>
-          <p className="enter" style={delay(2)}>
+          <p className="p-meta enter" style={delay(2)}>
             Currently at <strong>VoltLink</strong>. I&apos;ve also built{" "}
             <PreviewLink
               href="https://velora-one-rouge.vercel.app"
@@ -45,7 +47,7 @@ export default function Home() {
             </PreviewLink>
             .
           </p>
-          <p className="enter" style={delay(3)}>
+          <p className="p-day enter" style={delay(3)}>
             Most days you&apos;ll find me writing{" "}
             <span className="nowrap">
               code{" "}
@@ -68,20 +70,24 @@ export default function Home() {
                 height={616}
               />
             </span>
-            , or fixing something that was perfectly fine five minutes{" "}
-            <span className="nowrap">
-              ago{" "}
-              <InlineImage
-                src="/assets/pin-fix.jpg"
-                label="Max Verstappen saying what"
-                position="72% 30%"
-                width={340}
-                height={283}
-              />
-              .
+            ,{" "}
+            <br className="br-d" />
+            <span className="punch">
+              or fixing something that was perfectly fine five minutes{" "}
+              <span className="nowrap">
+                ago{" "}
+                <InlineImage
+                  src="/assets/pin-fix.jpg"
+                  label="Max Verstappen saying what"
+                  position="72% 30%"
+                  width={340}
+                  height={283}
+                />
+                .
+              </span>
             </span>
           </p>
-          <p className="enter" style={delay(4)}>
+          <p className="p-status enter" style={delay(4)}>
             <strong>Open to work.</strong>
           </p>
         </div>
