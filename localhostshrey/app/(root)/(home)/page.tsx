@@ -4,6 +4,8 @@ import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
 import PreviewLink from "@/components/PreviewLink";
 import ProfilePhoto from "@/components/ProfilePhoto";
+import MusicToggle from "@/components/MusicToggle";
+import StatusLight from "@/components/StatusLight";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -17,7 +19,10 @@ export default function Home() {
           <h1 className="who__name">Shreyash Gajbhiye</h1>
           <Clock />
         </div>
-        <ThemeToggle />
+        <div className="who__ctl">
+          <ThemeToggle />
+          <MusicToggle />
+        </div>
       </header>
 
       <div className="mid">
@@ -93,6 +98,9 @@ export default function Home() {
                 .
               </span>
             </span>
+          </p>
+          <p className="p-status enter" style={delay(4)}>
+            <StatusLight />
           </p>
         </div>
         <div className="enter" style={delay(5)}>
