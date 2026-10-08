@@ -14,6 +14,7 @@ export default function XCard() {
   const reduce = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null);
   const metal = useRef<Metal | null>(null);
+  const light = useRef(false);
 
   useEffect(() => {
     reduce.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -25,8 +26,10 @@ export default function XCard() {
       const m = createMetal(cv);
       if (m) {
         metal.current = m;
-        /* silver in light mode, gunmetal in dark: follow the theme as it changes */
-        const sync = () => m.setLight(document.documentElement.dataset.theme !== "dark");
+        /* the light page uses a flat CSS card; the shader only runs for the dark card */
+        const sync = () => {
+          light.current = document.documentElement.dataset.theme !== "dark";
+        };
         sync();
         mo = new MutationObserver(sync);
         mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -62,7 +65,7 @@ export default function XCard() {
     el.style.setProperty("--nx", st.x.toFixed(4));
     el.style.setProperty("--ny", st.y.toFixed(4));
     el.style.setProperty("--lift", Math.max(0, st.l).toFixed(4));
-    metal.current?.render(st.x, st.y, st.l);
+    if (!light.current) metal.current?.render(st.x, st.y, st.l);
     const still =
       Math.abs(st.tx - st.x) < 0.0005 && Math.abs(st.ty - st.y) < 0.0005 && Math.abs(st.tl - st.l) < 0.0005 &&
       Math.abs(st.vx) < 0.001 && Math.abs(st.vy) < 0.001 && Math.abs(st.vl) < 0.001;

@@ -770,41 +770,67 @@ body {
   transform: translateZ(12px);
 }
 
-/* light page: silver card. Text, rim ring and fallback surface get their own colours (the dark card above is unchanged). */
+/* light page: a flat soft-silver card with metallic type, after the card on shwn.design.
+   No tilt, bevel or surface texture; the cursor only shifts the light on the lettering. */
 :root:not([data-theme="dark"]) .xcard {
-  color: #1c1d20;
+  transform: none;
+  border-radius: 8px;
+  color: #3b3c40;
   box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.2),
-    0 2px 4px rgb(var(--card-sh) / 0.3),
-    0 6px 8px rgb(var(--card-sh) / 0.2),
-    calc(var(--nx) * -9px) calc(14px + var(--lift) * 10px + var(--ny) * -6px) calc(24px + var(--lift) * 12px) -8px rgb(var(--card-sh) / 0.5);
+    0 0 0 0.5px rgb(0 0 0 / 0.16),
+    0 1px 2px rgb(var(--card-sh) / 0.14),
+    0 10px 22px -12px rgb(var(--card-sh) / 0.4);
 }
 
-:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__face {
-  background: #c5c6c9;
+:root:not([data-theme="dark"]) .xcard .xcard__gl,
+:root:not([data-theme="dark"]) .xcard .xcard__sheen {
+  display: none;
+}
+
+:root:not([data-theme="dark"]) .xcard .xcard__face {
+  background: #d2d3d6;
   box-shadow:
-    inset calc(var(--nx) * -1.5px) calc(1px + var(--ny) * -1.5px) 0 rgb(255 255 255 / 0.7),
-    inset 0 -1px 0 rgb(0 0 0 / 0.22),
-    inset 0 0 0 1px rgb(255 255 255 / 0.25);
+    inset 0 0.5px 0 rgb(255 255 255 / 0.9),
+    inset 0 -1px 0 rgb(0 0 0 / 0.05);
 }
 
-:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__x {
-  fill: #b3b4b8;
-  stroke: rgb(255 255 255 / 0.55);
-  filter: drop-shadow(0 -1px 0 rgb(0 0 0 / 0.28)) drop-shadow(0 1px 0 rgb(255 255 255 / 0.5));
+/* a clean, flat, light X */
+:root:not([data-theme="dark"]) .xcard .xcard__x {
+  display: block;
+  fill: rgb(255 255 255 / 0.7);
+  stroke: none;
+  filter: none;
+  transform: translateY(-50%);
 }
 
-:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__sheen {
-  background: radial-gradient(
-    circle at calc(50% + var(--nx) * 40%) calc(50% + var(--ny) * 40%),
-    rgb(255 255 255 / 0.5),
-    transparent 58%
+:root:not([data-theme="dark"]) .xcard .xcard__who,
+:root:not([data-theme="dark"]) .xcard .xcard__role {
+  transform: none;
+}
+
+/* metallic lettering: a graphite-silver fill with a soft light that follows the cursor,
+   pressed into the card (pale lower edge, faint dark upper edge) */
+:root:not([data-theme="dark"]) .xcard__name,
+:root:not([data-theme="dark"]) .xcard__handle,
+:root:not([data-theme="dark"]) .xcard__role {
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: radial-gradient(
+    130px 80px at calc(50% + var(--nx) * 45%) calc(50% + var(--ny) * 45%),
+    #6a6b70,
+    #3f4044 72%
   );
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.8)) drop-shadow(0 -0.5px 0 rgb(0 0 0 / 0.14));
 }
 
 :root:not([data-theme="dark"]) .xcard__handle,
 :root:not([data-theme="dark"]) .xcard__role {
-  color: #4f5054;
+  background-image: radial-gradient(
+    110px 60px at calc(50% + var(--nx) * 45%) calc(50% + var(--ny) * 45%),
+    #5a5b60,
+    #45464a 72%
+  );
 }
 
 /* Contact thread (message-style) */
