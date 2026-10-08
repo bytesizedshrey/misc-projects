@@ -163,7 +163,7 @@ body {
 .mid {
   /* top-weighted, not centred: the copy hangs from the header and the leftover space falls toward the cards */
   align-self: start;
-  padding-top: clamp(0px, 3.2vh, 30px);
+  padding-top: clamp(0px, 1.4vh, 14px);
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -1119,19 +1119,21 @@ body {
   align-items: center;
   gap: 12px;
 }
-/* "open to work": a scrap of paper (the React Bits Paper Crumple) beside the words */
+/* "open to work": a small scrap of paper (the React Bits Paper Crumple) with the words centred directly beneath it */
 .prose .p-status {
   display: block;
 }
 .status {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.45em;
+  gap: 2px;
   color: var(--ink);
 }
 .status__text {
   font-weight: 560;
   letter-spacing: -0.005em;
+  text-align: center;
 }
 /* the sheet is 26x32; its WebGL stage needs room around it, so the stage is larger and centred on a slot of the sheet's size */
 .status__paper {
@@ -1139,7 +1141,6 @@ body {
   flex: none;
   width: 26px;
   height: 32px;
-  margin: -8px 0;
 }
 .status__paper .status__stage {
   position: absolute;
@@ -1157,7 +1158,6 @@ body {
   display: block;
   width: 26px;
   height: 32px;
-  margin: -8px 0;
 }
 
 /* TV — a small television, after the TV on shwn.design. Every size is a fraction of --S (the design is 164 units wide). */
