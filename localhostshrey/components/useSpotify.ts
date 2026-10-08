@@ -29,6 +29,7 @@ type Snap = {
   status: SpotifyStatus;
   paused: boolean;
   title: string;
+  artist: string;
   art: string;
   clock: { pos: number; dur: number; at: number };
   volume: number;
@@ -39,6 +40,7 @@ let snap: Snap = {
   status: CLIENT_ID ? "signed-out" : "unconfigured",
   paused: true,
   title: "",
+  artist: "",
   art: "",
   clock: { pos: 0, dur: 0, at: 0 },
   volume: 60,
@@ -213,6 +215,7 @@ function boot() {
       set({
         paused: s.paused,
         title: tr?.name ?? snap.title,
+        artist: tr ? (tr.artists ?? []).map((a: { name: string }) => a.name).join(", ") : snap.artist,
         art: tr ? (imgs[1]?.url ?? imgs[0]?.url ?? "") : snap.art,
         clock: { pos: s.position ?? 0, dur: s.duration ?? 0, at: Date.now() },
       });
