@@ -54,10 +54,10 @@ float maskB(vec2 p){
 }
 float height(vec2 p){
   float d = sdBox(p);
-  float bevel = smoothstep(0., 5., -d) * 3.2;                       // chamfered edge
+  float bevel = smoothstep(0., 5., -d) * mix(3.2, 2.2, uLightMode);                       // chamfered edge
   float brush = vnoise(vec2(p.x * .05, p.y * 2.4)) * .5 + vnoise(vec2(p.x * .13, p.y * 6.1)) * .3;
   float x = mask(p) * .55 + maskB(p) * .45;                            // engraving, slightly soft-edged
-  return bevel + brush * .14 - x * 2.0;
+  return bevel + brush * mix(.14, .012, uLightMode) - x * mix(2.0, 1.1, uLightMode);
 }
 
 void main(){
@@ -91,32 +91,32 @@ void main(){
   // brushed metal: highlight is stretched perpendicular to the brushing direction (x)
   float sinTH = sqrt(max(1. - H.x * H.x, 0.));
   float aniso = pow(sinTH, 110.) * smoothstep(0., .35, ndl);
-  float iso = pow(ndh, 46.);
+  float iso = pow(ndh, mix(46., 16., uLightMode));
 
   // two materials: black anodized gunmetal (dark page) and silver / light graphite (light page)
   vec3 darkBase = mix(vec3(.050, .051, .056), vec3(.024, .025, .029), xm);
-  vec3 silverBase = mix(vec3(.80, .805, .825), vec3(.52, .525, .545), xm);
+  vec3 silverBase = mix(vec3(.915, .92, .935), vec3(.775, .78, .795), xm);
   vec3 base = mix(darkBase, silverBase, uLightMode);
   float grain = vnoise(vec2(p.x * .04, p.y * 3.)) * .4 + vnoise(vec2(p.x * .1, p.y * 8.)) * .25;
-  base *= mix(.78 + grain * .6, .86 + grain * .34, uLightMode);
+  base *= mix(.78 + grain * .6, .975 + grain * .05, uLightMode);
 
-  float specSurface = (aniso * .31 + iso * .15) * (1. - xm);
+  float specSurface = (aniso * .31 * mix(1., .06, uLightMode) + iso * .15 * mix(1., .5, uLightMode)) * (1. - xm);
   float specX = (iso * .7 + pow(ndh, 14.) * .12) * xm;               // polished, tighter, its own response
 
   vec3 R = reflect(-V, N);
   float env = pow(max(dot(R, normalize(vec3(-.4, -.6, .7))), 0.), 6.) * .085;
 
-  float ao = mix(mix(.6, .5, uLightMode), 1., smoothstep(0., 10., -d)) * (1. - mix(.42, .38, uLightMode) * xm);
+  float ao = mix(mix(.6, .72, uLightMode), 1., smoothstep(0., 10., -d)) * (1. - mix(.42, .2, uLightMode) * xm);
   float edge = abs(m - mb) * 2.;
 
-  float diff = mix(.55 + ndl * .95, .78 + ndl * .42, uLightMode);
-  float attBase = mix(att, mix(att, 1., .65), uLightMode);          // a metal sheet is lit more evenly than black anodize
-  float specGain = mix(1., 1.5, uLightMode);
+  float diff = mix(.55 + ndl * .95, .87 + ndl * .24, uLightMode);
+  float attBase = mix(att, mix(att, 1., .88), uLightMode);          // a metal sheet is lit more evenly than black anodize
+  float specGain = mix(1., .5, uLightMode);
   vec3 col = base * diff * attBase
            + vec3(.86, .88, .93) * (specSurface + specX) * specGain * att * (.72 + .4 * uLift)
-           + vec3(.7, .72, .76) * env * mix(1., 1.6, uLightMode) * (1. - xm * .5);
-  col *= ao * (1. - edge * .5);
-  col = mix(col, col / (1. + col * .18), uLightMode);                   // soften the silver so highlights roll off, never blow out
+           + vec3(.7, .72, .76) * env * mix(1., 1.0, uLightMode) * (1. - xm * .5);
+  col *= ao * (1. - edge * mix(.5, .22, uLightMode));
+  col = mix(col, col / (1. + col * .06), uLightMode);                   // soften the silver so highlights roll off, never blow out
   gl_FragColor = vec4(col * alpha, alpha);
 }`;
 
