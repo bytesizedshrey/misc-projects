@@ -20,10 +20,16 @@ export default function XCard() {
     const st = s.current;
     const cv = canvas.current;
     let ro: ResizeObserver | undefined;
+    let mo: MutationObserver | undefined;
     if (cv) {
       const m = createMetal(cv);
       if (m) {
         metal.current = m;
+        /* silver in light mode, gunmetal in dark: follow the theme as it changes */
+        const sync = () => m.setLight(document.documentElement.dataset.theme !== "dark");
+        sync();
+        mo = new MutationObserver(sync);
+        mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
         card.current?.setAttribute("data-gl", "1");
         /* the card is display:none until placed, so wait for it to get a size */
         ro = new ResizeObserver(() => m.resize());
@@ -33,6 +39,7 @@ export default function XCard() {
     return () => {
       cancelAnimationFrame(st.raf);
       ro?.disconnect();
+      mo?.disconnect();
       metal.current?.destroy();
       metal.current = null;
     };

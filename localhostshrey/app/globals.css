@@ -770,6 +770,43 @@ body {
   transform: translateZ(12px);
 }
 
+/* light page: silver card. Text, rim ring and fallback surface get their own colours (the dark card above is unchanged). */
+:root:not([data-theme="dark"]) .xcard {
+  color: #1c1d20;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.2),
+    0 2px 4px rgb(var(--card-sh) / 0.3),
+    0 6px 8px rgb(var(--card-sh) / 0.2),
+    calc(var(--nx) * -9px) calc(14px + var(--lift) * 10px + var(--ny) * -6px) calc(24px + var(--lift) * 12px) -8px rgb(var(--card-sh) / 0.5);
+}
+
+:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__face {
+  background: #c5c6c9;
+  box-shadow:
+    inset calc(var(--nx) * -1.5px) calc(1px + var(--ny) * -1.5px) 0 rgb(255 255 255 / 0.7),
+    inset 0 -1px 0 rgb(0 0 0 / 0.22),
+    inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+
+:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__x {
+  fill: #b3b4b8;
+  stroke: rgb(255 255 255 / 0.55);
+  filter: drop-shadow(0 -1px 0 rgb(0 0 0 / 0.28)) drop-shadow(0 1px 0 rgb(255 255 255 / 0.5));
+}
+
+:root:not([data-theme="dark"]) .xcard:not([data-gl]) .xcard__sheen {
+  background: radial-gradient(
+    circle at calc(50% + var(--nx) * 40%) calc(50% + var(--ny) * 40%),
+    rgb(255 255 255 / 0.5),
+    transparent 58%
+  );
+}
+
+:root:not([data-theme="dark"]) .xcard__handle,
+:root:not([data-theme="dark"]) .xcard__role {
+  color: #4f5054;
+}
+
 /* Contact thread (message-style) */
 .thread {
   display: flex;
