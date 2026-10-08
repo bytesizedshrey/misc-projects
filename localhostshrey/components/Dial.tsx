@@ -66,6 +66,9 @@ export default function Dial() {
 
   return (
     <div className="dl-stage">
+      <span className="dl-hint" data-hide={playing} aria-hidden="true">
+        wanna hear some songs? <i>→</i>
+      </span>
       <div className="dl" data-playing={playing} title={title || undefined}>
         <span className="dl__track">
           <span

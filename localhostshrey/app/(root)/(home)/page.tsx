@@ -94,9 +94,6 @@ export default function Home() {
               </span>
             </span>
           </p>
-          <p className="p-status enter" style={delay(4)}>
-            <strong>Open to work.</strong>
-          </p>
         </div>
         <div className="enter" style={delay(5)}>
           <ContactCTA />
