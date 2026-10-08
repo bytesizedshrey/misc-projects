@@ -4,9 +4,12 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 
+/* Inter variable with the optical-size axis (opsz 14..32, wght 100..900), the same font setup as chetanvaswani.com */
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  axes: ["opsz"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
