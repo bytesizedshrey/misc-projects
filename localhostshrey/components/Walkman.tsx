@@ -1,34 +1,15 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 /** A small physical Walkman: silver shell, graphite plate, speaker grille, LCD, metal buttons.
- *  Cursor-following tilt + moving surface light; buttons press in. No audio, no player UI. */
+ *  Static object; the buttons press in when clicked. No audio, no player UI. */
 export default function Walkman() {
-  const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
 
-  const move = (e: React.PointerEvent) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const nx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
-    const ny = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
-    el.style.setProperty("--tx", nx.toFixed(3));
-    el.style.setProperty("--ty", ny.toFixed(3));
-    el.style.setProperty("--lx", ((nx + 1) / 2).toFixed(3));
-  };
-  const leave = () => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--tx", "0");
-    el.style.setProperty("--ty", "0");
-    el.style.setProperty("--lx", "0.3");
-  };
-
   return (
-    <div className="wm-stage" onPointerMove={move} onPointerLeave={leave}>
-      <div className="wm" ref={ref} data-on={on}>
+    <div className="wm-stage">
+      <div className="wm" data-on={on}>
         <div className="wm__plate">
           <span className="wm__grille" aria-hidden="true" />
           <span className="wm__lcd" aria-hidden="true">
@@ -48,7 +29,6 @@ export default function Walkman() {
             <span className="wm__glyph" aria-hidden="true" />
           </button>
         </div>
-        <span className="wm__sheen" aria-hidden="true" />
       </div>
     </div>
   );
