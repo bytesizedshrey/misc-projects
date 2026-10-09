@@ -1171,7 +1171,7 @@ body {
 
 /* TV — a small television, after the TV on shwn.design. Every size is a fraction of --S (the design is 164 units wide, 214 tall). */
 .tv {
-  --S: clamp(88px, 12vh, 124px);
+  --S: clamp(70px, 9.6vh, 100px);
   --u: calc(var(--S) / 164);
   position: relative;
   flex: none;
