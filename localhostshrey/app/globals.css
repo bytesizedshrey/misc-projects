@@ -1084,29 +1084,38 @@ body {
   .prose .tag { transition: none; }
 }
 
-/* a little invitation to the left of the player, arrow pointing at it */
+/* to the left of the TV: an invitation, then (once something is on) the track title and artist */
 .tv-hint {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
   display: flex;
   align-items: baseline;
-  gap: 0.3em;
-  max-width: 14em;
+  gap: 0.35em;
+  max-width: 15em;
   overflow: hidden;
   white-space: nowrap;
   font-size: clamp(14px, 1.05vw, 16px);
   letter-spacing: -0.0064em;
   color: var(--soft);
   pointer-events: none;
-  transition: opacity 0.5s var(--ease), max-width 0.6s var(--ease), margin 0.6s var(--ease);
 }
-.tv-hint i {
+.tv-hint em {
   font-style: normal;
   color: var(--ink);
 }
-.tv-hint[data-hide="true"] {
-  opacity: 0;
-  max-width: 0;
-  margin-right: -10px;
+.tv-hint b,
+.tv-hint i {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: normal;
+}
+.tv-hint b {
+  flex: 0 1 auto;
+  font-weight: 560;
+  color: var(--ink);
+}
+.tv-hint i {
+  flex: 0 1 auto;
 }
 @media (max-width: 760px) {
   .tv-hint, .tv { display: none; }
@@ -1160,15 +1169,16 @@ body {
   clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
 }
 
-/* TV — a small television, after the TV on shwn.design. Every size is a fraction of --S (the design is 164 units wide). */
+/* TV — a small television, after the TV on shwn.design. Every size is a fraction of --S (the design is 164 units wide, 214 tall). */
 .tv {
-  --S: clamp(60px, 9vh, 88px);
+  --S: clamp(88px, 12vh, 124px);
   --u: calc(var(--S) / 164);
   position: relative;
   flex: none;
   width: var(--S);
-  height: var(--S);
-  padding: calc(var(--u) * 12);
+  height: calc(var(--u) * 214);
+  /* it is taller than the photo beside it, so it overhangs the header rather than making it grow */
+  margin-block: calc((clamp(64px, 9.5vh, 96px) - var(--u) * 214) / 2);
   border-radius: calc(var(--u) * 44);
   background: #1d1d1d;
   box-shadow:
@@ -1204,180 +1214,104 @@ body {
   mix-blend-mode: overlay;
 }
 
-/* screen */
+/* the display sits in a recess: a dark inner shadow on its top and left edge, a catch-light on the lower lip */
+.tv__well {
+  position: absolute;
+  left: calc(var(--u) * 8);
+  top: calc(var(--u) * 8);
+  width: calc(var(--u) * 148);
+  height: calc(var(--u) * 148);
+  border-radius: calc(var(--u) * 23);
+  background: #0c0c0c;
+  box-shadow:
+    inset 0 calc(var(--u) * 3) calc(var(--u) * 5) rgba(0, 0, 0, 0.95),
+    inset calc(var(--u) * 2) 0 calc(var(--u) * 4) rgba(0, 0, 0, 0.6),
+    0 calc(var(--u) * 1.2) 0 rgba(255, 255, 255, 0.13),
+    0 calc(var(--u) * 2.5) calc(var(--u) * 3) rgba(0, 0, 0, 0.5);
+}
 .tv__screen {
   position: absolute;
-  left: calc(var(--u) * 9);
+  left: calc(var(--u) * 12);
   top: calc(var(--u) * 12);
-  width: calc(var(--u) * 146);
-  height: calc(var(--u) * 83);
+  width: calc(var(--u) * 140);
+  height: calc(var(--u) * 140);
   overflow: hidden;
-  border-radius: calc(var(--u) * 28) calc(var(--u) * 28) calc(var(--u) * 10) calc(var(--u) * 10);
-  background: #0a0a0a;
+  border-radius: calc(var(--u) * 19);
+  background: radial-gradient(130% 100% at 28% 12%, #1e2023 0%, #0a0a0b 62%);
+  /* thin black bezel, then a hairline where it meets the housing */
+  box-shadow: inset 0 0 0 calc(var(--u) * 3) #070707, 0 0 0 calc(var(--u) * 0.6) #2a2a2a;
   isolation: isolate;
 }
+/* the artwork: Spotify's largest image, whole and undistorted, set inside the bezel */
 .tv__art {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: contrast(1.06) saturate(0.88) sepia(0.14);
-  animation: tv-on 0.7s ease both;
-  transition: filter 0.6s ease;
+  inset: calc(var(--u) * 3);
+  width: calc(100% - var(--u) * 6);
+  height: calc(100% - var(--u) * 6);
+  border-radius: calc(var(--u) * 16);
+  object-fit: contain;
+  background: #000;
+  animation: tv-on 0.45s ease both;
+  transition: filter 0.4s ease;
 }
 .tv[data-state="paused"] .tv__art {
-  filter: contrast(1.02) saturate(0.7) sepia(0.14) brightness(0.5);
+  filter: brightness(0.6);
 }
 @keyframes tv-on {
-  0% { opacity: 0; filter: brightness(2.2) contrast(1.4) blur(1px); }
-  100% { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-/* the screen's own texture: fine grain that drifts, scanlines, a slow bright band, a faint phosphor glow */
-.tv__static,
-.tv__lines,
-.tv__scan,
-.tv__glow,
-.tv__blip,
-.tv__frame {
+/* thin glass: one soft diagonal reflection and a bright hairline along the top edge, nothing more */
+.tv__glass {
   position: absolute;
-  inset: 0;
+  inset: calc(var(--u) * 3);
+  border-radius: calc(var(--u) * 16);
   pointer-events: none;
+  background:
+    linear-gradient(125deg, rgba(255, 255, 255, 0.17) 0%, rgba(255, 255, 255, 0.05) 26%, rgba(255, 255, 255, 0) 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 12%);
+  box-shadow:
+    inset 0 calc(var(--u) * 0.8) 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 calc(var(--u) * 6) rgba(0, 0, 0, 0.35);
 }
-.tv__static {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 90px;
-  opacity: 0.12;
-  mix-blend-mode: screen;
-  animation: tv-grain 0.9s steps(4) infinite;
+.tv__blip {
+  position: absolute;
+  inset: calc(var(--u) * 3);
+  border-radius: calc(var(--u) * 16);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.12);
+  opacity: 0;
 }
-.tv[data-state="idle"] .tv__static,
-.tv[data-state="connect"] .tv__static,
-.tv[data-state="retry"] .tv__static {
-  opacity: 0.2;
-}
-.tv[data-state="paused"] .tv__static {
-  opacity: 0.06;
-  animation: none;
-}
-@keyframes tv-grain {
-  0% { background-position: 0 0; }
-  25% { background-position: -30px 14px; }
-  50% { background-position: 22px -26px; }
-  75% { background-position: -12px 30px; }
-}
-.tv__lines {
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px calc(var(--u) * 3.2));
-  mix-blend-mode: multiply;
-}
-.tv__scan {
-  height: 38%;
-  inset: auto 0 auto 0;
-  top: -40%;
-  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.07) 50%, transparent);
-  animation: tv-scan 7s linear infinite;
-}
-.tv[data-state="paused"] .tv__scan,
-.tv[data-state="idle"] .tv__scan {
-  animation-duration: 12s;
-}
-@keyframes tv-scan {
-  to { top: 110%; }
-}
-.tv__glow {
-  box-shadow: inset 0 0 calc(var(--u) * 14) rgba(190, 255, 215, 0.14), inset 0 0 calc(var(--u) * 3) rgba(190, 255, 215, 0.1);
-}
-.tv[data-state="playing"] .tv__glow {
-  animation: tv-flicker 6s steps(1) infinite;
-}
-@keyframes tv-flicker {
-  0%, 100% { opacity: 1; }
-  41% { opacity: 0.86; }
-  42% { opacity: 1; }
-  77% { opacity: 0.92; }
-  78% { opacity: 1; }
-}
-/* a key press makes the picture jump for a moment */
 .tv__blip[data-on="true"] {
-  background: rgba(255, 255, 255, 0.5);
-  animation: tv-blip 0.22s ease-out both;
+  animation: tv-blip 0.25s ease-out both;
 }
 @keyframes tv-blip {
-  0% { opacity: 0.8; transform: translateY(-2%); }
-  100% { opacity: 0; transform: none; }
-}
-.tv__frame {
-  border-radius: inherit;
-  box-shadow:
-    inset calc(var(--u) * -0.5) calc(var(--u) * -0.5) 0 #545454,
-    inset calc(var(--u) * -1) calc(var(--u) * -1) calc(var(--u) * 1) #404040,
-    inset calc(var(--u) * 2) calc(var(--u) * 2) calc(var(--u) * 3) rgba(255, 255, 255, 0.19),
-    inset 0 0 calc(var(--u) * 6) rgba(0, 0, 0, 0.8);
-}
-
-/* on-screen text: tiny, phosphor-tinted, never more than a line or two */
-.tv__label,
-.tv__osd {
-  position: absolute;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  text-transform: uppercase;
-  color: #d6f5e0;
-  text-shadow: 0 0 calc(var(--u) * 4) rgba(160, 255, 200, 0.7);
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 .tv__label {
+  position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: calc(var(--u) * 15);
+  font-size: calc(var(--u) * 14);
+  font-weight: 600;
   letter-spacing: 0.2em;
   padding-left: 0.2em;
-  animation: tv-blinkin 1.4s ease-in-out infinite;
-}
-@keyframes tv-blinkin {
-  50% { opacity: 0.55; }
-}
-.tv__osd {
-  left: calc(var(--u) * 12);
-  right: calc(var(--u) * 12);
-  bottom: calc(var(--u) * 8);
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--u) * 1);
-  font-size: calc(var(--u) * 11);
-  line-height: 1.15;
-  letter-spacing: 0.04em;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-.tv__osd[data-show="true"] {
-  opacity: 1;
-}
-.tv__osd b,
-.tv__osd i {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-style: normal;
-  font-weight: 600;
-}
-.tv__osd i {
-  font-weight: 400;
-  opacity: 0.75;
-  font-size: 0.86em;
+  color: rgba(235, 238, 240, 0.78);
 }
 
 /* the deck: a recessed row of three keys */
 .tv__deck {
   position: absolute;
-  left: calc(var(--u) * 15);
-  top: calc(var(--u) * 108);
-  width: calc(var(--u) * 134);
-  height: calc(var(--u) * 44);
+  left: calc(var(--u) * 12);
+  top: calc(var(--u) * 164);
+  width: calc(var(--u) * 140);
+  height: calc(var(--u) * 38);
   display: flex;
   gap: calc(var(--u) * 1);
   padding: calc(var(--u) * 2);
-  border-radius: calc(var(--u) * 6) calc(var(--u) * 6) calc(var(--u) * 32) calc(var(--u) * 32);
+  border-radius: calc(var(--u) * 6) calc(var(--u) * 6) calc(var(--u) * 30) calc(var(--u) * 30);
   background: #0b0b0b;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
@@ -1386,8 +1320,8 @@ body {
   display: flex;
   border-radius: calc(var(--u) * 4);
 }
-.tv__cell--l { border-bottom-left-radius: calc(var(--u) * 28); }
-.tv__cell--r { border-bottom-right-radius: calc(var(--u) * 28); }
+.tv__cell--l { border-bottom-left-radius: calc(var(--u) * 27); }
+.tv__cell--r { border-bottom-right-radius: calc(var(--u) * 27); }
 .tv__key {
   flex: 1;
   display: grid;
@@ -1432,6 +1366,6 @@ body {
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .tv__static, .tv__scan, .tv__glow, .tv__label, .tv__art, .tv__blip { animation: none !important; }
+  .tv__art, .tv__blip { animation: none !important; }
   .tv__key { transition: none; }
 }

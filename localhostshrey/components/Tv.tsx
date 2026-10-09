@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSpotify } from "./useSpotify";
 
 /**
  * A small television (after the TV on shwn.design) that is the Spotify player.
- * The three keys are previous / play-pause / next on the real SDK player; the screen shows the current
- * track's artwork with a restrained CRT treatment. The CRT effect is ambient only. It is not driven by the audio.
+ * The three keys are previous / play-pause / next on the real SDK player. The screen shows the current track's
+ * artwork, sharp and uncropped, in a recessed, glass-covered display; title and artist are shown beside the TV.
  */
 export default function Tv() {
   const { status, paused, title, artist, art, playPause, next, prev } = useSpotify();
@@ -26,16 +26,7 @@ export default function Tv() {
 
   const label = state === "connect" ? "CONNECT" : status === "premium" ? "PREMIUM" : state === "retry" ? "RETRY" : "";
 
-  // the on-screen caption shows briefly when the track or play state changes, like a TV's OSD
-  const [osd, setOsd] = useState(false);
-  useEffect(() => {
-    if (!hasTrack) return;
-    setOsd(true);
-    const t = setTimeout(() => setOsd(false), 4200);
-    return () => clearTimeout(t);
-  }, [title, artist, playing, hasTrack]);
-
-  // a tiny blip on the screen whenever a key is pressed
+  // a faint flash on the glass whenever a key is pressed
   const [blip, setBlip] = useState(0);
   const press = (fn: () => void) => () => {
     setBlip((b) => b + 1);
@@ -46,30 +37,29 @@ export default function Tv() {
 
   return (
     <>
-      <span className="tv-hint" data-hide={playing} aria-hidden="true">
-        wanna hear some songs? <i>→</i>
+      <span className="tv-hint" data-track={hasTrack} aria-hidden={hasTrack ? undefined : true}>
+        {hasTrack && title ? (
+          <>
+            <b>{title}</b>
+            <i>{artist}</i>
+          </>
+        ) : (
+          <>
+            wanna hear some songs? <em>→</em>
+          </>
+        )}
       </span>
       <div className="tv" data-state={state} title={tip || undefined}>
         <span className="tv__bevel tv__bevel--light" aria-hidden="true" />
         <span className="tv__bevel tv__bevel--dark" aria-hidden="true" />
         <span className="tv__noise" aria-hidden="true" />
 
+        <span className="tv__well" aria-hidden="true" />
         <div className="tv__screen" aria-hidden="true">
           {art && hasTrack && <img key={art} className="tv__art" src={art} alt="" draggable={false} />}
-          <span className="tv__static" />
-          <span className="tv__lines" />
-          <span className="tv__scan" />
-          <span className="tv__glow" />
+          {label && <span className="tv__label">{label}</span>}
+          <span className="tv__glass" />
           <span key={blip} className="tv__blip" data-on={blip > 0} />
-          {label ? (
-            <span className="tv__label">{label}</span>
-          ) : (
-            <span className="tv__osd" data-show={osd}>
-              <b>{title}</b>
-              <i>{artist}</i>
-            </span>
-          )}
-          <span className="tv__frame" />
         </div>
 
         <div className="tv__deck">

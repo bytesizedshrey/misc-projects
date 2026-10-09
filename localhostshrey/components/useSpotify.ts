@@ -216,7 +216,7 @@ function boot() {
         paused: s.paused,
         title: tr?.name ?? snap.title,
         artist: tr ? (tr.artists ?? []).map((a: { name: string }) => a.name).join(", ") : snap.artist,
-        art: tr ? (imgs[1]?.url ?? imgs[0]?.url ?? "") : snap.art,
+        art: tr ? (imgs[0]?.url ?? "") : snap.art, // Spotify lists the largest (640px) image first
         clock: { pos: s.position ?? 0, dur: s.duration ?? 0, at: Date.now() },
       });
     });
