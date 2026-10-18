@@ -2,6 +2,7 @@ import Clock from "@/components/Clock";
 import InlineImage from "@/components/InlineImage";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
+import PondFooter from "@/components/PondFooter";
 import PreviewLink from "@/components/PreviewLink";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import Tv from "@/components/Tv";
@@ -13,104 +14,106 @@ const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
 export default function Home() {
   return (
     <>
-      <header className="who enter">
-        <ProfilePhoto />
-        <div className="who__text">
-          <h1 className="who__name">Shreyash Gajbhiye</h1>
-          <Clock />
-        </div>
-        <div className="who__ctl">
-          <Tv />
-          <ThemeToggle />
-        </div>
-      </header>
+      <main className="page">
+        <header className="who enter">
+          <ProfilePhoto />
+          <div className="who__text">
+            <h1 className="who__name">Shreyash Gajbhiye</h1>
+            <Clock />
+          </div>
+          <div className="who__ctl">
+            <Tv />
+            <ThemeToggle />
+          </div>
+        </header>
 
-      <div className="mid">
-        <div className="prose">
-          <p className="p-intro enter" style={delay(1)}>
-            <strong>I&apos;m Shrey.</strong> I&apos;m a{" "}
-            <span className="mark">Design Engineer</span>.{" "}
-            <span className="intro-rest">
-              I make interfaces, write code, and spend an unreasonable amount
-              of time making small things feel right.
-            </span>
-          </p>
-          <p className="p-meta enter" style={delay(2)}>
-            Currently at{" "}
-            <span className="tag tag--now">
-              <i className="tag__dot" aria-hidden="true" />
-              VoltLink
-            </span>
-            . I&apos;ve also built{" "}
-            <PreviewLink
-              href="https://velora-one-rouge.vercel.app"
-              tag="a"
-              src="/assets/preview-velora.jpg"
-            >
-              Velora
-            </PreviewLink>{" "}
-            and{" "}
-            <PreviewLink
-              href="https://usual-ui.vercel.app/"
-              tag="b"
-              src="/assets/preview-usual-ui.jpg"
-            >
-              usual-ui
-            </PreviewLink>
-            .
-          </p>
-          <p className="p-day enter" style={delay(3)}>
-            Most days you&apos;ll find me writing{" "}
-            <span className="nowrap">
-              code{" "}
-              <InlineImage
-                src="/assets/pin-code.jpg"
-                label="A kitten at an old computer, with an arrow labelled full of knowledge"
-                position="42% 38%"
-                width={900}
-                height={693}
-              />
-            </span>
-            , designing{" "}
-            <span className="nowrap">
-              things{" "}
-              <InlineImage
-                src="/assets/pin-design.jpg"
-                label="A man sketching in a notebook while hanging upside down on a wall"
-                position="50% 52%"
-                width={735}
-                height={616}
-              />
-            </span>
-            ,{" "}
-            <br className="br-d" />
-            <span className="punch">
-              or fixing something that was perfectly fine five minutes{" "}
-              <span className="nowrap">
-                ago{" "}
-                <InlineImage
-                  src="/assets/pin-fix.jpg"
-                  label="Max Verstappen saying what"
-                  position="72% 30%"
-                  width={340}
-                  height={283}
-                />
-                .
+        <div className="mid">
+          <div className="prose">
+            <p className="p-intro enter" style={delay(1)}>
+              <strong>I&apos;m Shrey.</strong> I&apos;m a{" "}
+              <span className="mark">Design Engineer</span>.{" "}
+              <span className="intro-rest">
+                I make interfaces, write code, and spend an unreasonable amount
+                of time making small things feel right.
               </span>
-            </span>
-          </p>
-          <p className="p-status enter" style={delay(4)}>
-            <StatusLight />
-          </p>
+            </p>
+            <p className="p-meta enter" style={delay(2)}>
+              Currently at{" "}
+              <span className="tag tag--now">
+                <i className="tag__dot" aria-hidden="true" />
+                VoltLink
+              </span>
+              . I&apos;ve also built{" "}
+              <PreviewLink
+                href="https://velora-one-rouge.vercel.app"
+                tag="a"
+                src="/assets/preview-velora.jpg"
+              >
+                Velora
+              </PreviewLink>{" "}
+              and{" "}
+              <PreviewLink
+                href="https://usual-ui.vercel.app/"
+                tag="b"
+                src="/assets/preview-usual-ui.jpg"
+              >
+                usual-ui
+              </PreviewLink>
+              .
+            </p>
+            <p className="p-day enter" style={delay(3)}>
+              Most days you&apos;ll find me writing{" "}
+              <span className="nowrap">
+                code{" "}
+                <InlineImage
+                  src="/assets/pin-code.jpg"
+                  label="A kitten at an old computer, with an arrow labelled full of knowledge"
+                  position="42% 38%"
+                  width={900}
+                  height={693}
+                />
+              </span>
+              , designing{" "}
+              <span className="nowrap">
+                things{" "}
+                <InlineImage
+                  src="/assets/pin-design.jpg"
+                  label="A man sketching in a notebook while hanging upside down on a wall"
+                  position="50% 52%"
+                  width={735}
+                  height={616}
+                />
+              </span>
+              , <br className="br-d" />
+              <span className="punch">
+                or fixing something that was perfectly fine five minutes{" "}
+                <span className="nowrap">
+                  ago{" "}
+                  <InlineImage
+                    src="/assets/pin-fix.jpg"
+                    label="Max Verstappen saying what"
+                    position="72% 30%"
+                    width={340}
+                    height={283}
+                  />
+                  .
+                </span>
+              </span>
+            </p>
+            <p className="p-status enter" style={delay(4)}>
+              <StatusLight />
+            </p>
+          </div>
+          <div className="enter" style={delay(5)}>
+            <ContactCTA />
+          </div>
         </div>
-        <div className="enter" style={delay(5)}>
-          <ContactCTA />
-        </div>
-      </div>
 
-      <div className="base enter" style={delay(4)}>
-        <OffScreen />
-      </div>
+        <div className="base enter" style={delay(4)}>
+          <OffScreen />
+        </div>
+      </main>
+      <PondFooter />
     </>
   );
 }
