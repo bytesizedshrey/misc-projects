@@ -1370,98 +1370,294 @@ body {
   .tv__key { transition: none; }
 }
 
-/* Footer: a quiet coffee break, found by scrolling to the bottom. A single photograph, kept whole, that comes alive on arrival. */
-.cafe {
+/* Footer: a desk at the end of the page, with a stamp. It sits below the first screen; its things are set down as you arrive. */
+.desk {
   width: 100%;
   max-width: clamp(680px, 74vw, 1160px);
   margin: 0 auto;
   /* the top padding keeps it clear of the fold, so nothing shows when the page first loads */
   padding: max(14vh, 96px) 24px calc(var(--pad, 40px) + 28px);
 }
-.cafe__frame {
+.desk__frame {
+  --plate: 118px;
   position: relative;
-  /* the photograph's own 16:9 frame, never cropped on desktop; capped so it always fits the screen */
-  width: min(100%, calc(76vh * 1.7778));
-  aspect-ratio: 16 / 9;
-  margin: 0 auto;
+  height: clamp(390px, 60vh, 540px);
   border-radius: 30px;
   overflow: hidden;
-  background: #120d09;
+  background: #dad1bf;
   isolation: isolate;
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(36px);
   transition:
-    opacity 1.2s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    opacity 1s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
   /* a basin set into the page: a catch-light on its lower lip */
   box-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.75), 0 26px 40px -26px rgba(0, 0, 0, 0.45);
+  touch-action: pan-y; /* a tap stamps; a vertical swipe still scrolls the page */
+  user-select: none;
+  -webkit-user-select: none;
 }
-.cafe__frame[data-in] {
+.desk__frame[data-in] {
   opacity: 1;
   transform: none;
 }
-.cafe__photo,
-.cafe__canvas {
+.desk__frame[data-carry] {
+  cursor: none;
+}
+.desk__surface {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.28 0 0 0 0 0.18 0 0 0 .9 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+}
+
+/* the things on the desk: each is set down in turn when the desk arrives */
+.desk__sheet,
+.desk__pad,
+.desk__stamp-wrap {
+  opacity: 0;
+  translate: 0 14px;
+  transition:
+    opacity 0.7s ease var(--d, 0s),
+    translate 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0s);
+}
+.desk__frame[data-in] .desk__sheet,
+.desk__frame[data-in] .desk__pad,
+.desk__frame[data-in] .desk__stamp-wrap {
+  opacity: 1;
+  translate: 0 0;
+}
+.desk__sheet { --d: 0.15s; }
+.desk__pad { --d: 0.3s; }
+.desk__stamp-wrap { --d: 0.5s; }
+
+.desk__sheet {
+  position: absolute;
+  left: 5%;
+  top: 8%;
+  width: 60%;
+  height: 80%;
+  background: #f9f6ef;
+  border-radius: 3px;
+  rotate: var(--rot, -1.2deg);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    1px 2px 3px rgba(60, 40, 10, 0.16),
+    6px 10px 18px rgba(60, 40, 10, 0.16),
+    16px 26px 44px -16px rgba(60, 40, 10, 0.32);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 31px, rgba(80, 60, 30, 0.07) 31px 32px);
+  background-position: 0 52px;
+}
+.desk__head {
+  position: absolute;
+  left: 22px;
+  top: 16px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(80, 62, 36, 0.5);
+  pointer-events: none;
+}
+.desk__prints {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display: block;
-  /* a slow push-in as it arrives, like a camera settling */
-  transform: scale(1.04);
-  transition: transform 3.4s cubic-bezier(0.2, 0.6, 0.2, 1);
+  pointer-events: none;
 }
-.cafe__frame[data-in] .cafe__photo,
-.cafe__frame[data-in] .cafe__canvas {
+
+.desk__pad {
+  position: absolute;
+  right: 7%;
+  bottom: 12%;
+  width: 24%;
+  aspect-ratio: 1.45;
+  max-width: 230px;
+  border-radius: 18px;
+  background: #272522;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.6),
+    0 0 0 1px #0e0d0c,
+    2px 4px 6px rgba(40, 26, 8, 0.3),
+    10px 18px 28px -8px rgba(40, 26, 8, 0.4);
+}
+.desk__felt {
+  position: absolute;
+  inset: 11px;
+  border-radius: 10px;
+  background-color: #98221b;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.28 0 0 0 0 0.18 0 0 0 .9 -.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 120px;
+  background-blend-mode: soft-light;
+  box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+.desk__pad[data-dab] .desk__felt {
+  transform: scale(0.982);
+  filter: brightness(0.86);
+  transition-duration: 0.05s;
+}
+
+.desk__stamp-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.desk__stamp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--plate);
+  height: var(--plate);
+  will-change: transform, filter;
+  pointer-events: auto;
+  outline: none;
+  border-radius: 50%;
+}
+.desk__stamp:focus-visible .desk__plate {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+.desk__plate,
+.desk__knob {
+  position: absolute;
+  border-radius: 50%;
+}
+.desk__plate {
+  inset: 0;
+  background: #2c2a27;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -3px 4px rgba(0, 0, 0, 0.6),
+    0 0 0 1px #0d0c0b;
+}
+.desk__plate::after {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.desk__knob {
+  inset: 21%;
+  background: #3b3935;
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.2),
+    inset 0 -4px 6px rgba(0, 0, 0, 0.55),
+    0 3px 5px rgba(0, 0, 0, 0.5);
+}
+.desk__knob::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 12%;
+  width: 34%;
+  height: 22%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.11);
+  filter: blur(3px);
+}
+
+/* the lamp: soft light from the upper left, over everything */
+.desk__light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 100% at 18% 0%, rgba(255, 246, 222, 0.55), transparent 70%);
+  mix-blend-mode: soft-light;
+}
+
+.desk__line {
+  position: absolute;
+  left: 5%;
+  bottom: 3.2%;
+  margin: 0;
+  font-size: 13.5px;
+  letter-spacing: -0.003em;
+  color: rgba(70, 52, 26, 0.62);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.desk__line[data-on] {
+  opacity: 1;
   transform: none;
 }
-.cafe__photo {
-  object-fit: cover;
-  object-position: 52% 50%;
+.desk__frame:not([data-in]) .desk__line {
+  opacity: 0;
 }
-.cafe__canvas {
-  visibility: hidden; /* until the WebGL version has drawn its first frame; the plain photo shows meanwhile */
+.desk__sound {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  color: rgba(70, 52, 26, 0.55);
+  cursor: pointer;
 }
-.cafe__frame[data-gl] .cafe__canvas {
-  visibility: visible;
+.desk__sound:hover {
+  color: rgba(70, 52, 26, 0.9);
 }
-.cafe__frame[data-gl] .cafe__photo {
-  visibility: hidden;
+.desk__sound:focus-visible {
+  outline: 2px solid var(--ink);
 }
-.cafe__rim {
+.desk__rim {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
   box-shadow:
-    inset 0 7px 16px rgba(0, 0, 0, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
-    inset 0 -2px 0 rgba(255, 255, 255, 0.08);
+    inset 0 7px 16px rgba(60, 40, 10, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.4);
 }
-:root[data-theme="dark"] .cafe__frame {
+:root[data-theme="dark"] .desk__frame {
   box-shadow: 0 1.5px 0 rgba(255, 255, 255, 0.08), 0 26px 40px -26px rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 560px) {
-  .cafe {
+  .desk {
     padding: max(12vh, 80px) 16px calc(var(--pad, 32px) + 20px);
   }
-  .cafe__frame {
-    /* a phone is narrow, so crop in on him instead of shrinking the whole café to a strip */
-    aspect-ratio: 4 / 3.4;
+  .desk__frame {
+    --plate: 92px;
+    height: clamp(480px, 74vh, 600px);
     border-radius: 24px;
+  }
+  .desk__sheet {
+    left: 6%;
+    top: 5%;
+    width: 88%;
+    height: 56%;
+  }
+  .desk__pad {
+    right: 8%;
+    bottom: 11%;
+    width: 46%;
+  }
+  .desk__line {
+    left: 7%;
+    bottom: 3%;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cafe__frame {
+  .desk__frame {
     transform: none;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
   }
-  .cafe__photo,
-  .cafe__canvas,
-  .cafe__frame[data-in] .cafe__photo,
-  .cafe__frame[data-in] .cafe__canvas {
-    transform: none;
-    transition: none;
+  .desk__sheet,
+  .desk__pad,
+  .desk__stamp-wrap {
+    translate: 0 0;
+    transition: opacity 0.4s ease;
   }
 }
