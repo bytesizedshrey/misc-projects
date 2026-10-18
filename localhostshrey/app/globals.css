@@ -1369,3 +1369,66 @@ body {
   .tv__art, .tv__blip { animation: none !important; }
   .tv__key { transition: none; }
 }
+
+/* ---------- park footer ----------
+   An aerial park that fades in when the page runs out. It has no frame: the
+   canvas paints its own torn paper edge into the page colour. */
+.park {
+  display: flex;
+  justify-content: center;
+  padding: clamp(72px, 14vh, 160px) 0 clamp(40px, 8vh, 88px);
+  background: var(--paper);
+}
+.park__wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 92vw;
+  max-width: 980px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.park[data-live="true"] .park__wrap {
+  opacity: 1;
+  transform: none;
+}
+.park__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (min-width: 640px) {
+  .park__wrap { width: 78vw; }
+  .park__stage { aspect-ratio: 16 / 10; }
+}
+.park__layer {
+  position: absolute;
+  inset: 0;
+}
+.park__layer--paper,
+.park__layer--top {
+  pointer-events: none;
+}
+.park[data-unsupported] .park__stage { display: none; }
+.park__sound {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: color-mix(in srgb, var(--ink) 40%, transparent);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.park__sound:hover { color: color-mix(in srgb, var(--ink) 75%, transparent); }
+.park__sound:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .park__wrap { transition: none; transform: none; }
+}

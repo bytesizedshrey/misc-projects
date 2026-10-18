@@ -2,6 +2,7 @@ import Clock from "@/components/Clock";
 import InlineImage from "@/components/InlineImage";
 import ContactCTA from "@/components/ContactCTA";
 import OffScreen from "@/components/OffScreen";
+import Park from "@/components/Park";
 import PreviewLink from "@/components/PreviewLink";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import Tv from "@/components/Tv";
@@ -112,6 +113,7 @@ export default function Home() {
           <OffScreen />
         </div>
       </main>
+      <Park />
     </>
   );
 }
