@@ -3,8 +3,8 @@
 // its umbrella. Static things are painted once; animals and boats are drawn
 // each frame from cached sprites.
 
-import { cast, mkPt, project, setCamera, SUN, type Pt } from "./camera";
-import { pondPoint, type Bench, type Blanket, type Pond } from "./layout";
+import { cast, flat, groundTransform, mkPt, onGround, project, screenTransform, setDrift, SUN, toScreenVec, type Pt } from "./camera";
+import { pondPoint, type Bench, type Blanket, type Pond, type Reed } from "./layout";
 import { seeded } from "./util";
 import { makeCanvas } from "./util";
 
@@ -182,11 +182,11 @@ function drawBin(g: Ctx, x: number, y: number, u: number) {
   const mid = project(x, y, 0.62 * u, mkPt());
   g.fillStyle = "rgb(48,52,50)";
   g.beginPath();
-  g.arc(base.x, base.y, r, 0, Math.PI * 2);
+  g.ellipse(base.x, base.y, r, r * 0.7, 0, 0, Math.PI * 2);
   g.fill();
   g.fillStyle = "rgb(214,214,206)";
   g.beginPath();
-  g.arc(mid.x, mid.y, 0.86 * r * mid.k, 0, Math.PI * 2);
+  g.ellipse(mid.x, mid.y, 0.86 * r, 0.86 * r * 0.7, 0, 0, Math.PI * 2);
   g.fill();
   g.fillStyle = "rgb(150,112,70)";
   g.beginPath();
@@ -206,8 +206,43 @@ function drawBin(g: Ctx, x: number, y: number, u: number) {
   g.strokeStyle = "rgb(40,58,50)";
   g.lineWidth = 0.06 * u;
   g.beginPath();
-  g.arc(top.x, top.y, r * top.k, 0, Math.PI * 2);
+  g.ellipse(top.x, top.y, r, r * 0.7, 0, 0, Math.PI * 2);
   g.stroke();
+}
+
+// --------------------------------------------------------------- reeds ----
+
+/** Tufts of reed and bulrush standing along the shore. */
+function drawReeds(g: Ctx, reeds: Reed[]) {
+  const p0 = mkPt();
+  const p1 = mkPt();
+  g.lineCap = "round";
+  for (const r of reeds) {
+    const blades = 4 + ((r.seed * 4) | 0);
+    for (let i = 0; i < blades; i++) {
+      const k = (i + 1) / blades;
+      const lean = r.lean + (k - 0.5) * 0.5;
+      const hh = r.h * (0.7 + 0.5 * ((i * 37 + r.seed * 11) % 1));
+      project(r.x + (k - 0.5) * 0.5 * r.h * 0.5, r.y, 0, p0);
+      toScreenVec(lean * hh, 0, p1);
+      const tx = p0.x + p1.x;
+      const ty = p0.y - hh * 0.8 + p1.y;
+      g.strokeStyle = i % 2 ? "rgb(98,124,62)" : "rgb(132,142,74)";
+      g.lineWidth = Math.max(0.9, r.h * 0.07);
+      g.beginPath();
+      g.moveTo(p0.x, p0.y);
+      g.quadraticCurveTo(p0.x + (tx - p0.x) * 0.3, p0.y - hh * 0.5, tx, ty);
+      g.stroke();
+      if (i === 1 && r.seed > 0.35) {
+        g.strokeStyle = "rgb(112,74,44)";
+        g.lineWidth = Math.max(1.4, r.h * 0.13);
+        g.beginPath();
+        g.moveTo(tx - (tx - p0.x) * 0.1, ty + hh * 0.16);
+        g.lineTo(tx, ty);
+        g.stroke();
+      }
+    }
+  }
 }
 
 export interface StaticProps {
@@ -216,28 +251,32 @@ export interface StaticProps {
 }
 
 export function paintStaticProps(
-  w: number,
-  h: number,
+  vw: number,
+  vh: number,
   dpr: number,
   u: number,
   benches: Bench[],
   blankets: Blanket[],
   bin: { x: number; y: number },
   pond: Pond,
+  reeds: Reed[],
 ): StaticProps {
-  setCamera(w / 2, h / 2, u);
-  const body = makeCanvas(w * dpr, h * dpr);
-  const shadow = makeCanvas(w, h);
+  setDrift(0, 0);
+  const body = makeCanvas(vw * dpr, vh * dpr);
+  const shadow = makeCanvas(vw, vh);
   const g = body.getContext("2d")!;
   const sg = shadow.getContext("2d")!;
-  g.scale(dpr, dpr);
+  // flat things lie on the ground plane: paint them under the ground transform
+  groundTransform(g, dpr);
   drawPads(g, pond, u);
   for (const bl of blankets) drawBlanket(g, bl, u);
-  for (const b of benches) {
-    drawBenchShadow(sg, b, u);
-    drawBench(g, b, u);
-  }
+  screenTransform(g, dpr);
+  drawReeds(g, reeds);
+  groundTransform(sg, 1);
+  for (const b of benches) drawBenchShadow(sg, b, u);
   drawBinShadow(sg, bin.x, bin.y, u);
+  screenTransform(g, dpr);
+  for (const b of benches) drawBench(g, b, u);
   drawBin(g, bin.x, bin.y, u);
   return { body, shadow };
 }
@@ -594,14 +633,17 @@ export function drawOars(g: Ctx, b: BoatFrame, sweep: number, up: number, headin
     bseg(g, b, inA, inS, 0.62, outA, outS, outZ);
     const tip = bp(b, outA, outS, outZ, mkPt());
     const bladeAng = heading + Math.atan2(s, c);
+    flat(g, tip.x, tip.y);
+    g.rotate(bladeAng);
     g.fillStyle = "#f0dfb6";
     g.beginPath();
-    g.ellipse(tip.x, tip.y, 0.36 * m, 0.09 * m, bladeAng, 0, Math.PI * 2);
+    g.ellipse(0, 0, 0.36 * m, 0.09 * m, 0, 0, Math.PI * 2);
     g.fill();
     g.fillStyle = "#2f6a4c";
     g.beginPath();
-    g.ellipse(tip.x + Math.cos(bladeAng) * m * 0.22, tip.y + Math.sin(bladeAng) * m * 0.22, 0.1 * m, 0.085 * m, bladeAng, 0, Math.PI * 2);
+    g.ellipse(m * 0.22, 0, 0.1 * m, 0.085 * m, 0, 0, Math.PI * 2);
     g.fill();
+    g.restore();
   }
 }
 
@@ -752,61 +794,79 @@ export function drawCartShadow(g: Ctx, x: number, y: number, m: number) {
 export function drawCart(g: Ctx, x: number, y: number, m: number) {
   const r = 0.65 * m;
   const n = 0.4 * m;
-  const top = project(x, y, 0.9 * m, mkPt());
+  // wheels
   g.fillStyle = "#2a2a2c";
   for (const t of [-1, 1]) {
+    onGround(g, x + t * r, y, 0.18 * m);
     g.beginPath();
-    g.ellipse(x + t * r, y, 0.08 * m, 0.3 * m, 0, 0, Math.PI * 2);
+    g.ellipse(0, 0, 0.08 * m, 0.3 * m, 0, 0, Math.PI * 2);
     g.fill();
+    g.restore();
   }
-  g.fillStyle = "#b8bcc0";
-  g.beginPath();
-  g.roundRect(top.x - r, top.y - n, 2 * r, 2 * n, 0.08 * m);
-  g.fill();
-  g.fillStyle = "#e8ecee";
-  g.fillRect(top.x - 0.85 * r, top.y - 0.7 * n, 0.8 * r, 1.4 * n);
-  g.fillStyle = "#d84a3a";
-  g.fillRect(top.x + 0.15 * r, top.y - 0.7 * n, 0.65 * r, 0.5 * n);
-  g.fillStyle = "#f2c640";
-  g.fillRect(top.x + 0.15 * r, top.y + 0.1 * n, 0.65 * r, 0.5 * n);
+  // the box, built up from its footprint so it has some body
+  for (let i = 0; i <= 5; i++) {
+    const z = (0.35 + (0.55 * i) / 5) * m;
+    onGround(g, x, y, z);
+    g.fillStyle = i === 5 ? "#c9cdd0" : i % 2 ? "#9da2a6" : "#a8adb1";
+    g.beginPath();
+    g.roundRect(-r, -n, 2 * r, 2 * n, 0.08 * m);
+    g.fill();
+    if (i === 5) {
+      g.fillStyle = "#e8ecee";
+      g.fillRect(-0.85 * r, -0.7 * n, 0.8 * r, 1.4 * n);
+      g.fillStyle = "#d84a3a";
+      g.fillRect(0.15 * r, -0.7 * n, 0.65 * r, 0.5 * n);
+      g.fillStyle = "#f2c640";
+      g.fillRect(0.15 * r, 0.1 * n, 0.65 * r, 0.5 * n);
+    }
+    g.restore();
+  }
 }
 
 export function drawUmbrella(g: Ctx, x: number, y: number, m: number, time: number) {
-  const c = project(x, y, 2.2 * m, mkPt());
-  const rad = 1.15 * m * c.k;
+  const base = project(x, y, 0.9 * m, mkPt());
+  const top = project(x, y, 2.35 * m, mkPt());
+  g.strokeStyle = "#e8e2d4";
+  g.lineWidth = Math.max(1, 0.05 * m);
+  g.lineCap = "round";
+  g.beginPath();
+  g.moveTo(base.x, base.y);
+  g.lineTo(top.x, top.y);
+  g.stroke();
+  const rad = 1.15 * m;
   const turn = 0.02 * Math.sin(0.3 * time);
+  onGround(g, x, y, 2.2 * m);
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2 + turn;
     const b = ((i + 1) / 8) * Math.PI * 2 + turn;
     const mid = (a + b) / 2;
     g.fillStyle = i % 2 ? "#f6cc48" : "#3474bc";
     g.beginPath();
-    g.moveTo(c.x, c.y);
-    g.lineTo(c.x + Math.cos(a) * rad, c.y + Math.sin(a) * rad);
-    g.quadraticCurveTo(c.x + Math.cos(mid) * rad * 0.9, c.y + Math.sin(mid) * rad * 0.9, c.x + Math.cos(b) * rad, c.y + Math.sin(b) * rad);
+    g.moveTo(0, 0);
+    g.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+    g.quadraticCurveTo(Math.cos(mid) * rad * 0.9, Math.sin(mid) * rad * 0.9, Math.cos(b) * rad, Math.sin(b) * rad);
     g.closePath();
     g.fill();
   }
-  const sheen = g.createRadialGradient(c.x - 0.35 * rad, c.y + 0.1 * rad, 0.1 * rad, c.x, c.y, rad);
+  const sheen = g.createRadialGradient(-0.35 * rad, 0.1 * rad, 0.1 * rad, 0, 0, rad);
   sheen.addColorStop(0, "rgba(255,250,230,0.32)");
   sheen.addColorStop(0.6, "rgba(255,250,230,0)");
   sheen.addColorStop(1, "rgba(20,30,60,0.18)");
   g.fillStyle = sheen;
   g.beginPath();
-  g.arc(c.x, c.y, rad, 0, Math.PI * 2);
+  g.arc(0, 0, rad, 0, Math.PI * 2);
   g.fill();
-  const tip = project(x, y, 2.35 * m, mkPt());
+  g.restore();
   g.fillStyle = "#f8f4ea";
   g.beginPath();
-  g.arc(tip.x, tip.y, 0.08 * m, 0, Math.PI * 2);
+  g.arc(top.x, top.y, 0.08 * m, 0, Math.PI * 2);
   g.fill();
 }
 
 // ------------------------------------------------------------ stroller ----
 
 export function drawStroller(g: Ctx, x: number, y: number, heading: number, m: number) {
-  g.save();
-  g.translate(x + Math.cos(heading) * m * 0.7, y + Math.sin(heading) * m * 0.7);
+  onGround(g, x + Math.cos(heading) * m * 0.7, y + Math.sin(heading) * m * 0.7, 0.3 * m);
   g.rotate(heading);
   g.fillStyle = "rgb(60,62,66)";
   g.fillRect(-0.42 * m, -0.2 * m, 0.04 * m, 0.4 * m);
@@ -827,9 +887,7 @@ export function drawStroller(g: Ctx, x: number, y: number, heading: number, m: n
 
 /** Something to read on the bench: a paper, a book, or a phone. */
 export function drawReading(g: Ctx, kind: number, x: number, y: number, heading: number, n: number, time: number, seed: number) {
-  const p = project(x + Math.cos(heading) * n * 0.22, y + Math.sin(heading) * n * 0.22, 0.66 * n, mkPt());
-  g.save();
-  g.translate(p.x, p.y);
+  onGround(g, x + Math.cos(heading) * n * 0.22, y + Math.sin(heading) * n * 0.22, 0.66 * n);
   g.rotate(heading);
   if (kind === 1) {
     g.fillStyle = "#f6f0e2";

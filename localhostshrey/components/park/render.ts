@@ -6,7 +6,7 @@
 //   fore    : tree crowns and birds, in front of the "lens"
 //   canopy  : the tree shadows (half resolution)
 
-import { SUN, cast, mkPt, project, setCamera } from "./camera";
+import { SUN, cast, groundTransform, mkPt, onGround, project, screenTransform, setDrift, toScreenVec } from "./camera";
 import { drawDog, drawDogShadow, drawFigure, drawFigureShadow } from "./figure";
 import {
   boatShadow, drawBird, drawCart, drawCartShadow, drawDuck, drawLily, drawOars, drawPigeonSprite,
@@ -27,6 +27,7 @@ export interface Layers {
   canopy: HTMLCanvasElement;
 }
 
+/** Layers are in screen space: w × h is the view, not the ground. */
 export function makeLayers(w: number, h: number, dpr: number): Layers {
   return {
     sprites: makeCanvas(w * dpr, h * dpr),
@@ -83,21 +84,27 @@ function longShadow(g: Ctx, x: number, y: number, rad: number, depth: number, al
 export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: number) {
   const { L, camX, camY, time } = w;
   const m = L.m;
+  const vw = L.vw;
+  const vh = L.vh;
   blobBlue ??= glowSprite(214, 222, 236);
   blobWhite ??= glowSprite(236, 234, 230);
-  setCamera(L.w / 2 + camX, L.h / 2 + camY, m);
+  setDrift(camX, camY);
+  // The pre-painted statics were drawn with no drift; slide them by what the
+  // drift moves the ground on screen.
+  const drift = toScreenVec(-camX, -camY, { x: 0, y: 0 });
 
   const sp = ly.sprites.getContext("2d")!;
   const sh = ly.shade.getContext("2d")!;
   const air = ly.air.getContext("2d")!;
   const fore = ly.fore.getContext("2d")!;
   const can = ly.canopy.getContext("2d")!;
+  const ALT = 0.4; // birds fly lower than they would for real, so they stay in frame
 
   // ------------------------------------------------------------- shadows
   sh.setTransform(1, 0, 0, 1, 0, 0);
-  sh.clearRect(0, 0, L.w, L.h);
-  sh.translate(-camX, -camY);
-  sh.drawImage(props.shadow, 0, 0);
+  sh.clearRect(0, 0, vw, vh);
+  sh.drawImage(props.shadow, drift.x, drift.y);
+  groundTransform(sh, 1);
   for (const p of w.people) {
     drawFigureShadow(sh, p.pose, p.look, m);
     if (p.dog) drawDogShadow(sh, p.dog.x, p.dog.y, p.dog.heading, p.dog.ph, m, p.dog.sniff > 0);
@@ -123,7 +130,7 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
   const fl = w.flock;
   for (const bird of fl.birds) {
     const pose = flockBirdPose(fl, bird, m);
-    cast(pose.x, pose.y, bird.alt * m, p1);
+    cast(pose.x, pose.y, bird.alt * m * ALT, p1);
     const o = bird.alt * m * 0.006;
     for (const [dx, dy, a] of [[0, 0, 0.22], [o, 0.4 * o, 0.12], [-o, -0.4 * o, 0.12]]) {
       sh.save();
@@ -134,7 +141,7 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
       sh.restore();
     }
   }
-  for (const s of [...w.lawn.sitters.map((q) => q), ...w.lawn.players, w.lawn.kid]) drawFigureShadow(sh, s.pose, s.look, m);
+  for (const s of [...w.lawn.sitters, ...w.lawn.players, w.lawn.kid]) drawFigureShadow(sh, s.pose, s.look, m);
   const disc = w.lawn.disc;
   if (disc.flying) {
     cast(disc.x, disc.y, disc.z * m, p1);
@@ -160,13 +167,16 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
   sh.arc(p1.x, p1.y, 0.06 * m, 0, Math.PI * 2);
   sh.fill();
   for (const s of w.sails) drawSailboatShadow(sh, s, m);
+  // the dark patch where each trunk meets the grass
+  for (const t of L.trees) blob(sh, t.x, t.y, 0.3 * t.r, 0.3 * t.r, 0, 0.55);
 
   // -------------------------------------------------------------- sprites
   sp.setTransform(1, 0, 0, 1, 0, 0);
   sp.clearRect(0, 0, ly.sprites.width, ly.sprites.height);
-  sp.setTransform(dpr, 0, 0, dpr, -camX * dpr, -camY * dpr);
-  sp.drawImage(props.body, 0, 0, L.w, L.h);
+  sp.drawImage(props.body, drift.x * dpr, drift.y * dpr, vw * dpr, vh * dpr);
+  groundTransform(sp, dpr);
   for (const lily of L.lilies) drawLily(sp, lily);
+  screenTransform(sp, dpr);
 
   const duckSize = 1.35 * m;
   for (const d of w.ducks) {
@@ -175,11 +185,13 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
     const squash = 1 - 0.55 * dip;
     const bx = d.x - Math.cos(d.heading) * duckSize * 0.22 * dip;
     const by = d.y - Math.sin(d.heading) * duckSize * 0.22 * dip;
+    onGround(sp, bx, by, 0);
     sp.fillStyle = "rgba(10,40,50,0.22)";
     sp.beginPath();
-    sp.ellipse(bx, by, 0.56 * duckSize * squash, 0.24 * duckSize, d.heading, 0, Math.PI * 2);
+    sp.ellipse(0, 0, 0.56 * duckSize * squash, 0.24 * duckSize, d.heading, 0, Math.PI * 2);
     sp.fill();
-    drawDuck(sp, bx, by, d.heading + bob, duckSize, d.kind, dpr, squash);
+    drawDuck(sp, 0, 0, d.heading + bob, duckSize, d.kind, dpr, squash);
+    sp.restore();
   }
 
   drawRowboat(sp, bf);
@@ -193,16 +205,17 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
     if (!c.alive) continue;
     project(c.x, c.y, c.z * m, p1);
     sp.beginPath();
-    sp.arc(p1.x, p1.y, 0.045 * m * p1.k, 0, Math.PI * 2);
+    sp.arc(p1.x, p1.y, 0.045 * m, 0, Math.PI * 2);
     sp.fill();
   }
 
   for (const p of w.pigeons) {
-    project(p.x, p.y, (0.15 + p.z) * m, p1);
+    onGround(sp, p.x, p.y, (0.15 + p.z) * m);
     const flap = pigeonFlap(p);
-    if (flap > 0) drawPigeonWings(sp, p1.x, p1.y, p.heading, 0.7 * m, flap, p.tone, p1.k);
+    if (flap > 0) drawPigeonWings(sp, 0, 0, p.heading, 0.7 * m, flap, p.tone, 1);
     const peck = p.mode === 2 ? 0.09 * Math.sin(Math.min(1, p.peckT / 0.32) * Math.PI) : p.mode === 1 ? 0.045 * Math.cos(p.gait) : 0;
-    drawPigeonSprite(sp, p1.x + Math.cos(p.heading) * peck * 0.7 * m, p1.y + Math.sin(p.heading) * peck * 0.7 * m, p.heading, 0.7 * m * p1.k, p.tone, dpr);
+    drawPigeonSprite(sp, Math.cos(p.heading) * peck * 0.7 * m, Math.sin(p.heading) * peck * 0.7 * m, p.heading, 0.7 * m, p.tone, dpr);
+    sp.restore();
   }
 
   for (const s of w.lawn.sitters) drawFigure(sp, s.pose, s.look, m);
@@ -210,25 +223,26 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
   drawFigure(sp, w.lawn.players[1].pose, w.lawn.players[1].look, m);
   drawFigure(sp, w.lawn.kid.pose, w.lawn.kid.look, m);
   if (disc.flying) {
-    project(disc.x, disc.y, disc.z * m, p1);
-    const r = 0.14 * m * p1.k;
+    onGround(sp, disc.x, disc.y, disc.z * m);
+    const r = 0.14 * m;
     sp.fillStyle = "#ff8a5c";
     sp.beginPath();
-    sp.arc(p1.x, p1.y, r, 0, Math.PI * 2);
+    sp.arc(0, 0, r, 0, Math.PI * 2);
     sp.fill();
     sp.strokeStyle = "rgba(255,240,220,0.8)";
     sp.lineWidth = 0.8;
     const a = 20 * time;
     sp.beginPath();
-    sp.arc(p1.x, p1.y, 0.6 * r, a, a + 2);
+    sp.arc(0, 0, 0.6 * r, a, a + 2);
     sp.stroke();
+    sp.restore();
   }
 
   drawDog(sp, fe.dx, fe.dy, fe.dh, fe.ph, "#2e2a26", m, false);
   project(fe.bx, fe.by, fe.bz * m, p1);
   sp.fillStyle = "#d8e84a";
   sp.beginPath();
-  sp.arc(p1.x, p1.y, 0.06 * m * p1.k, 0, Math.PI * 2);
+  sp.arc(p1.x, p1.y, 0.06 * m, 0, Math.PI * 2);
   sp.fill();
   drawFigure(sp, fe.owner, fe.look, m);
   for (const s of w.sails) drawSailboat(sp, s, m);
@@ -264,19 +278,20 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
     const s = w.smoker;
     const ci = Math.cos(s.face);
     const si = Math.sin(s.face);
-    project(s.x + (-0.04 * ci + 0.62 * si) * m, s.y + (-0.04 * si - 0.62 * ci) * m, 0.56 * m, p1);
+    onGround(sp, s.x + (-0.04 * ci + 0.62 * si) * m, s.y + (-0.04 * si - 0.62 * ci) * m, 0.56 * m);
     sp.fillStyle = "#3c6a9a";
     sp.beginPath();
-    sp.arc(p1.x, p1.y, 0.065 * m, 0, Math.PI * 2);
+    sp.arc(0, 0, 0.065 * m, 0, Math.PI * 2);
     sp.fill();
     sp.fillStyle = "#f6f2ea";
     sp.beginPath();
-    sp.arc(p1.x, p1.y, 0.052 * m, 0, Math.PI * 2);
+    sp.arc(0, 0, 0.052 * m, 0, Math.PI * 2);
     sp.fill();
     sp.fillStyle = "#8a7a68";
     sp.beginPath();
-    sp.ellipse(p1.x + 0.025 * m, p1.y, 0.012 * m, 0.006 * m, 0, 0, Math.PI * 2);
+    sp.ellipse(0.025 * m, 0, 0.012 * m, 0.006 * m, 0, 0, Math.PI * 2);
     sp.fill();
+    sp.restore();
     drawFigure(sp, s.pose, SMOKER_LOOK, m);
     if (s.lit || s.s === 5 || (s.s === 7 && s.t > 0.4)) {
       const mx = s.hand.x + (s.ember.x - s.hand.x) * 0.3;
@@ -304,26 +319,27 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
 
   for (const l of w.leaves) {
     if (l.state === 0) continue;
-    project(l.x, l.y, l.z * m, p1);
     const fade = l.state >= 2 ? Math.min(1, (30 - l.t) / 5) : 1;
     const flutter = l.state === 1 ? 0.35 + 0.65 * Math.abs(Math.sin(2.4 * l.ph)) : 1;
+    onGround(sp, l.x, l.y, l.z * m);
     sp.globalAlpha = fade;
     sp.fillStyle = LEAF[l.col];
     sp.beginPath();
-    sp.ellipse(p1.x, p1.y, 0.11 * m * p1.k, 0.06 * m * p1.k * flutter, l.rot, 0, Math.PI * 2);
+    sp.ellipse(0, 0, 0.11 * m, 0.06 * m * flutter, l.rot, 0, Math.PI * 2);
     sp.fill();
+    sp.restore();
   }
   sp.globalAlpha = 1;
 
   // ------------------------------------------------------------------ air
   air.setTransform(1, 0, 0, 1, 0, 0);
-  air.clearRect(0, 0, L.w, L.h);
-  air.translate(-camX, -camY);
+  air.clearRect(0, 0, vw, vh);
+  groundTransform(air, 1);
   for (const r of w.ripples) {
     if (!r.alive) continue;
     const k = r.age / r.life;
     const rad = Math.max(0.5, r.r * (1 - (1 - k) * (1 - k)));
-    air.lineWidth = 1.2;
+    air.lineWidth = 1.2 / 0.7;
     air.strokeStyle = `rgba(230,244,236,${r.a * (1 - k) * (1 - k) * 0.45})`;
     air.beginPath();
     air.ellipse(r.x, r.y, rad, 0.94 * rad, 0, 0, Math.PI * 2);
@@ -338,53 +354,62 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
     air.arc(lily.x, lily.y, 3.2 * lily.r, 0, Math.PI * 2);
     air.fill();
   }
+  screenTransform(air, 1);
   for (const bu of w.bubbles) {
     if (!bu.alive) continue;
+    project(bu.x, bu.y, bu.z * m, p1);
     const t = Math.min(1, 3 * bu.age) * Math.min(1, (bu.life - bu.age) * 2);
     const wob = 1 + 0.04 * Math.sin(6 * time + bu.ph);
-    const g = air.createRadialGradient(bu.x, bu.y, 0.6 * bu.r, bu.x, bu.y, bu.r);
+    const g = air.createRadialGradient(p1.x, p1.y, 0.6 * bu.r, p1.x, p1.y, bu.r);
     g.addColorStop(0, "rgba(255,255,255,0)");
     g.addColorStop(0.85, `rgba(255,240,255,${0.22 * t})`);
     g.addColorStop(1, "rgba(255,255,255,0)");
     air.fillStyle = g;
     air.beginPath();
-    air.ellipse(bu.x, bu.y, bu.r * wob, bu.r / wob, 0, 0, Math.PI * 2);
+    air.ellipse(p1.x, p1.y, bu.r * wob, bu.r / wob, 0, 0, Math.PI * 2);
     air.fill();
     air.lineWidth = Math.max(0.8, 0.08 * bu.r);
     const hue = (40 * time + 60 * bu.ph) % 360;
     air.strokeStyle = `hsla(${hue},90%,78%,${0.55 * t})`;
     air.beginPath();
-    air.arc(bu.x, bu.y, 0.95 * bu.r, 0.4, 2.6);
+    air.arc(p1.x, p1.y, 0.95 * bu.r, 0.4, 2.6);
     air.stroke();
     air.strokeStyle = `hsla(${(hue + 150) % 360},90%,80%,${0.5 * t})`;
     air.beginPath();
-    air.arc(bu.x, bu.y, 0.95 * bu.r, 3.4, 5.6);
+    air.arc(p1.x, p1.y, 0.95 * bu.r, 3.4, 5.6);
     air.stroke();
     air.fillStyle = `rgba(255,255,255,${0.85 * t})`;
     air.beginPath();
-    air.ellipse(bu.x - 0.38 * bu.r, bu.y - 0.38 * bu.r, 0.2 * bu.r, 0.11 * bu.r, -0.8, 0, Math.PI * 2);
+    air.ellipse(p1.x - 0.38 * bu.r, p1.y - 0.38 * bu.r, 0.2 * bu.r, 0.11 * bu.r, -0.8, 0, Math.PI * 2);
     air.fill();
   }
   for (const s of w.sparks) {
     if (!s.alive) continue;
+    let sx = s.x;
+    let sy = s.y;
+    if (!s.scr) {
+      project(s.x, s.y, 0, p1);
+      sx = p1.x;
+      sy = p1.y;
+    }
     const t = s.age / s.life;
     const tw = 0.6 + 0.4 * Math.sin(30 * s.age);
     const size = s.s * (1 - 0.5 * t);
     const a = (1 - t) * 0.9 * tw;
-    const g = air.createRadialGradient(s.x, s.y, 0, s.x, s.y, 2.2 * size);
+    const g = air.createRadialGradient(sx, sy, 0, sx, sy, 2.2 * size);
     g.addColorStop(0, `rgba(${s.rgb},${0.5 * a})`);
     g.addColorStop(1, `rgba(${s.rgb},0)`);
     air.fillStyle = g;
     air.beginPath();
-    air.arc(s.x, s.y, 2.2 * size, 0, Math.PI * 2);
+    air.arc(sx, sy, 2.2 * size, 0, Math.PI * 2);
     air.fill();
     air.fillStyle = `rgba(255,254,246,${a})`;
     air.beginPath();
-    air.moveTo(s.x - size, s.y);
-    air.quadraticCurveTo(s.x, s.y, s.x, s.y - 1.3 * size);
-    air.quadraticCurveTo(s.x, s.y, s.x + size, s.y);
-    air.quadraticCurveTo(s.x, s.y, s.x, s.y + 1.3 * size);
-    air.quadraticCurveTo(s.x, s.y, s.x - size, s.y);
+    air.moveTo(sx - size, sy);
+    air.quadraticCurveTo(sx, sy, sx, sy - 1.3 * size);
+    air.quadraticCurveTo(sx, sy, sx + size, sy);
+    air.quadraticCurveTo(sx, sy, sx, sy + 1.3 * size);
+    air.quadraticCurveTo(sx, sy, sx - size, sy);
     air.fill();
   }
   for (const p of w.smoke) {
@@ -428,7 +453,7 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
   // --------------------------------------------------------------- canopy
   can.setTransform(1, 0, 0, 1, 0, 0);
   can.clearRect(0, 0, ly.canopy.width, ly.canopy.height);
-  can.setTransform(0.5, 0, 0, 0.5, -0.5 * camX, -0.5 * camY);
+  groundTransform(can, 1, 0.5);
   can.imageSmoothingEnabled = true;
   for (const t of L.trees.concat(L.shades)) {
     const s = treeShadow(t, m, dpr);
@@ -436,7 +461,6 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
     const h = crownHeight(t);
     can.save();
     can.translate(t.x + SUN.x * h + sw * m * 0.12 * (0.4 + w.wind), t.y + SUN.y * h);
-    can.rotate(0.012 * sw);
     can.globalAlpha = 0.96;
     can.drawImage(s.cv, -s.size / 2, -s.size / 2, s.size, s.size);
     can.restore();
@@ -445,26 +469,42 @@ export function renderLayers(w: World, ly: Layers, props: StaticProps, dpr: numb
   // ----------------------------------------------------------------- fore
   fore.setTransform(1, 0, 0, 1, 0, 0);
   fore.clearRect(0, 0, ly.fore.width, ly.fore.height);
-  fore.setTransform(dpr, 0, 0, dpr, 0, 0);
-  for (const t of L.trees) {
+  screenTransform(fore, dpr);
+  // nearer trees (lower on screen) stand in front of farther ones
+  const order = L.trees.map((t) => ({ t, y: project(t.x, t.y, 0, mkPt()).y })).sort((a, c) => a.y - c.y);
+  for (const { t } of order) {
     const s = treeSprite(t, m, dpr);
     const sw = sway(t, time);
-    project(t.x + sw * m * 0.12 * (0.4 + w.wind), t.y, crownHeight(t), p1);
-    const f = s.size * p1.k;
+    const sway3 = sw * m * 0.12 * (0.4 + w.wind);
+    const base = project(t.x, t.y, 0, p1);
+    const crown = project(t.x + sway3, t.y, crownHeight(t), p2);
+    // the trunk, from the roots up into the crown
+    const top = project(t.x + sway3 * 0.6, t.y, crownHeight(t) - 0.2 * t.r, mkPt());
+    fore.lineCap = "round";
+    fore.strokeStyle = "rgb(58,42,32)";
+    fore.lineWidth = Math.max(2, 0.2 * t.r);
+    fore.beginPath();
+    fore.moveTo(base.x, base.y);
+    fore.lineTo(top.x, top.y);
+    fore.stroke();
+    fore.strokeStyle = "rgba(196,160,118,0.55)";
+    fore.lineWidth = Math.max(1, 0.07 * t.r);
+    fore.beginPath();
+    fore.moveTo(base.x - 0.05 * t.r, base.y);
+    fore.lineTo(top.x - 0.05 * t.r, top.y);
+    fore.stroke();
     fore.save();
-    fore.translate(p1.x - camX, p1.y - camY);
+    fore.translate(crown.x, crown.y);
     fore.rotate(0.012 * sw);
-    fore.drawImage(s.cv, -f / 2, -f / 2, f, f);
+    fore.drawImage(s.cv, -s.size / 2, -s.size / 2, s.size, s.size);
     fore.restore();
   }
   for (const bird of fl.birds) {
     const pose = flockBirdPose(fl, bird, m);
-    project(pose.x, pose.y, bird.alt * m, p1);
-    fore.save();
-    fore.translate(p1.x - camX, p1.y - camY);
+    onGround(fore, pose.x, pose.y, bird.alt * m * ALT);
     fore.rotate(pose.a);
     fore.fillStyle = "rgba(255,255,252,0.96)";
-    drawBird(fore, 0.55 * m * p1.k, bird, true);
+    drawBird(fore, 0.55 * m, bird, true);
     fore.restore();
   }
 }

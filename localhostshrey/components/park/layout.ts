@@ -1,15 +1,31 @@
-// The park's fixed geometry: a pond in the upper right, two paths that cross
-// at a small plaza, benches, trees, picnic blankets. Everything is derived
-// from the stage size so the same composition holds at any aspect ratio.
+// The park's fixed geometry. The ground is a flat plane (world) seen through
+// the oblique camera; the composition is designed in *view* coordinates
+// (u, v in 0..1 across the screen) and converted to ground positions, so it
+// holds together at any aspect ratio: a kidney-shaped pond on the left, a
+// winding path along its far bank and another sweeping in from the lower
+// left, meeting at a small plaza, with open lawns, a blossom tree and a
+// grove around them.
 
-import { TAU, clamp01, seeded } from "./util";
+import { setSun, setView, toScreenVec, toWorldVec, unproject } from "./camera";
+import { TAU, angleDiff, clamp01, seeded } from "./util";
 
 export interface Pond {
+  /** Centre, world. */
   cx: number;
   cy: number;
+  /** Rough world radius, for the simulation's sampling. */
   rx: number;
   ry: number;
+  /** Semi-axes in screen px — the pond's shape is designed as seen. */
+  sx: number;
+  sy: number;
+  rot: number;
+  /** Radial wobble: amplitude, frequency and phase of each harmonic. */
+  amp: number[];
+  freq: number[];
   ph: number[];
+  /** A bay: the shore pulls in around this screen angle. */
+  dip: { ang: number; depth: number; width: number };
 }
 
 export interface Path {
@@ -32,6 +48,7 @@ export interface TreeDef {
   x: number;
   y: number;
   r: number;
+  /** Palette: 0..2 leafy greens, 3 blossom. */
   tone: number;
   seed: number;
 }
@@ -43,9 +60,21 @@ export interface Blanket {
   check: string;
 }
 
+export interface Reed {
+  x: number;
+  y: number;
+  h: number;
+  lean: number;
+  seed: number;
+}
+
 export interface Layout {
+  /** World (ground) size. */
   w: number;
   h: number;
+  /** View size in screen px. */
+  vw: number;
+  vh: number;
   /** One "metre": the unit every size and speed is expressed in. */
   m: number;
   pond: Pond;
@@ -58,50 +87,52 @@ export interface Layout {
   shades: TreeDef[];
   blankets: Blanket[];
   frisbee: [number, number, number, number];
+  fetch: { x: number; y: number };
   bin: { x: number; y: number };
   lilies: { x: number; y: number; r: number; rot: number; ph: number }[];
+  reeds: Reed[];
   field: Float32Array;
   fieldW: number;
   fieldStep: number;
 }
 
-const WAVES = [
-  [2, 0.09],
-  [3, 0.06],
-  [5, 0.035],
-  [9, 0.018],
-] as const;
+/** The camera: rotation of the ground, foreshortening, height scale. */
+const THETA = 0.5;
+const SQUASH = 0.62;
+const HEIGHT = 0.8;
+
+const tv = { x: 0, y: 0 };
 
 function wobble(p: Pond, ang: number) {
   let s = 1;
-  for (let i = 0; i < WAVES.length; i++) {
-    s += WAVES[i][1] * Math.sin(WAVES[i][0] * ang + p.ph[i]);
-  }
+  for (let i = 0; i < p.amp.length; i++) s += p.amp[i] * Math.sin(p.freq[i] * ang + p.ph[i]);
+  const d = angleDiff(ang, p.dip.ang);
+  s -= p.dip.depth * Math.exp(-(d * d) / p.dip.width);
   return s;
 }
 
 /** > 0 inside the pond, 0 on the shore, < 0 on land. */
 export function pondField(p: Pond, x: number, y: number) {
-  const dx = (x - p.cx) / p.rx;
-  const dy = (y - p.cy) / p.ry;
-  return 1 - Math.hypot(dx, dy) / wobble(p, Math.atan2(dy, dx));
+  toScreenVec(x - p.cx, y - p.cy, tv);
+  const c = Math.cos(p.rot);
+  const s = Math.sin(p.rot);
+  const ex = (tv.x * c + tv.y * s) / p.sx;
+  const ey = (-tv.x * s + tv.y * c) / p.sy;
+  return 1 - Math.hypot(ex, ey) / wobble(p, Math.atan2(ey, ex));
 }
 
-/** A point on the pond's outline, pulled in by `inset` (1 = on the shore). */
+/** A world point on the pond's outline at screen-angle `ang`, pulled in by `inset`. */
 export function pondPoint(p: Pond, ang: number, inset: number) {
-  const w = wobble(p, ang);
-  return {
-    x: p.cx + Math.cos(ang) * p.rx * w * inset,
-    y: p.cy + Math.sin(ang) * p.ry * w * inset,
-  };
+  const w = wobble(p, ang) * inset;
+  const ex = Math.cos(ang) * p.sx * w;
+  const ey = Math.sin(ang) * p.sy * w;
+  const c = Math.cos(p.rot);
+  const s = Math.sin(p.rot);
+  toWorldVec(ex * c - ey * s, ex * s + ey * c, tv);
+  return { x: p.cx + tv.x, y: p.cy + tv.y };
 }
 
-function buildPath(
-  pts: number[][],
-  w: number,
-  h: number,
-  plaza: { x: number; y: number },
-): Path {
+function buildPath(pts: number[][], plaza: { x: number; y: number }): Path {
   const xs: number[] = [];
   const ys: number[] = [];
   for (let i = 0; i < pts.length - 1; i++) {
@@ -114,18 +145,14 @@ function buildPath(
       const t2 = t * t;
       const t3 = t2 * t;
       const cr = (a: number, b: number, c: number, d: number) =>
-        0.5 *
-        (2 * b +
-          (-a + c) * t +
-          (2 * a - 5 * b + 4 * c - d) * t2 +
-          (-a + 3 * b - 3 * c + d) * t3);
-      xs.push(cr(p0[0], p1[0], p2[0], p3[0]) * w);
-      ys.push(cr(p0[1], p1[1], p2[1], p3[1]) * h);
+        0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+      xs.push(cr(p0[0], p1[0], p2[0], p3[0]));
+      ys.push(cr(p0[1], p1[1], p2[1], p3[1]));
     }
   }
   const last = pts[pts.length - 1];
-  xs.push(last[0] * w);
-  ys.push(last[1] * h);
+  xs.push(last[0]);
+  ys.push(last[1]);
   const n = xs.length;
   const s = new Float32Array(n);
   let nearest = 0;
@@ -138,24 +165,13 @@ function buildPath(
       nearest = i;
     }
   }
-  return {
-    xs: Float32Array.from(xs),
-    ys: Float32Array.from(ys),
-    s,
-    n,
-    total: s[n - 1],
-    junction: s[nearest],
-  };
+  return { xs: Float32Array.from(xs), ys: Float32Array.from(ys), s, n, total: s[n - 1], junction: s[nearest] };
 }
 
 const tmp = { x: 0, y: 0, tx: 0, ty: 0 };
 
 /** Position and unit tangent at arc length `t` along a path. */
-export function pathAt(
-  path: Path,
-  t: number,
-  out: { x: number; y: number; tx: number; ty: number },
-) {
+export function pathAt(path: Path, t: number, out: { x: number; y: number; tx: number; ty: number }) {
   if (t <= 0) t = 0;
   else if (t >= path.total) t = path.total - 0.001;
   let lo = 0;
@@ -178,11 +194,7 @@ export function pathAt(
 }
 
 /** Distance (in px) from a point to the nearest path centreline. */
-export function pathDistance(
-  L: Pick<Layout, "field" | "fieldW" | "fieldStep">,
-  x: number,
-  y: number,
-) {
+export function pathDistance(L: Pick<Layout, "field" | "fieldW" | "fieldStep">, x: number, y: number) {
   const rows = L.field.length / L.fieldW;
   const fx = Math.max(0, Math.min(L.fieldW - 1.001, x / L.fieldStep));
   const fy = Math.max(0, Math.min(rows - 1.001, y / L.fieldStep));
@@ -192,58 +204,68 @@ export function pathDistance(
   const ty = fy - iy;
   const i = iy * L.fieldW + ix;
   const f = L.field;
-  return (
-    (f[i] * (1 - tx) + f[i + 1] * tx) * (1 - ty) +
-    (f[i + L.fieldW] * (1 - tx) + f[i + L.fieldW + 1] * tx) * ty
-  );
+  return (f[i] * (1 - tx) + f[i + 1] * tx) * (1 - ty) + (f[i + L.fieldW] * (1 - tx) + f[i + L.fieldW + 1] * tx) * ty;
 }
 
-export function buildLayout(w: number, h: number): Layout {
-  const rng = seeded(1904);
-  const m = Math.min(w, h) / 22;
+export function buildLayout(vw: number, vh: number): Layout {
+  const rng = seeded(2611);
+  const m = Math.min(vw, vh) / 21;
 
-  const pond: Pond = {
-    cx: 0.74 * w,
-    cy: 0.25 * h,
-    rx: 0.27 * w,
-    ry: 0.31 * h,
-    ph: [rng() * TAU, rng() * TAU, rng() * TAU, rng() * TAU],
+  // The ground needs to cover everything the view can see. Measure the view's
+  // corners on the ground, then centre the world on the view.
+  setView(vw, vh, THETA, SQUASH, HEIGHT, 0, 0);
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const [sx, sy] of [[0, 0], [vw, 0], [0, vh], [vw, vh]]) {
+    unproject(sx, sy, tv);
+    minX = Math.min(minX, tv.x); maxX = Math.max(maxX, tv.x);
+    minY = Math.min(minY, tv.y); maxY = Math.max(maxY, tv.y);
+  }
+  const pad = 6 * m;
+  const w = Math.ceil(maxX - minX + 2 * pad);
+  const h = Math.ceil(maxY - minY + 2 * pad);
+  setView(vw, vh, THETA, SQUASH, HEIGHT, w / 2, h / 2);
+  // Shadows fall toward the lower right of the screen: a soft late-morning sun
+  // from the upper left.
+  setSun(0.5, 0.36);
+
+  /** View coordinates (0..1 across the screen) → a ground point. */
+  const V = (u: number, v: number) => {
+    unproject(u * vw, v * vh, tv);
+    return { x: tv.x, y: tv.y };
   };
-  const plaza = { x: 0.4 * w, y: 0.56 * h, r: 2.6 * m };
+  const P = (u: number, v: number): [number, number] => {
+    const p = V(u, v);
+    return [p.x, p.y];
+  };
+
+  // A kidney-shaped pond, its bay opening toward the plaza.
+  const pc = V(0.25, 0.6);
+  const pond: Pond = {
+    cx: pc.x,
+    cy: pc.y,
+    rx: 0.23 * vw * 1.05,
+    ry: 0.23 * vw * 1.05,
+    sx: 0.235 * vw,
+    sy: 0.27 * vh,
+    rot: -0.18,
+    amp: [0.07, 0.1, 0.05, 0.03, 0.015],
+    freq: [2, 3, 4, 6, 10],
+    ph: [rng() * TAU, rng() * TAU, rng() * TAU, rng() * TAU, rng() * TAU],
+    dip: { ang: 0.35, depth: 0.2, width: 0.32 },
+  };
+
+  const plazaAt = V(0.62, 0.52);
+  const plaza = { x: plazaAt.x, y: plazaAt.y, r: 2.6 * m };
 
   const paths = [
-    buildPath(
-      [
-        [0.3, -0.12],
-        [0.33, 0.12],
-        [0.37, 0.36],
-        [0.4, 0.56],
-        [0.36, 0.8],
-        [0.26, 1.12],
-      ],
-      w,
-      h,
-      plaza,
-    ),
-    buildPath(
-      [
-        [-0.12, 0.62],
-        [0.16, 0.58],
-        [0.4, 0.56],
-        [0.6, 0.66],
-        [0.82, 0.72],
-        [1.12, 0.66],
-      ],
-      w,
-      h,
-      plaza,
-    ),
+    // down the far bank, through the plaza, out toward the lower right
+    buildPath([P(0.5, -0.22), P(0.52, 0.04), P(0.5, 0.24), P(0.56, 0.4), P(0.62, 0.52), P(0.7, 0.68), P(0.82, 0.84), P(0.98, 0.95), P(1.18, 1.0)], plaza),
+    // from the lower left, under the pond, up to the plaza and away to the upper right
+    buildPath([P(-0.2, 1.1), P(0.1, 0.98), P(0.34, 0.9), P(0.52, 0.72), P(0.62, 0.52), P(0.76, 0.36), P(0.92, 0.2), P(1.2, 0.1)], plaza),
   ];
   const pathHW = 1.3 * m;
 
-  // Distance-to-path field on a coarse grid, used for the ground texture and
-  // for keeping props off the paths.
-  const fieldStep = 3;
+  const fieldStep = 4;
   const fieldW = Math.ceil(w / fieldStep) + 1;
   const fieldH = Math.ceil(h / fieldStep) + 1;
   const field = new Float32Array(fieldW * fieldH);
@@ -265,8 +287,8 @@ export function buildLayout(w: number, h: number): Layout {
   }
   const lay = { field, fieldW, fieldStep };
 
-  // Benches: a few around the plaza, a few along the paths, and the one on
-  // the pond bank where the smoker lives.
+  // Benches: one on the pond bank facing the water (the smoker's), a couple
+  // around the plaza, the rest along the paths.
   const benches: Bench[] = [];
   const arms: number[] = [];
   for (const p of paths) {
@@ -286,21 +308,21 @@ export function buildLayout(w: number, h: number): Layout {
       const bx = plaza.x + Math.cos(a) * rr;
       const by = plaza.y + Math.sin(a) * rr;
       if (pathDistance(lay, bx, by) < pathHW + 0.9 * m) continue;
+      if (pondField(pond, bx, by) > -0.1) continue;
       benches.push({ x: bx, y: by, face: a + Math.PI, occupied: false });
     }
   }
-  const sx = plaza.x + (pond.cx - plaza.x) * 0.3;
-  const sy = plaza.y + (pond.cy - plaza.y) * 0.42;
+  // On the shore nearest the plaza, a little way back from the water.
+  toScreenVec(plaza.x - pond.cx, plaza.y - pond.cy, tv);
+  const toward = Math.atan2(tv.y, tv.x) - pond.rot;
+  const shore = pondPoint(pond, toward, 1);
+  const away = Math.atan2(plaza.y - shore.y, plaza.x - shore.x);
+  const sx = shore.x + Math.cos(away) * 1.9 * m;
+  const sy = shore.y + Math.sin(away) * 1.9 * m;
   for (let i = benches.length - 1; i >= 0; i--) {
-    if (Math.hypot(benches[i].x - sx, benches[i].y - sy) < 2.2 * m)
-      benches.splice(i, 1);
+    if (Math.hypot(benches[i].x - sx, benches[i].y - sy) < 2.4 * m) benches.splice(i, 1);
   }
-  benches.push({
-    x: sx,
-    y: sy,
-    face: Math.atan2(pond.cy - sy, pond.cx - sx),
-    occupied: true,
-  });
+  benches.push({ x: sx, y: sy, face: Math.atan2(shore.y - sy, shore.x - sx), occupied: true });
   const smokerBench = benches.length - 1;
 
   const alongPath = (p: Path, frac: number, side: number, flip: boolean) => {
@@ -310,38 +332,46 @@ export function buildLayout(w: number, h: number): Layout {
     const off = pathHW + 0.75 * m;
     const bx = tmp.x + nx * off;
     const by = tmp.y + ny * off;
-    if (bx < 0.05 * w || bx > 0.95 * w || by < 0.05 * h || by > 0.95 * h) return;
-    if (pondField(pond, bx, by) > -0.05) return;
-    benches.push({
-      x: bx,
-      y: by,
-      face: Math.atan2(flip ? ny : -ny, flip ? nx : -nx),
-      occupied: false,
-    });
+    if (pondField(pond, bx, by) > -0.08) return;
+    if (Math.hypot(bx - sx, by - sy) < 3 * m) return;
+    benches.push({ x: bx, y: by, face: Math.atan2(flip ? ny : -ny, flip ? nx : -nx), occupied: false });
   };
-  alongPath(paths[0], 0.22, -1, false);
-  alongPath(paths[0], 0.33, -1, false);
-  alongPath(paths[1], 0.66, 1, true);
-  alongPath(paths[1], 0.8, 1, true);
-  alongPath(paths[1], 0.2, -1, false);
+  alongPath(paths[0], 0.2, 1, true);
+  alongPath(paths[0], 0.3, -1, false);
+  alongPath(paths[0], 0.76, 1, true);
+  alongPath(paths[1], 0.3, 1, true);
+  alongPath(paths[1], 0.72, -1, false);
+  alongPath(paths[1], 0.85, 1, true);
 
+  // Trees grow bigger toward the front of the scene, which also gives the
+  // flat ground a sense of depth. Crowns stand well above their roots, so
+  // anything near the top edge has to be small to stay in frame.
+  const tp = (u: number, v: number, tone: number, i: number, scale = 1): TreeDef => {
+    const p = V(u, v);
+    return { x: p.x, y: p.y, r: (1.9 + 2.1 * v) * scale * m, tone, seed: 7 + 31 * i };
+  };
   const trees: TreeDef[] = [
-    { x: plaza.x - 4.6 * m, y: plaza.y + 4.4 * m, r: 3.2 * m, tone: 0 },
-    { x: 0.1 * w, y: 0.84 * h, r: 3.8 * m, tone: 1 },
-    { x: 0.1 * w, y: 0.14 * h, r: 3.4 * m, tone: 2 },
-    { x: 0.93 * w, y: 0.9 * h, r: 3.6 * m, tone: 0 },
-    { x: 0.64 * w, y: 0.97 * h, r: 2.8 * m, tone: 2 },
-  ].map((t, i) => ({ ...t, seed: 7 + 31 * i }));
-  // A big tree just off the bottom edge whose shadow reaches in.
-  const shades: TreeDef[] = [
-    { x: 0.8 * w, y: 1.25 * h, r: 4.5 * m, tone: 0, seed: 223 },
+    tp(0.07, 0.3, 1, 0, 0.95),
+    tp(0.3, 0.22, 2, 1, 0.9),
+    tp(0.64, 0.3, 0, 2, 0.9),
+    tp(0.92, 0.52, 3, 3), // the blossom tree
+    tp(0.9, 0.9, 1, 4),
+    tp(0.05, 0.96, 2, 5, 0.9),
   ];
+  // Beyond the frame to the upper right, shading the lawn in.
+  const shades: TreeDef[] = [{ ...tp(0.9, -0.12, 0, 7, 1.5), seed: 223 }];
 
+  const bl = (u: number, v: number, ang: number, check: string): Blanket => {
+    const p = V(u, v);
+    return { x: p.x, y: p.y, ang, check };
+  };
   const blankets: Blanket[] = [
-    { x: 0.56 * w, y: 0.86 * h, ang: 0.2, check: "rgba(214,86,74,0.5)" },
-    { x: 0.13 * w, y: 0.34 * h, ang: -0.35, check: "rgba(70,120,200,0.45)" },
-    { x: 0.84 * w, y: 0.9 * h, ang: 0.5, check: "rgba(232,180,60,0.55)" },
+    bl(0.82, 0.66, 0.3, "rgba(214,86,74,0.5)"),
+    bl(0.17, 0.12, -0.4, "rgba(70,130,190,0.45)"),
+    bl(0.58, 0.84, 0.5, "rgba(232,180,60,0.55)"),
   ];
+  const f0 = V(0.64, 0.1);
+  const f1 = V(0.82, 0.16);
 
   const sb = benches[smokerBench];
   const bin = {
@@ -352,36 +382,26 @@ export function buildLayout(w: number, h: number): Layout {
   const lilies: Layout["lilies"] = [];
   const lr = seeded(5);
   for (let i = 0; i < 5; i++) {
-    const a = -0.7 + 1.2 * lr();
-    const pt = pondPoint(pond, a, 0.76 + 0.14 * lr());
-    lilies.push({
-      x: pt.x,
-      y: pt.y,
-      r: m * (0.15 + 0.06 * lr()),
-      rot: 6 * lr(),
-      ph: 6 * lr(),
-    });
+    const a = 2.4 + 1.5 * lr();
+    const pt = pondPoint(pond, a, 0.74 + 0.14 * lr());
+    lilies.push({ x: pt.x, y: pt.y, r: m * (0.16 + 0.06 * lr()), rot: 6 * lr(), ph: 6 * lr() });
   }
 
+  // Reeds crowd the near shore.
+  const reeds: Reed[] = [];
+  const rr = seeded(91);
+  for (let i = 0; i < 26; i++) {
+    const a = 0.4 + 2.9 * rr();
+    const pt = pondPoint(pond, a, 0.98 + 0.05 * rr());
+    reeds.push({ x: pt.x, y: pt.y, h: m * (0.9 + 0.9 * rr()), lean: (rr() - 0.5) * 0.5, seed: rr() });
+  }
+
+  const fp = V(0.9, 0.76);
   return {
-    w,
-    h,
-    m,
-    pond,
-    paths,
-    pathHW,
-    plaza,
-    benches,
-    smokerBench,
-    trees,
-    shades,
-    blankets,
-    frisbee: [0.07 * w, 0.12 * h, 0.24 * w, 0.2 * h],
-    bin,
-    lilies,
-    field,
-    fieldW,
-    fieldStep,
+    w, h, vw, vh, m, pond, paths, pathHW, plaza, benches, smokerBench, trees, shades, blankets,
+    frisbee: [f0.x, f0.y, f1.x, f1.y],
+    fetch: { x: fp.x, y: fp.y },
+    bin, lilies, reeds, field, fieldW, fieldStep,
   };
 }
 
@@ -397,10 +417,7 @@ export function buildGroundMap(L: Layout) {
       const py = 2 * y + 1;
       const o = (y * mw + x) * 4;
       const toPlaza = Math.hypot(px - L.plaza.x, py - L.plaza.y);
-      const path = Math.max(
-        clamp01(0.5 + (L.pathHW - pathDistance(L, px, py)) / soft),
-        clamp01(0.5 + (L.plaza.r - toPlaza) / soft),
-      );
+      const path = Math.max(clamp01(0.5 + (L.pathHW - pathDistance(L, px, py)) / soft), clamp01(0.5 + (L.plaza.r - toPlaza) / soft));
       data[o] = 255 * path;
       data[o + 1] = 255 * clamp01(0.5 + pondField(L.pond, px, py));
       data[o + 2] = 255 * clamp01((L.plaza.r - 0.3 * L.m - toPlaza) / L.m);

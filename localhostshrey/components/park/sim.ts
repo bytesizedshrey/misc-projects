@@ -4,7 +4,7 @@
 // scatter; a man on the pond bench smokes and mutters. Nothing is scripted
 // on a timeline; it all keeps going, and pointer taps nudge it.
 
-import { type Pt, mkPt, project } from "./camera";
+import { type Pt, mkPt, project, screenDir } from "./camera";
 import { figureAnchors, makeLook, type Look, type Pose } from "./figure";
 import { pathAt, pathDistance, pondField, pondPoint, type Layout } from "./layout";
 import { type DuckKind, type FlockBird, type Sailboat, oarCycle } from "./props";
@@ -62,7 +62,8 @@ export interface Duck {
 
 export interface Crumb { x: number; y: number; z: number; vx: number; vy: number; vz: number; water: boolean; alive: boolean; age: number }
 export interface Ripple { x: number; y: number; r: number; a: number; life: number; age: number; alive: boolean }
-export interface Spark { x: number; y: number; vx: number; vy: number; age: number; life: number; s: number; rgb: string; alive: boolean }
+/** `scr` sparks live in screen px (embers, bubble pops); the rest sit on the ground. */
+export interface Spark { x: number; y: number; vx: number; vy: number; age: number; life: number; s: number; rgb: string; alive: boolean; scr: boolean }
 export interface Smoke { x: number; y: number; vx: number; vy: number; age: number; life: number; r0: number; r1: number; a: number; blue: boolean; seed: number; alive: boolean }
 export interface Bubble { x: number; y: number; vx: number; vy: number; z: number; vz: number; r: number; age: number; life: number; ph: number; alive: boolean }
 export interface Leaf { x: number; y: number; z: number; rot: number; spin: number; ph: number; col: number; t: number; state: number }
@@ -170,6 +171,15 @@ const REPLIES = [
 
 // ------------------------------------------------------------- helpers ----
 
+const panPt = mkPt();
+const sdir = { x: 0, y: 0 };
+/** Stereo position (0..1) of a ground point, by where it appears on screen. */
+function panOf(w: World, x: number, y: number) {
+  project(x, y, 0, panPt);
+  return clamp01(panPt.x / w.L.vw);
+}
+
+
 export const smokerLook: Look = {
   coat: "#e9e2d2", legs: "#2e3a52", shoes: "#3a2c24", hair: "#3a2e26", skin: "#d8ac88",
   hairStyle: 0, hat: 0, hatColor: "#000000", scarf: null, longCoat: false, bag: null, scale: 1,
@@ -230,13 +240,13 @@ export function addRipple(w: World, x: number, y: number, r: number, a = 0.5, li
   w.rippleNext = (slot + 1) % POOL.ripples;
 }
 
-export function addSpark(w: World, x: number, y: number, size: number, n = 1, speed = 0, rgb = "255,252,236", scale = 1) {
+export function addSpark(w: World, x: number, y: number, size: number, n = 1, speed = 0, rgb = "255,252,236", scale = 1, scr = false) {
   for (let i = 0; i < n; i++) {
     const s = w.sparks[w.sparkNext];
     w.sparkNext = (w.sparkNext + 1) % POOL.sparks;
     const a = rand(0, TAU);
     const v = speed * rand(0.4, 1);
-    Object.assign(s, { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, age: 0, life: rand(0.5, 1.1), s: size * rand(0.03, 0.07) * scale, rgb, alive: true });
+    Object.assign(s, { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, age: 0, life: rand(0.5, 1.1), s: size * rand(0.03, 0.07) * scale, rgb, alive: true, scr });
   }
 }
 
@@ -440,19 +450,19 @@ function updateSmoker(w: World, dt: number) {
     case 3: s.raise = 1 - easeInOut(f); if (f >= 1) setPhase(s, 4, rand(1.6, 2.4)); break;
     case 4:
       if (f >= 1) {
-        if (Math.random() < 0.12) { s.cough = 0.6; w.sfx.cough(s.x / L.w, 0.45); }
+        if (Math.random() < 0.12) { s.cough = 0.6; w.sfx.cough(panOf(w, s.x, s.y), 0.45); }
         if (s.length < 0.28) setPhase(s, 5, 1.6); else setPhase(s, 0, rand(3.5, 8));
       }
       break;
     case 5:
-      if (f > 0.5 && s.lit) { s.lit = false; w.sfx.flick(L.bin.x / L.w); }
+      if (f > 0.5 && s.lit) { s.lit = false; w.sfx.flick(panOf(w, L.bin.x, L.bin.y)); }
       if (f >= 1) setPhase(s, 6, rand(6, 13));
       break;
     case 6: if (f >= 1) setPhase(s, 7, 2.2); break;
     case 7:
       s.raise = Math.min(1, s.t / 0.6);
-      if (s.t > 0.9 && s.t - dt <= 0.9) w.sfx.flick(s.x / L.w);
-      if (s.t > 1.25 && s.t - dt <= 1.25) { w.sfx.flick(s.x / L.w); s.flame = 0.8; }
+      if (s.t > 0.9 && s.t - dt <= 0.9) w.sfx.flick(panOf(w, s.x, s.y));
+      if (s.t > 1.25 && s.t - dt <= 1.25) { w.sfx.flick(panOf(w, s.x, s.y)); s.flame = 0.8; }
       if (s.t > 1.4 && !s.lit) { s.lit = true; s.length = 0.95; s.drags = 0; }
       if (f >= 1) setPhase(s, 2, 1.6);
       break;
@@ -496,16 +506,16 @@ function updateSmoker(w: World, dt: number) {
   const head = mkPt();
   figureAnchors(p, smokerLook, m, hand, head);
   s.hand.x = hand.x; s.hand.y = hand.y; s.hand.k = hand.k;
-  const fa = p.heading + p.look;
+  const fd = screenDir(p.heading + p.look, sdir);
   const hd = 0.1 * m * head.k;
-  s.mouth.x = head.x + Math.cos(fa) * hd; s.mouth.y = head.y + Math.sin(fa) * hd; s.mouth.k = head.k;
-  const ea = s.face + 0.6 * (1 - s.raise);
+  s.mouth.x = head.x + fd.x * hd; s.mouth.y = head.y + fd.y * hd; s.mouth.k = head.k;
+  const ed = screenDir(s.face + 0.6 * (1 - s.raise), sdir);
   const el = (0.05 + 0.07 * Math.max(0, s.length)) * m * hand.k;
-  s.ember.x = hand.x + Math.cos(ea) * el; s.ember.y = hand.y + Math.sin(ea) * el;
+  s.ember.x = hand.x + ed.x * el; s.ember.y = hand.y + ed.y * el;
 
   if (s.lit) {
     if (Math.random() < dt * (s.s === 2 ? 1.2 : s.s === 0 ? 0.15 : 0)) {
-      addSpark(w, s.ember.x, s.ember.y, m, s.s === 0 ? 3 : 1, 0.4 * m, "255,176,96", 0.7);
+      addSpark(w, s.ember.x, s.ember.y, m, s.s === 0 ? 3 : 1, 0.4 * m, "255,176,96", 0.7, true);
     }
     s.emitT -= dt;
     while (s.emitT <= 0) {
@@ -514,9 +524,9 @@ function updateSmoker(w: World, dt: number) {
     }
   }
   if (s.s === 4 && f < 0.75) {
-    const a = s.face + s.look + 0.25;
+    const bd = screenDir(s.face + s.look + 0.25, sdir);
     const v = m * (1.4 - 1.4 * f);
-    if (Math.random() < 0.85) addSmoke(w, s.mouth.x, s.mouth.y, Math.cos(a) * v + (Math.random() - 0.5) * m * 0.3, Math.sin(a) * v + (Math.random() - 0.5) * m * 0.3, m, true);
+    if (Math.random() < 0.85) addSmoke(w, s.mouth.x, s.mouth.y, bd.x * v + (Math.random() - 0.5) * m * 0.3, bd.y * v + (Math.random() - 0.5) * m * 0.3, m, true);
   }
   s.talkT -= dt;
   if (s.talkT <= 0 && s.s === 0) {
@@ -559,7 +569,7 @@ function updateDucks(w: World, dt: number) {
       if (bill < 0.3 * m || body < 0.45 * m) {
         d.target.alive = false; d.target = null;
         addRipple(w, hx, hy, 0.5 * m, 0.4, 1.2);
-        w.sfx.nibble(d.x / L.w);
+        w.sfx.nibble(panOf(w, d.x, d.y));
         d.state = 1; d.t = rand(0.6, 1.5);
       }
     } else if (d.state === 0) {
@@ -615,7 +625,9 @@ function updateDucks(w: World, dt: number) {
 function updateCrumbs(w: World, dt: number) {
   const L = w.L;
   let wetPan = -1;
+  let wetY = 0;
   let dryPan = -1;
+  let dryY = 0;
   for (const c of w.crumbs) {
     if (!c.alive) continue;
     c.age += dt;
@@ -631,13 +643,17 @@ function updateCrumbs(w: World, dt: number) {
           addRipple(w, c.x, c.y, 0.4 * L.m, 0.4, 1.2);
           addSpark(w, c.x, c.y, L.m, 2, 0.5 * L.m);
           wetPan = c.x;
-        } else dryPan = c.x;
+          wetY = c.y;
+        } else {
+          dryPan = c.x;
+          dryY = c.y;
+        }
       }
     } else if (c.water) c.x += Math.sin(c.age) * L.m * 0.02 * dt;
     if (c.age > 40) c.alive = false;
   }
-  if (wetPan >= 0) w.sfx.pellets(wetPan / L.w);
-  else if (dryPan >= 0) w.sfx.flick(dryPan / L.w);
+  if (wetPan >= 0) w.sfx.pellets(panOf(w, wetPan, wetY));
+  else if (dryPan >= 0) w.sfx.flick(panOf(w, dryPan, dryY));
   if (w.crumbs.length > 60 || (w.crumbs.length && !w.crumbs[0].alive)) {
     for (let i = w.crumbs.length - 1; i >= 0; i--) if (!w.crumbs[i].alive) w.crumbs.splice(i, 1);
   }
@@ -645,7 +661,8 @@ function updateCrumbs(w: World, dt: number) {
 
 function popBubble(w: World, b: Bubble) {
   b.alive = false;
-  addSpark(w, b.x, b.y, w.L.m, 9, 1.2 * w.L.m);
+  const at = project(b.x, b.y, b.z * w.L.m, mkPt());
+  addSpark(w, at.x, at.y, w.L.m, 9, 1.2 * w.L.m, "255,252,236", 1, true);
 }
 
 function updateBubbles(w: World, dt: number) {
@@ -725,7 +742,7 @@ export function scatterPigeons(w: World, x: number, y: number, radius: number) {
       delay: Math.hypot(p.x - x, p.y - y) / (6 * m) + rand(0, 0.25),
     });
   }
-  w.sfx.rustle(x / L.w, Math.min(1, 0.4 + 0.08 * hit.length));
+  w.sfx.rustle(panOf(w, x, y), Math.min(1, 0.4 + 0.08 * hit.length));
 }
 
 /** Wing-beat amount: 0 on the ground, flapping while airborne. */
@@ -899,7 +916,7 @@ function updateBoat(w: World, dt: number) {
     b.stroke += dt / 2.6;
     const cur = b.stroke % 1;
     if (cur < 0.45) b.speed += 0.55 * dt;
-    if (prev > cur) w.sfx.oar(b.x / L.w);
+    if (prev > cur) w.sfx.oar(panOf(w, b.x, b.y));
     if (prev > cur || (prev < 0.45 && cur >= 0.45)) {
       const c = Math.cos(b.heading);
       const s = Math.sin(b.heading);
@@ -1009,9 +1026,8 @@ function updateLawn(w: World, dt: number) {
         const p = kid.pose;
         const c = Math.cos(p.heading);
         const s = Math.sin(p.heading);
-        const at = project(p.x + c * m * 0.3, p.y + s * m * 0.3, 0.9 * m, mkPt());
         const slot = w.bubbles.find((q) => !q.alive);
-        if (slot) Object.assign(slot, { x: at.x, y: at.y, vx: (1.2 * c + 0.5 * w.windX) * m, vy: (1.2 * s + 0.5 * w.windY) * m, z: 1.1, vz: rand(-0.05, 0.25), r: m * rand(0.14, 0.3), age: 0, life: rand(5, 13), ph: rand(0, 6), alive: true });
+        if (slot) Object.assign(slot, { x: p.x + c * m * 0.3, y: p.y + s * m * 0.3, vx: (1.2 * c + 0.5 * w.windX) * m, vy: (1.2 * s + 0.5 * w.windY) * m, z: 0.95, vz: rand(-0.05, 0.25), r: m * rand(0.14, 0.3), age: 0, life: rand(5, 13), ph: rand(0, 6), alive: true });
       }
       if (kid.blowing <= 0) {
         kid.pose.handR = null;
@@ -1161,8 +1177,8 @@ export function createWorld(L: Layout, dpr: number, sfx: Sfx = quietSfx): World 
   const toward = Math.atan2(L.plaza.y - cy, L.plaza.x - cx);
   const vendor = newPose(cx + Math.cos(toward) * m * 0.9, cy + Math.sin(toward) * m * 0.9, toward);
 
-  const ox = 0.14 * L.w;
-  const oy = 0.8 * L.h;
+  const ox = L.fetch.x;
+  const oy = L.fetch.y;
   const w: World = {
     L, dpr, sfx, time: 0, wind: 0.5, windX: 0.5, windY: 0, camX: 0, camY: 0,
     people: [], spawnT: 2,
@@ -1181,7 +1197,7 @@ export function createWorld(L: Layout, dpr: number, sfx: Sfx = quietSfx): World 
     crumbs: [],
     ripples: mkPool(POOL.ripples, () => ({ x: 0, y: 0, r: 1, a: 0, life: 1, age: 0, alive: false })),
     rippleNext: 0,
-    sparks: mkPool(POOL.sparks, () => ({ x: 0, y: 0, vx: 0, vy: 0, age: 0, life: 1, s: 1, rgb: "", alive: false })),
+    sparks: mkPool(POOL.sparks, () => ({ x: 0, y: 0, vx: 0, vy: 0, age: 0, life: 1, s: 1, rgb: "", alive: false, scr: false })),
     sparkNext: 0,
     smoke: mkPool(POOL.smoke, () => ({ x: 0, y: 0, vx: 0, vy: 0, age: 0, life: 1, r0: 1, r1: 1, a: 0, blue: false, seed: 0, alive: false })),
     smokeNext: 0,
@@ -1288,20 +1304,27 @@ export function updateWorld(w: World, realDt: number) {
   w.sfx.wind(clamp01(w.wind));
 }
 
-/** A tap/click at world coordinates (x, y). */
-export function tapWorld(w: World, x: number, y: number) {
+/**
+ * A tap/click. (x, y) is the ground point under the pointer; (sx, sy) is the
+ * same point on screen, which is what things that float (bubbles) and the
+ * smoker's head are measured against.
+ */
+export function tapWorld(w: World, x: number, y: number, sx: number, sy: number) {
   const L = w.L;
   const m = L.m;
-  const pan = x / L.w;
+  const pan = clamp01(sx / L.vw);
+  const at = mkPt();
   for (const b of w.bubbles) {
-    if (b.alive && Math.hypot(b.x - x, b.y - y) < b.r + 0.35 * m) { popBubble(w, b); w.sfx.flick(pan); return; }
+    if (!b.alive) continue;
+    project(b.x, b.y, b.z * m, at);
+    if (Math.hypot(at.x - sx, at.y - sy) < b.r * 1.15 + 0.35 * m) { popBubble(w, b); w.sfx.flick(pan); return; }
   }
   const s = w.smoker;
-  if (Math.hypot(x - s.mouth.x, y - s.mouth.y) < 1.2 * m) {
+  if (Math.hypot(sx - s.mouth.x, sy - s.mouth.y) < 1.2 * m) {
     say(w, REPLIES[(Math.random() * REPLIES.length) | 0], s.mouth.x, s.mouth.y - 12, 2.6);
     s.lookTo = 0;
     s.talkT = rand(8, 14);
-    w.sfx.cough(s.x / L.w, 0.25);
+    w.sfx.cough(panOf(w, s.x, s.y), 0.25);
     return;
   }
   if (pondField(L.pond, x, y) > 0) {

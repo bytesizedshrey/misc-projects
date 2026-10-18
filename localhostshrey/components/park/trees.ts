@@ -2,7 +2,7 @@
 // sprite is drawn big in front of the lens, and (flattened to a silhouette)
 // as the shadow the sun throws across the lawn.
 
-import { SUN } from "./camera";
+import { lightDir } from "./camera";
 import type { TreeDef } from "./layout";
 import { makeCanvas, seeded } from "./util";
 
@@ -16,9 +16,14 @@ interface Palette {
 }
 
 const PALETTES: Palette[] = [
-  { dark: [18, 50, 30], mid: [52, 116, 46], lit: [118, 178, 62], high: [186, 222, 96], back: [226, 244, 140] },
-  { dark: [28, 54, 24], mid: [78, 130, 42], lit: [150, 190, 60], high: [212, 226, 100], back: [246, 240, 150] },
-  { dark: [14, 50, 40], mid: [42, 112, 70], lit: [104, 176, 96], high: [170, 222, 134], back: [214, 246, 170] },
+  // sage and olive
+  { dark: [24, 52, 36], mid: [66, 112, 62], lit: [128, 166, 84], high: [190, 208, 120], back: [232, 236, 160] },
+  // sun-struck golden green
+  { dark: [34, 56, 28], mid: [92, 126, 52], lit: [158, 176, 72], high: [214, 214, 112], back: [250, 238, 160] },
+  // cool blue-green
+  { dark: [16, 46, 46], mid: [48, 100, 84], lit: [100, 150, 120], high: [160, 200, 160], back: [210, 238, 196] },
+  // spring blossom
+  { dark: [64, 44, 52], mid: [176, 102, 128], lit: [230, 150, 170], high: [248, 200, 212], back: [255, 232, 236] },
 ];
 
 function ramp(p: Palette, t: number): RGB {
@@ -49,7 +54,7 @@ export function clearTreeCache() {
 }
 
 /** Height of a crown above the ground, in px. */
-export const crownHeight = (t: TreeDef) => 1.6 * t.r;
+export const crownHeight = (t: TreeDef) => 1.9 * t.r;
 
 export function treeSprite(t: TreeDef, m: number, dpr: number): Sprite {
   const hit = sprites.get(t);
@@ -82,10 +87,10 @@ export function treeShadow(t: TreeDef, m: number, dpr: number): Sprite {
 
 function paintCrown(g: CanvasRenderingContext2D, c: number, R: number, l: number, seed: number, pal: Palette) {
   const r = seeded(seed);
-  const hyp = Math.hypot(SUN.x, SUN.y);
-  // unit vector toward the light, in the sprite's plane
-  const lx = -SUN.x / hyp;
-  const ly = -SUN.y / hyp;
+  // unit vector toward the light, in the sprite's (screen) plane
+  const ld = lightDir();
+  const lx = ld.x;
+  const ly = ld.y;
   const L3 = { x: 0.62 * lx, y: 0.62 * ly, z: 0.78 };
 
   g.strokeStyle = "rgb(46,36,28)";

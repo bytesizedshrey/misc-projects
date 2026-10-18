@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createAudio, type Audio } from "./park/audio";
+import { SUN, matrices, project, unproject } from "./park/camera";
 import { createRenderer } from "./park/gl";
 import { buildGroundMap, buildLayout } from "./park/layout";
 import { paintPaper, parseColor } from "./park/paper";
@@ -84,7 +85,7 @@ export default function Park() {
       const L = buildLayout(w, h);
       world = createWorld(L, dpr, audio.sfx);
       layers = makeLayers(w, h, dpr);
-      props = paintStaticProps(w, h, dpr, L.m, L.benches, L.blankets, L.bin, L.pond);
+      props = paintStaticProps(w, h, dpr, L.m, L.benches, L.blankets, L.bin, L.pond, L.reeds);
       const map = buildGroundMap(L);
       gl.setMap(map.data, map.mw, map.mh);
       gl.resize(Math.round(w * glScale), Math.round(h * glScale));
@@ -115,18 +116,20 @@ export default function Park() {
         ripples[4 * n + 3] = Math.min(1.2, 1.6 * r.a);
         n++;
       }
+      const mx = matrices();
       gl.draw(
         {
-          w: w.L.w, h: w.L.h, m: w.L.m, time: w.time, wind: w.wind, camX: w.camX, camY: w.camY,
-          sunX: 0.78, sunY: -0.22, ripples, focus: (w.smoker.y - w.camY) / w.L.h, dim: isDark() ? 0.8 : 1,
+          w: w.L.w, h: w.L.h, vw: w.L.vw, vh: w.L.vh, m: w.L.m, time: w.time, wind: w.wind,
+          wcx: mx.wx, wcy: mx.wy, inv: [mx.ia, mx.ib, mx.ic, mx.id],
+          sunX: SUN.x, sunY: SUN.y, ripples, focus: w.smoker.mouth.y / w.L.vh, dim: isDark() ? 0.8 : 1,
         },
         [layers.sprites, layers.shade, layers.air, layers.fore, layers.canopy],
       );
       const g = top.getContext("2d")!;
       g.setTransform(1, 0, 0, 1, 0, 0);
       g.clearRect(0, 0, top.width, top.height);
-      g.setTransform(dpr, 0, 0, dpr, -w.camX * dpr, -w.camY * dpr);
-      drawSay(g, w, w.L.w, font);
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawSay(g, w, w.L.vw, font);
     };
 
     const loop = (now: number) => {
@@ -150,6 +153,7 @@ export default function Park() {
       const t2 = performance.now();
       const dbg = ((window as unknown as { __park?: Record<string, unknown> }).__park ||= { frames: 0, sim: 0, draw: 0 });
       dbg.world = world;
+      dbg.project = (x: number, y: number, z: number) => project(x, y, z, { x: 0, y: 0, k: 1 });
       dbg.step = (sec: number) => {
         for (let i = 0; i < sec * 30; i++) updateWorld(world!, 1 / 30);
       };
@@ -189,7 +193,10 @@ export default function Park() {
     const onPointer = (e: PointerEvent) => {
       if (!world || reduced.matches) return;
       const rect = stage.getBoundingClientRect();
-      tapWorld(world, e.clientX - rect.left + world.camX, e.clientY - rect.top + world.camY);
+      const sx = e.clientX - rect.left;
+      const sy = e.clientY - rect.top;
+      const at = unproject(sx, sy, { x: 0, y: 0 });
+      tapWorld(world, at.x, at.y, sx, sy);
     };
     stage.addEventListener("pointerdown", onPointer);
 

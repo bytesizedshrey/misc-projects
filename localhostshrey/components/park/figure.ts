@@ -3,7 +3,7 @@
 // frame (forward, side, up) and projected like everything else, so a walker
 // leans away from the view centre and casts a long shadow.
 
-import { SUN, cast, mkPt, project, type Pt } from "./camera";
+import { cast, lightDir, mkPt, project, screenDir, type Pt } from "./camera";
 import { pick, shade } from "./util";
 
 export interface Look {
@@ -161,7 +161,7 @@ function seg(ctx: CanvasRenderingContext2D, a: Pt, b: Pt, w: number) {
   ctx.stroke();
 }
 
-const LIGHT_ANGLE = Math.atan2(-SUN.y, -SUN.x);
+const sd = { x: 0, y: 0 };
 
 export function drawFigureShadow(
   ctx: CanvasRenderingContext2D,
@@ -193,8 +193,13 @@ export function drawFigure(
   const u = place(p, look, m, false);
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  const cos = Math.cos(p.heading);
-  const sin = Math.sin(p.heading);
+  // Headings are on the ground; what we draw is on screen.
+  screenDir(p.heading, sd);
+  const cos = sd.x;
+  const sin = sd.y;
+  const hAng = Math.atan2(sin, cos);
+  const lg = lightDir();
+  const LIGHT_ANGLE = Math.atan2(lg.y, lg.x);
 
   // legs and shoes
   ctx.strokeStyle = look.legs;
@@ -205,7 +210,7 @@ export function drawFigure(
   ctx.fillStyle = look.shoes;
   for (const f of [pts[FOOT_L], pts[FOOT_R]]) {
     ctx.beginPath();
-    ctx.ellipse(f.x + cos * u * 0.06, f.y + sin * u * 0.06, 0.11 * u, 0.046 * u, p.heading, 0, Math.PI * 2);
+    ctx.ellipse(f.x + cos * u * 0.06, f.y + sin * u * 0.06, 0.11 * u, 0.046 * u, hAng, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -218,7 +223,7 @@ export function drawFigure(
     ctx.fillStyle = look.bag;
     const c = pts[CHEST];
     ctx.beginPath();
-    ctx.ellipse(c.x - cos * u * 0.17, c.y - sin * u * 0.17, 0.14 * u, 0.09 * u, p.heading + Math.PI / 2, 0, Math.PI * 2);
+    ctx.ellipse(c.x - cos * u * 0.17, c.y - sin * u * 0.17, 0.14 * u, 0.09 * u, hAng + Math.PI / 2, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -271,9 +276,10 @@ export function drawFigure(
   // head
   const h = pts[HEAD];
   const hr = (look.scale < 0.8 ? 0.14 : 0.112) * u * h.k;
-  const face = p.heading + p.look;
-  const fc = Math.cos(face);
-  const fs = Math.sin(face);
+  screenDir(p.heading + p.look, sd);
+  const fc = sd.x;
+  const fs = sd.y;
+  const face = Math.atan2(fs, fc);
   if (look.hairStyle === 1 && !p.sitting && look.hat === 0) {
     ctx.strokeStyle = look.hair;
     seg(ctx, h, pts[CHEST], 0.17 * u);
@@ -396,12 +402,14 @@ export function drawDog(ctx: CanvasRenderingContext2D, x: number, y: number, hea
   ctx.beginPath();
   ctx.arc(head.x, head.y, 0.1 * u * head.k, 0, Math.PI * 2);
   ctx.fill();
-  const c = Math.cos(heading);
-  const s = Math.sin(heading);
+  screenDir(heading, sd);
+  const c = sd.x;
+  const s = sd.y;
+  const hAng = Math.atan2(s, c);
   ctx.fillStyle = "rgba(0,0,0,0.22)";
   for (const side of [-1, 1]) {
     ctx.beginPath();
-    ctx.ellipse(head.x - c * u * 0.03 - s * side * u * 0.08, head.y - s * u * 0.03 + c * side * u * 0.08, 0.06 * u, 0.035 * u, heading + 0.5 * side, 0, Math.PI * 2);
+    ctx.ellipse(head.x - c * u * 0.03 - s * side * u * 0.08, head.y - s * u * 0.03 + c * side * u * 0.08, 0.06 * u, 0.035 * u, hAng + 0.5 * side, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.fillStyle = "#1e1a18";

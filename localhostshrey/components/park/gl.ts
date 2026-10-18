@@ -13,9 +13,10 @@ void main() {
 const GROUND = `
 precision highp float;
 varying vec2 vUv;
-uniform vec2 uSize;
+uniform vec2 uSize, uView, uWc;
+uniform vec4 uInv;
 uniform float uM, uTime, uWind;
-uniform vec2 uCam, uSun;
+uniform vec2 uSun;
 uniform sampler2D uMap, uSprites, uShade, uAir, uFore, uCanopy;
 uniform vec4 uRipples[12];
 
@@ -52,6 +53,13 @@ float fleck(vec2 m) {
           + vn(q * 4.6 - vec2(t * 0.13, -t * 0.21) + 7.0) * 0.3
           + vn(q * 0.7 + 3.0) * 0.2;
   return smoothstep(0.57, 0.7, n);
+}
+
+// Gentle undulation of the ground: slopes facing the sun catch more light.
+float rise(vec2 q) { return vn(q * 0.06 + 11.0) * 0.65 + vn(q * 0.15 + 4.0) * 0.35; }
+float slopeLight(vec2 m) {
+  vec2 toSun = -normalize(uSun) * 1.4;
+  return 1.0 - (rise(m + toSun) - rise(m - toSun)) * 0.9;
 }
 
 // Water surface: a handful of drifting directional swells, warped by noise
@@ -107,9 +115,9 @@ vec3 pondColor(vec2 wp, float deep, out float glint) {
   vec3 L = normalize(vec3(0.4, 0.7, 0.3));
   vec3 eye = vec3(0.0, 1.0, 0.0);
   float fres = clamp(pow(1.0 - max(dot(n, eye), 0.0), 3.0) * 0.65, 0.0, 1.0);
-  vec3 deepC = mix(vec3(0.12, 0.30, 0.26), vec3(0.02, 0.18, 0.32), deep);
-  vec3 skyC = vec3(0.50, 0.82, 0.88);
-  vec3 waterC = vec3(0.25, 0.65, 0.60);
+  vec3 deepC = mix(vec3(0.17, 0.40, 0.32), vec3(0.03, 0.25, 0.29), deep);
+  vec3 skyC = vec3(0.66, 0.85, 0.80);
+  vec3 waterC = vec3(0.30, 0.64, 0.52);
   vec3 c = mix(deepC + pow(dot(n, L) * 0.4 + 0.6, 80.0) * waterC * 0.12, skyC, fres);
   c += waterC * (h - 0.1) * 0.12;
   c += vec3(pow(max(dot(reflect(-eye, n), L), 0.0), 80.0) * 0.16);
@@ -118,33 +126,46 @@ vec3 pondColor(vec2 wp, float deep, out float glint) {
 }
 
 void main() {
-  vec2 p = vUv * uSize + uCam;
+  // the screen point's ground position, through the oblique camera
+  vec2 d = vUv * uView - uView * 0.5;
+  vec2 p = uWc + vec2(uInv.x * d.x + uInv.y * d.y, uInv.z * d.x + uInv.w * d.y);
   vec2 m = p / uM;
   vec4 map = texture2D(uMap, clamp(p / uSize, 0.001, 0.999));
 
-  // Grass: broad clumps, then blades, then per-pixel grit.
+  // Grass: broad clumps, then blades, then per-pixel grit — sage and olive,
+  // mown in broad stripes, with meadow flowers where it has been left long.
   float clump = fbm(m * 0.55);
   float blade = vn(vec2(m.x * 3.2 + m.y * 1.1, m.y * 14.0 + vn(m * 0.8) * 3.0));
   float fine = vn(m * vec2(9.0, 26.0));
-  vec3 grass = mix(vec3(0.16, 0.44, 0.12), vec3(0.36, 0.68, 0.17), clump);
-  grass *= 0.72 + blade * 0.36 + fine * 0.16 + (hash(floor(p * 1.5)) - 0.5) * 0.14;
-  grass *= 0.82 + 0.3 * smoothstep(0.25, 0.7, fbm(m * 1.7 + 4.0));
-  grass = mix(grass, vec3(0.5, 0.68, 0.2), smoothstep(0.55, 0.8, fbm(m * 0.12 + 9.0)) * 0.4);
+  vec3 grass = mix(vec3(0.22, 0.42, 0.17), vec3(0.50, 0.68, 0.25), clump);
+  grass *= 0.74 + blade * 0.34 + fine * 0.16 + (hash(floor(p * 1.5)) - 0.5) * 0.12;
+  grass *= 0.84 + 0.26 * smoothstep(0.25, 0.7, fbm(m * 1.7 + 4.0));
+  float mown = smoothstep(-0.25, 0.25, sin(dot(m, vec2(0.55, 0.83)) * 0.9));
+  grass *= 0.93 + 0.09 * mown;
+  float meadow = smoothstep(0.52, 0.78, fbm(m * 0.1 + 9.0));
+  grass = mix(grass, vec3(0.62, 0.66, 0.30), meadow * 0.42);
+  vec2 fq = m * 3.2;
+  vec2 fc = floor(fq);
+  float fh = hash(fc + 17.0);
+  vec2 fo = fract(fq) - 0.5 - (vec2(hash(fc + 3.0), hash(fc + 7.0)) - 0.5) * 0.45;
+  float bloom = step(0.9, fh) * smoothstep(0.17, 0.07, length(fo)) * meadow;
+  vec3 flower = fh > 0.96 ? vec3(0.96, 0.94, 0.86) : (fh > 0.93 ? vec3(0.95, 0.80, 0.34) : vec3(0.88, 0.52, 0.62));
+  grass = mix(grass, flower, bloom * 0.9);
 
-  // Path: pale, sun-bleached, the lawn fraying across its edges.
+  // Path: warm clay and sand, packed hard, the lawn fraying across its edges.
   float edge = map.r + (vn(m * 1.1) - 0.5) * 0.2 + (vn(m * 4.0 + 7.0) - 0.5) * 0.1;
   float onPath = smoothstep(0.47, 0.55, edge);
-  vec3 path = vec3(0.82, 0.80, 0.72) * (0.94 + vn(m * 3.0) * 0.06);
-  path = mix(path * 0.93, path, smoothstep(0.55, 0.9, map.r));
+  vec3 path = vec3(0.80, 0.67, 0.52) * (0.93 + vn(m * 3.0) * 0.07) * (0.94 + 0.12 * hash(floor(p * 1.7)));
+  path = mix(path * 0.88, path, smoothstep(0.55, 0.9, map.r));
   float verge = smoothstep(0.3, 0.5, map.r) * (1.0 - onPath);
-  vec3 col = mix(grass, vec3(0.62, 0.60, 0.32), verge * 0.45);
-  // Hexagonal pavers on the plaza, barely there.
-  vec2 hx = m * vec2(1.0, 1.1547) / 0.34;
-  hx.x += mod(floor(hx.y), 2.0) * 0.5;
-  vec2 hf = abs(fract(hx) - 0.5);
-  float grout = smoothstep(0.42, 0.5, max(hf.x, hf.y * 0.9 + hf.x * 0.3));
-  path *= 1.0 - map.b * grout * 0.12;
+  vec3 col = mix(grass, vec3(0.58, 0.58, 0.30), verge * 0.4);
+  // Square pavers on the plaza, laid on the diagonal.
+  vec2 pq = vec2(m.x + m.y, m.x - m.y) / 0.5;
+  vec2 pf = abs(fract(pq) - 0.5);
+  float grout = smoothstep(0.43, 0.5, max(pf.x, pf.y));
+  path *= 1.0 - map.b * grout * 0.16;
   col = mix(col, path, onPath);
+  col *= slopeLight(m);
 
   // Pond.
   float depth = map.g;
@@ -155,7 +176,10 @@ void main() {
   float cloud = smoothstep(0.55, 0.8, fbm(m * vec2(0.07, 0.1) + vec2(uTime * 0.012, uTime * 0.004)));
   water = mix(water, vec3(0.8, 0.88, 0.9), cloud * 0.25);
   float bank = smoothstep(0.44, 0.5, depth) * (1.0 - wet);
-  col = mix(col, vec3(0.1, 0.24, 0.12), bank * 0.75);
+  col = mix(col, vec3(0.12, 0.26, 0.15), bank * 0.6);
+  // a thin edging of pale stone where the lawn meets the water
+  float edging = smoothstep(0.452, 0.462, depth) * (1.0 - smoothstep(0.478, 0.49, depth));
+  col = mix(col, vec3(0.74, 0.70, 0.60) * (0.9 + 0.2 * vn(m * 6.0)), edging * 0.85);
 
   // Light: crowns shade the ground along the sun, with flecks opening up
   // inside them; people and benches add their own small shadows on top.
@@ -163,9 +187,9 @@ void main() {
   float light = 1.0 - canopy * (1.0 - fleck(m) * 0.92);
   float shade = texture2D(uShade, vUv).a;
   float lightUp = light;               // figures stand above the ground's shadows
-  light = min(light, 1.0 - shade * 0.82);
-  vec3 sun = vec3(1.2, 1.14, 1.0);
-  vec3 amb = vec3(0.24, 0.36, 0.66);
+  light = min(light, 1.0 - shade * 0.74);
+  vec3 sun = vec3(1.26, 1.16, 0.98);
+  vec3 amb = vec3(0.40, 0.49, 0.64);
   vec3 lit = mix(amb, sun, light);
 
   vec3 ground = col * lit;
@@ -233,13 +257,13 @@ void main() {
   // Grade: rich colour, ink-blue blacks, cream whites, warm highlights.
   float l0 = dot(c, vec3(0.3, 0.59, 0.11));
   c = clamp(mix(vec3(l0), c, 1.18), 0.0, 1.0);
-  c = mix(vec3(0.04, 0.08, 0.18), vec3(1.0, 0.99, 0.95), c);
+  c = mix(vec3(0.07, 0.07, 0.10), vec3(1.0, 0.98, 0.93), c);
   float lum = dot(c, vec3(0.3, 0.59, 0.11));
   c += vec3(0.05, 0.04, 0.0) * smoothstep(0.6, 1.0, lum);
-  // Low western sun: a warm haze leaks in from that side, pastel at the corners.
-  c += vec3(0.10, 0.085, 0.05) * smoothstep(0.8, 0.0, length((vUv - vec2(-0.05, 0.75)) * vec2(1.0, 0.8)));
-  c += vec3(0.07, 0.03, 0.06) * smoothstep(0.55, 0.0, length(vUv - vec2(1.05, -0.05)));
-  c += vec3(0.0, 0.05, 0.045) * smoothstep(0.5, 0.0, length(vUv - vec2(0.95, 1.05)));
+  // A soft late-morning sun from the upper left: a warm haze leaks in from
+  // that corner, with a faint cool bounce coming off the water below.
+  c += vec3(0.10, 0.075, 0.04) * smoothstep(0.85, 0.0, length((vUv - vec2(0.0, -0.05)) * vec2(1.0, 0.9)));
+  c += vec3(0.0, 0.035, 0.04) * smoothstep(0.6, 0.0, length(vUv - vec2(0.15, 1.05)));
   vec2 v = vUv - 0.5;
   c *= 1.0 - dot(v, v) * 0.12;
   float g = hash(gl_FragCoord.xy + uSeed) + hash(gl_FragCoord.xy * 1.37 - uSeed) - 1.0;
@@ -249,13 +273,20 @@ void main() {
 }`;
 
 export interface FrameParams {
+  /** Ground size. */
   w: number;
   h: number;
+  /** View size. */
+  vw: number;
+  vh: number;
   m: number;
   time: number;
   wind: number;
-  camX: number;
-  camY: number;
+  /** World point at the view centre (drift included). */
+  wcx: number;
+  wcy: number;
+  /** Inverse of the ground→screen matrix: [ia, ib, ic, id]. */
+  inv: [number, number, number, number];
   sunX: number;
   sunY: number;
   ripples: Float32Array;
@@ -312,8 +343,9 @@ export function createRenderer(canvas: HTMLCanvasElement): Renderer | null {
   gl.useProgram(ground);
   const u = (p: WebGLProgram, n: string) => gl.getUniformLocation(p, n);
   const gu = {
-    size: u(ground, "uSize"), m: u(ground, "uM"), time: u(ground, "uTime"), wind: u(ground, "uWind"),
-    cam: u(ground, "uCam"), sun: u(ground, "uSun"), ripples: u(ground, "uRipples"),
+    size: u(ground, "uSize"), view: u(ground, "uView"), wc: u(ground, "uWc"), inv: u(ground, "uInv"),
+    m: u(ground, "uM"), time: u(ground, "uTime"), wind: u(ground, "uWind"),
+    sun: u(ground, "uSun"), ripples: u(ground, "uRipples"),
   };
   const names = ["uMap", "uSprites", "uShade", "uAir", "uFore", "uCanopy"];
   const texs = names.map((n, i) => {
@@ -357,10 +389,12 @@ export function createRenderer(canvas: HTMLCanvasElement): Renderer | null {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, layers[i]);
       }
       gl.uniform2f(gu.size, p.w, p.h);
+      gl.uniform2f(gu.view, p.vw, p.vh);
+      gl.uniform2f(gu.wc, p.wcx, p.wcy);
+      gl.uniform4f(gu.inv, p.inv[0], p.inv[1], p.inv[2], p.inv[3]);
       gl.uniform1f(gu.m, p.m);
       gl.uniform1f(gu.time, p.time);
       gl.uniform1f(gu.wind, p.wind);
-      gl.uniform2f(gu.cam, p.camX, p.camY);
       gl.uniform2f(gu.sun, p.sunX, p.sunY);
       gl.uniform4fv(gu.ripples, p.ripples);
       gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
